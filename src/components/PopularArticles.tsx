@@ -1,4 +1,5 @@
 import { TrendingUp } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const popularArticles = [
   {
@@ -28,21 +29,18 @@ const popularArticles = [
 ];
 
 const PopularArticles = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="bg-card rounded-xl border border-border p-5">
       <div className="flex items-center gap-2 mb-5">
         <TrendingUp className="w-5 h-5 text-secondary" />
-        <h3 className="font-bold text-card-foreground">Eng ko'p ko'rilgan</h3>
+        <h3 className="font-bold text-card-foreground">{t("section.popular")}</h3>
       </div>
       <div className="space-y-4">
         {popularArticles.map((article, i) => (
           <div key={i} className="flex gap-3 group cursor-pointer">
-            <img
-              src={article.image}
-              alt={article.title}
-              className="w-16 h-16 rounded-lg object-cover shrink-0"
-              loading="lazy"
-            />
+            <img src={article.image} alt={article.title} className="w-16 h-16 rounded-lg object-cover shrink-0" loading="lazy" />
             <div className="min-w-0">
               <h4 className="text-sm font-medium text-card-foreground line-clamp-2 group-hover:text-primary transition-colors">
                 {article.title}
@@ -50,7 +48,7 @@ const PopularArticles = () => {
               <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                 <span>{article.category}</span>
                 <span className="text-border">•</span>
-                <span>{article.views} ko'rish</span>
+                <span>{article.views}</span>
               </div>
             </div>
           </div>

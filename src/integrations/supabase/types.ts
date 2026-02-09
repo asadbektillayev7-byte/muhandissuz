@@ -14,16 +14,467 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      articles: {
+        Row: {
+          author_id: string | null
+          category_id: string | null
+          content: string | null
+          content_en: string | null
+          created_at: string
+          excerpt: string | null
+          excerpt_en: string | null
+          featured_image: string | null
+          id: string
+          meta_description: string | null
+          meta_title: string | null
+          publish_date: string | null
+          slug: string
+          status: string
+          tags: string[] | null
+          title: string
+          title_en: string | null
+          updated_at: string
+          views_count: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          category_id?: string | null
+          content?: string | null
+          content_en?: string | null
+          created_at?: string
+          excerpt?: string | null
+          excerpt_en?: string | null
+          featured_image?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          publish_date?: string | null
+          slug: string
+          status?: string
+          tags?: string[] | null
+          title: string
+          title_en?: string | null
+          updated_at?: string
+          views_count?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          category_id?: string | null
+          content?: string | null
+          content_en?: string | null
+          created_at?: string
+          excerpt?: string | null
+          excerpt_en?: string | null
+          featured_image?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          publish_date?: string | null
+          slug?: string
+          status?: string
+          tags?: string[] | null
+          title?: string
+          title_en?: string | null
+          updated_at?: string
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "articles_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      categories: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          description_en: string | null
+          icon: string | null
+          id: string
+          name: string
+          name_en: string | null
+          parent_id: string | null
+          slug: string
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          name_en?: string | null
+          parent_id?: string | null
+          slug: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          name_en?: string | null
+          parent_id?: string | null
+          slug?: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comments: {
+        Row: {
+          article_id: string
+          author_name: string | null
+          content: string
+          created_at: string
+          id: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          article_id: string
+          author_name?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          article_id?: string
+          author_name?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_corner: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_en: string | null
+          event_date: string | null
+          id: string
+          sort_order: number | null
+          thumbnail_url: string | null
+          title: string
+          title_en: string | null
+          type: string
+          url: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_en?: string | null
+          event_date?: string | null
+          id?: string
+          sort_order?: number | null
+          thumbnail_url?: string | null
+          title: string
+          title_en?: string | null
+          type?: string
+          url?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_en?: string | null
+          event_date?: string | null
+          id?: string
+          sort_order?: number | null
+          thumbnail_url?: string | null
+          title?: string
+          title_en?: string | null
+          type?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
+      media_files: {
+        Row: {
+          alt_text: string | null
+          created_at: string
+          file_name: string
+          file_path: string
+          file_size: number | null
+          file_type: string | null
+          id: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          uploaded_by?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      scientific_articles: {
+        Row: {
+          abstract: string | null
+          abstract_en: string | null
+          author_credentials: string | null
+          author_name: string
+          category_id: string | null
+          co_authors: string[] | null
+          content: string | null
+          content_en: string | null
+          created_at: string
+          created_by: string | null
+          doi: string | null
+          email: string | null
+          id: string
+          keywords: string[] | null
+          pdf_url: string | null
+          references_list: string[] | null
+          slug: string
+          status: string
+          title: string
+          title_en: string | null
+          updated_at: string
+          views_count: number | null
+        }
+        Insert: {
+          abstract?: string | null
+          abstract_en?: string | null
+          author_credentials?: string | null
+          author_name: string
+          category_id?: string | null
+          co_authors?: string[] | null
+          content?: string | null
+          content_en?: string | null
+          created_at?: string
+          created_by?: string | null
+          doi?: string | null
+          email?: string | null
+          id?: string
+          keywords?: string[] | null
+          pdf_url?: string | null
+          references_list?: string[] | null
+          slug: string
+          status?: string
+          title: string
+          title_en?: string | null
+          updated_at?: string
+          views_count?: number | null
+        }
+        Update: {
+          abstract?: string | null
+          abstract_en?: string | null
+          author_credentials?: string | null
+          author_name?: string
+          category_id?: string | null
+          co_authors?: string[] | null
+          content?: string | null
+          content_en?: string | null
+          created_at?: string
+          created_by?: string | null
+          doi?: string | null
+          email?: string | null
+          id?: string
+          keywords?: string[] | null
+          pdf_url?: string | null
+          references_list?: string[] | null
+          slug?: string
+          status?: string
+          title?: string
+          title_en?: string | null
+          updated_at?: string
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scientific_articles_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_settings: {
+        Row: {
+          id: string
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          id?: string
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          bio: string | null
+          bio_en: string | null
+          created_at: string
+          education: string | null
+          education_en: string | null
+          full_name: string
+          full_name_en: string | null
+          id: string
+          is_active: boolean | null
+          photo_url: string | null
+          role_title: string | null
+          role_title_en: string | null
+          social_links: Json | null
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          bio_en?: string | null
+          created_at?: string
+          education?: string | null
+          education_en?: string | null
+          full_name: string
+          full_name_en?: string | null
+          id?: string
+          is_active?: boolean | null
+          photo_url?: string | null
+          role_title?: string | null
+          role_title_en?: string | null
+          social_links?: Json | null
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          bio_en?: string | null
+          created_at?: string
+          education?: string | null
+          education_en?: string | null
+          full_name?: string
+          full_name_en?: string | null
+          id?: string
+          is_active?: boolean | null
+          photo_url?: string | null
+          role_title?: string | null
+          role_title_en?: string | null
+          social_links?: Json | null
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "editor" | "author"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +601,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "editor", "author"],
+    },
   },
 } as const

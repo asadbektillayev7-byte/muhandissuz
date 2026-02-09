@@ -1,81 +1,77 @@
 import { useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard,
-  FileText,
-  FolderOpen,
-  Users,
-  Image,
-  MessageSquare,
-  BarChart3,
-  Settings,
-  LogOut,
-  Menu,
-  X,
-  Bell,
-  Search,
-  ExternalLink,
-  GraduationCap,
-  Newspaper,
-  ChevronDown,
-  ChevronRight,
+  LayoutDashboard, FileText, FolderOpen, Users, Image,
+  MessageSquare, BarChart3, Settings, LogOut, Menu, X,
+  Bell, Search, ExternalLink, GraduationCap, Newspaper,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const sidebarItems = [
-  { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
-  { icon: FileText, label: "Maqolalar", path: "/admin/articles" },
-  { icon: FolderOpen, label: "Kategoriyalar", path: "/admin/categories" },
-  { icon: Users, label: "Jamoa", path: "/admin/team" },
-  { icon: Image, label: "Media kutubxonasi", path: "/admin/media" },
-  { icon: GraduationCap, label: "Ilmiy maqolalar", path: "/admin/scientific-articles" },
-  { icon: Newspaper, label: "OAV burchagi", path: "/admin/media-corner" },
-  { icon: Users, label: "Foydalanuvchilar", path: "/admin/users" },
-  { icon: MessageSquare, label: "Izohlar", path: "/admin/comments" },
-  { icon: BarChart3, label: "Analitika", path: "/admin/analytics" },
-  { icon: Settings, label: "Sozlamalar", path: "/admin/settings" },
-];
+import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import ThemeLangToggle from "@/components/ThemeLangToggle";
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const { t } = useLanguage();
+
+  const sidebarItems = [
+    { icon: LayoutDashboard, label: t("admin.dashboard"), path: "/admin" },
+    { icon: FileText, label: t("admin.articles"), path: "/admin/articles" },
+    { icon: FolderOpen, label: t("admin.categories"), path: "/admin/categories" },
+    { icon: Users, label: t("admin.team"), path: "/admin/team" },
+    { icon: Image, label: t("admin.media_library"), path: "/admin/media" },
+    { icon: GraduationCap, label: t("admin.scientific"), path: "/admin/scientific-articles" },
+    { icon: Newspaper, label: t("admin.media_corner"), path: "/admin/media-corner" },
+    { icon: Users, label: t("admin.users"), path: "/admin/users" },
+    { icon: MessageSquare, label: t("admin.comments"), path: "/admin/comments" },
+    { icon: BarChart3, label: t("admin.analytics"), path: "/admin/analytics" },
+    { icon: Settings, label: t("admin.settings"), path: "/admin/settings" },
+  ];
 
   const isActive = (path: string) => {
     if (path === "/admin") return location.pathname === "/admin";
     return location.pathname.startsWith(path);
   };
 
+  const userInitials = user?.user_metadata?.full_name
+    ? user.user_metadata.full_name.split(" ").map((n: string) => n[0]).join("").toUpperCase()
+    : user?.email?.[0]?.toUpperCase() || "U";
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/admin/login");
+  };
+
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
-      {/* Profile */}
       <div className="p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
             <AvatarFallback className="bg-primary text-primary-foreground text-sm font-semibold">
-              AD
+              {userInitials}
             </AvatarFallback>
           </Avatar>
           {sidebarOpen && (
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-sidebar-foreground truncate">Admin</p>
-              <p className="text-xs text-muted-foreground truncate">admin@muhandiss.uz</p>
+              <p className="text-sm font-semibold text-sidebar-foreground truncate">
+                {user?.user_metadata?.full_name || user?.email}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Nav items */}
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
         {sidebarItems.map((item) => (
           <Link
@@ -95,14 +91,13 @@ const AdminLayout = () => {
         ))}
       </nav>
 
-      {/* Logout */}
       <div className="p-3 border-t border-sidebar-border">
         <button
-          onClick={() => navigate("/admin/login")}
+          onClick={handleLogout}
           className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-destructive hover:bg-destructive/10 w-full transition-colors"
         >
           <LogOut className="h-4 w-4 shrink-0" />
-          {sidebarOpen && <span>Chiqish</span>}
+          {sidebarOpen && <span>{t("admin.logout")}</span>}
         </button>
       </div>
     </div>
@@ -110,7 +105,6 @@ const AdminLayout = () => {
 
   return (
     <div className="min-h-screen bg-muted/30 flex">
-      {/* Desktop Sidebar */}
       <aside
         className={cn(
           "hidden lg:flex flex-col bg-sidebar border-r border-sidebar-border transition-all duration-300 shrink-0",
@@ -120,7 +114,6 @@ const AdminLayout = () => {
         <SidebarContent />
       </aside>
 
-      {/* Mobile Sidebar Overlay */}
       {mobileSidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileSidebarOpen(false)} />
@@ -130,9 +123,7 @@ const AdminLayout = () => {
         </div>
       )}
 
-      {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top bar */}
         <header className="h-14 bg-card border-b border-border flex items-center px-4 gap-3 shrink-0 sticky top-0 z-40">
           <Button
             variant="ghost"
@@ -148,15 +139,17 @@ const AdminLayout = () => {
           <div className="hidden sm:flex items-center gap-2 flex-1 max-w-md">
             <div className="relative w-full">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Qidirish..." className="pl-9 h-9" />
+              <Input placeholder={t("admin.search")} className="pl-9 h-9" />
             </div>
           </div>
 
           <div className="ml-auto flex items-center gap-2">
+            <ThemeLangToggle />
+
             <Button variant="outline" size="sm" asChild>
               <Link to="/" target="_blank">
                 <ExternalLink className="h-4 w-4 mr-1" />
-                <span className="hidden sm:inline">Saytni ko'rish</span>
+                <span className="hidden sm:inline">{t("admin.viewsite")}</span>
               </Link>
             </Button>
 
@@ -171,22 +164,21 @@ const AdminLayout = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
                   <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">AD</AvatarFallback>
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">{userInitials}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Profil</DropdownMenuItem>
-                <DropdownMenuItem>Sozlamalar</DropdownMenuItem>
-                <DropdownMenuItem className="text-destructive" onClick={() => navigate("/admin/login")}>
-                  Chiqish
+                <DropdownMenuItem>{t("admin.profile")}</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/admin/settings")}>{t("admin.settings")}</DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive" onClick={handleLogout}>
+                  {t("admin.logout")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </header>
 
-        {/* Page content */}
         <main className="flex-1 p-4 md:p-6 overflow-auto">
           <Outlet />
         </main>
