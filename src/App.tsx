@@ -55,10 +55,10 @@ const App = () => (
                   <Route path="media" element={<MediaLibrary />} />
                   <Route path="scientific-articles" element={<ScientificArticlesAdmin />} />
                   <Route path="media-corner" element={<MediaCornerAdmin />} />
-                  <Route path="users" element={<UsersAdmin />} />
+                  <Route path="users" element={<ProtectedRoute requiredRole="admin"><UsersAdmin /></ProtectedRoute>} />
                   <Route path="comments" element={<CommentsAdmin />} />
                   <Route path="analytics" element={<AnalyticsAdmin />} />
-                  <Route path="settings" element={<SettingsAdmin />} />
+                  <Route path="settings" element={<ProtectedRoute requiredRole="admin"><SettingsAdmin /></ProtectedRoute>} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
