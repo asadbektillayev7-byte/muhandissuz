@@ -497,6 +497,83 @@ export type Database = {
           },
         ]
       }
+      public_scientific_articles: {
+        Row: {
+          abstract: string | null
+          abstract_en: string | null
+          author_credentials: string | null
+          author_name: string | null
+          category_id: string | null
+          co_authors: string[] | null
+          content: string | null
+          content_en: string | null
+          created_at: string | null
+          doi: string | null
+          id: string | null
+          keywords: string[] | null
+          pdf_url: string | null
+          references_list: string[] | null
+          slug: string | null
+          status: string | null
+          title: string | null
+          title_en: string | null
+          updated_at: string | null
+          views_count: number | null
+        }
+        Insert: {
+          abstract?: string | null
+          abstract_en?: string | null
+          author_credentials?: string | null
+          author_name?: string | null
+          category_id?: string | null
+          co_authors?: string[] | null
+          content?: string | null
+          content_en?: string | null
+          created_at?: string | null
+          doi?: string | null
+          id?: string | null
+          keywords?: string[] | null
+          pdf_url?: string | null
+          references_list?: string[] | null
+          slug?: string | null
+          status?: string | null
+          title?: string | null
+          title_en?: string | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          abstract?: string | null
+          abstract_en?: string | null
+          author_credentials?: string | null
+          author_name?: string | null
+          category_id?: string | null
+          co_authors?: string[] | null
+          content?: string | null
+          content_en?: string | null
+          created_at?: string | null
+          doi?: string | null
+          id?: string | null
+          keywords?: string[] | null
+          pdf_url?: string | null
+          references_list?: string[] | null
+          slug?: string | null
+          status?: string | null
+          title?: string | null
+          title_en?: string | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scientific_articles_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       has_role: {
