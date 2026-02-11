@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft, Save, Eye, Clock } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { ArrowLeft, Save, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,31 +9,116 @@ import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import RichTextEditor from "@/components/RichTextEditor";
+import { useCategories } from "@/hooks/useCategories";
+import { useArticleById, useCreateArticle, useUpdateArticle } from "@/hooks/useArticles";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const ArticleEditor = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const isEditing = !!id;
+
+  const { data: existingArticle, isLoading: loadingArticle } = useArticleById(id || "");
+  const { data: categories } = useCategories();
+  const createArticle = useCreateArticle();
+  const updateArticle = useUpdateArticle();
+
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [content, setContent] = useState("");
   const [excerpt, setExcerpt] = useState("");
-  const [category, setCategory] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [status, setStatus] = useState("draft");
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [tags, setTags] = useState("");
+  const [publishDate, setPublishDate] = useState("");
+  const [featuredImage, setFeaturedImage] = useState("");
+  const [saving, setSaving] = useState(false);
 
-  const generateSlug = (text: string) => {
-    return text
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .trim();
-  };
+  useEffect(() => {
+    if (existingArticle) {
+      setTitle(existingArticle.title || "");
+      setSlug(existingArticle.slug || "");
+      setContent(existingArticle.content || "");
+      setExcerpt(existingArticle.excerpt || "");
+      setCategoryId(existingArticle.category_id || "");
+      setStatus(existingArticle.status || "draft");
+      setMetaTitle(existingArticle.meta_title || "");
+      setMetaDescription(existingArticle.meta_description || "");
+      setTags(existingArticle.tags?.join(", ") || "");
+      setPublishDate(existingArticle.publish_date ? existingArticle.publish_date.slice(0, 16) : "");
+      setFeaturedImage(existingArticle.featured_image || "");
+    }
+  }, [existingArticle]);
+
+  const generateSlug = (text: string) =>
+    text.toLowerCase().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-").trim();
 
   const handleTitleChange = (value: string) => {
     setTitle(value);
-    setSlug(generateSlug(value));
+    if (!isEditing) setSlug(generateSlug(value));
   };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const ext = file.name.split(".").pop();
+    const path = `articles/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("media").upload(path, file);
+    if (error) {
+      toast({ title: "Upload failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    const { data: urlData } = supabase.storage.from("media").getPublicUrl(path);
+    setFeaturedImage(urlData.publicUrl);
+    toast({ title: "Image uploaded" });
+  };
+
+  const handleSave = async () => {
+    if (!title || !slug) {
+      toast({ title: "Title and slug are required", variant: "destructive" });
+      return;
+    }
+    setSaving(true);
+    try {
+      const articleData = {
+        title,
+        slug,
+        content,
+        excerpt,
+        category_id: categoryId || null,
+        status,
+        meta_title: metaTitle || null,
+        meta_description: metaDescription || null,
+        tags: tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : null,
+        publish_date: publishDate ? new Date(publishDate).toISOString() : (status === "published" ? new Date().toISOString() : null),
+        featured_image: featuredImage || null,
+        author_id: user?.id || null,
+      };
+
+      if (isEditing) {
+        await updateArticle.mutateAsync({ id, ...articleData });
+        toast({ title: "Article updated" });
+      } else {
+        const result = await createArticle.mutateAsync(articleData);
+        toast({ title: "Article created" });
+        navigate(`/admin/articles/${result.id}/edit`);
+      }
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (isEditing && loadingArticle) {
+    return <div className="text-muted-foreground">Loading...</div>;
+  }
 
   return (
     <div className="space-y-4 max-w-5xl">
@@ -43,138 +128,114 @@ const ArticleEditor = () => {
             <Link to="/admin/articles"><ArrowLeft className="h-4 w-4" /></Link>
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Yangi maqola</h1>
-            <p className="text-sm text-muted-foreground">Maqola yaratish va tahrirlash</p>
+            <h1 className="text-2xl font-bold text-foreground">{isEditing ? "Edit Article" : "New Article"}</h1>
+            <p className="text-sm text-muted-foreground">Create and edit articles</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm"><Eye className="h-4 w-4 mr-1" /> Ko'rish</Button>
-          <Button size="sm"><Save className="h-4 w-4 mr-1" /> Saqlash</Button>
+          {isEditing && slug && (
+            <Button variant="outline" size="sm" asChild>
+              <Link to={`/article/${slug}`} target="_blank"><Eye className="h-4 w-4 mr-1" /> Preview</Link>
+            </Button>
+          )}
+          <Button size="sm" onClick={handleSave} disabled={saving}>
+            <Save className="h-4 w-4 mr-1" /> {saving ? "Saving..." : "Save"}
+          </Button>
         </div>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4">
-        {/* Main content */}
         <div className="lg:col-span-2 space-y-4">
           <Card>
             <CardContent className="p-4 space-y-4">
               <div className="space-y-2">
-                <Label>Sarlavha</Label>
-                <Input placeholder="Maqola sarlavhasi..." value={title} onChange={(e) => handleTitleChange(e.target.value)} />
+                <Label>Title</Label>
+                <Input placeholder="Article title..." value={title} onChange={(e) => handleTitleChange(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label>Slug</Label>
                 <Input value={slug} onChange={(e) => setSlug(e.target.value)} className="text-muted-foreground" />
               </div>
               <div className="space-y-2">
-                <Label>Qisqa tavsif</Label>
-                <Textarea placeholder="Maqola haqida qisqa ma'lumot..." value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={3} />
+                <Label>Excerpt</Label>
+                <Textarea placeholder="Short description..." value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={3} />
                 <p className="text-xs text-muted-foreground">{excerpt.length}/300</p>
               </div>
               <div className="space-y-2">
-                <Label>Asosiy matn</Label>
-                <Textarea
-                  placeholder="Maqola matnini yozing... (Markdown qo'llab-quvvatlanadi)"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  rows={16}
-                  className="font-content"
-                />
+                <Label>Content</Label>
+                <RichTextEditor content={content} onChange={setContent} placeholder="Write your article content..." />
               </div>
             </CardContent>
           </Card>
 
-          {/* SEO */}
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">SEO sozlamalari</CardTitle>
-            </CardHeader>
+            <CardHeader className="pb-2"><CardTitle className="text-base">SEO Settings</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Meta sarlavha</Label>
-                <Input placeholder="SEO sarlavhasi" value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} />
+                <Label>Meta Title</Label>
+                <Input placeholder="SEO title" value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} />
                 <p className="text-xs text-muted-foreground">{metaTitle.length}/60</p>
               </div>
               <div className="space-y-2">
-                <Label>Meta tavsif</Label>
-                <Textarea placeholder="SEO tavsifi" value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)} rows={2} />
+                <Label>Meta Description</Label>
+                <Textarea placeholder="SEO description" value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)} rows={2} />
                 <p className="text-xs text-muted-foreground">{metaDescription.length}/160</p>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-4">
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">Chop etish</CardTitle>
-            </CardHeader>
+            <CardHeader className="pb-2"><CardTitle className="text-base">Publish</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Holat</Label>
+                <Label>Status</Label>
                 <Select value={status} onValueChange={setStatus}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="draft">Qoralama</SelectItem>
-                    <SelectItem value="published">Chop etilgan</SelectItem>
-                    <SelectItem value="scheduled">Rejalashtirilgan</SelectItem>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="published">Published</SelectItem>
+                    <SelectItem value="scheduled">Scheduled</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Kategoriya</Label>
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger><SelectValue placeholder="Tanlang" /></SelectTrigger>
+                <Label>Category</Label>
+                <Select value={categoryId} onValueChange={setCategoryId}>
+                  <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="elektrotexnika">Elektrotexnika</SelectItem>
-                    <SelectItem value="mexanika">Mexanika</SelectItem>
-                    <SelectItem value="ai">Sun'iy Intellekt</SelectItem>
-                    <SelectItem value="kimyo">Kimyo</SelectItem>
-                    <SelectItem value="motosport">Motosport</SelectItem>
-                    <SelectItem value="kosmik">Kosmik sanoat</SelectItem>
-                    <SelectItem value="dasturiy">Dasturiy ta'minot</SelectItem>
-                    <SelectItem value="fuqarolik">Fuqarolik</SelectItem>
-                    <SelectItem value="atrof">Atrof-muhit</SelectItem>
-                    <SelectItem value="umumiy">Umumiy</SelectItem>
+                    {categories?.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Chop etish sanasi</Label>
-                <Input type="datetime-local" />
+                <Label>Publish Date</Label>
+                <Input type="datetime-local" value={publishDate} onChange={(e) => setPublishDate(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label>Teglar</Label>
-                <Input placeholder="teg1, teg2, ..." value={tags} onChange={(e) => setTags(e.target.value)} />
+                <Label>Tags</Label>
+                <Input placeholder="tag1, tag2, ..." value={tags} onChange={(e) => setTags(e.target.value)} />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">Asosiy rasm</CardTitle>
-            </CardHeader>
+            <CardHeader className="pb-2"><CardTitle className="text-base">Featured Image</CardTitle></CardHeader>
             <CardContent>
-              <div className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary transition-colors">
-                <p className="text-sm text-muted-foreground">Rasm yuklash uchun bosing yoki shu yerga tashlang</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">Muallif</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Select>
-                <SelectTrigger><SelectValue placeholder="Muallif tanlang" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="sardor">Sardor Alimov</SelectItem>
-                  <SelectItem value="nodira">Nodira Karimova</SelectItem>
-                  <SelectItem value="jasur">Jasur Toshmatov</SelectItem>
-                </SelectContent>
-              </Select>
+              {featuredImage ? (
+                <div className="space-y-2">
+                  <img src={featuredImage} alt="Featured" className="w-full h-40 object-cover rounded-lg" />
+                  <Button variant="outline" size="sm" onClick={() => setFeaturedImage("")}>Remove</Button>
+                </div>
+              ) : (
+                <label className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary transition-colors block">
+                  <p className="text-sm text-muted-foreground">Click to upload image</p>
+                  <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                </label>
+              )}
             </CardContent>
           </Card>
         </div>
