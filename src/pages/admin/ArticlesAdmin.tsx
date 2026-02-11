@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, Search, Filter, MoreHorizontal, Edit, Trash2, Eye, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, MoreHorizontal, Edit, Trash2, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -12,52 +12,60 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-
-const mockArticles = [
-  { id: 1, title: "Kvant kompyuterlari: yangi imkoniyatlar", author: "Sardor Alimov", category: "Elektrotexnika", status: "published", views: 1240, date: "2026-02-06", image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=80&q=60" },
-  { id: 2, title: "3D bosma texnologiyasi", author: "Nodira Karimova", category: "Kosmik sanoat", status: "published", views: 890, date: "2026-02-04", image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=80&q=60" },
-  { id: 3, title: "Mexatronika: robotlar tizimi", author: "Jasur Toshmatov", category: "Mexanika", status: "draft", views: 0, date: "2026-02-02", image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=80&q=60" },
-  { id: 4, title: "GPT modellarining tahlili", author: "Aziza Raxmatova", category: "Sun'iy Intellekt", status: "published", views: 2100, date: "2026-01-28", image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=80&q=60" },
-  { id: 5, title: "Formula 1 ERS tizimi", author: "Bekzod Umarov", category: "Motosport", status: "published", views: 750, date: "2026-01-25", image: "https://images.unsplash.com/photo-1541348263662-e068662d82af?w=80&q=60" },
-  { id: 6, title: "Kimyoviy katalitik jarayonlar", author: "Malika Xasanova", category: "Kimyo", status: "scheduled", views: 0, date: "2026-02-10", image: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=80&q=60" },
-];
+import { useArticles, useDeleteArticle } from "@/hooks/useArticles";
+import { useCategories } from "@/hooks/useCategories";
+import { toast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const statusLabels: Record<string, { label: string; className: string }> = {
-  published: { label: "Chop etilgan", className: "bg-accent/20 text-accent" },
-  draft: { label: "Qoralama", className: "bg-muted text-muted-foreground" },
-  scheduled: { label: "Rejalashtirilgan", className: "bg-secondary/20 text-secondary" },
+  published: { label: "Published", className: "bg-accent/20 text-accent" },
+  draft: { label: "Draft", className: "bg-muted text-muted-foreground" },
+  scheduled: { label: "Scheduled", className: "bg-secondary/20 text-secondary" },
 };
 
 const ArticlesAdmin = () => {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
 
-  const filtered = mockArticles.filter((a) => {
-    if (search && !a.title.toLowerCase().includes(search.toLowerCase())) return false;
-    if (categoryFilter !== "all" && a.category !== categoryFilter) return false;
-    if (statusFilter !== "all" && a.status !== statusFilter) return false;
-    return true;
+  const { data: articles, isLoading } = useArticles({
+    status: statusFilter,
+    categoryId: categoryFilter,
+    search: search || undefined,
   });
+  const { data: categories } = useCategories();
+  const deleteArticle = useDeleteArticle();
 
-  const toggleSelect = (id: number) => {
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this article?")) return;
+    try {
+      await deleteArticle.mutateAsync(id);
+      toast({ title: "Article deleted" });
+      setSelected((prev) => prev.filter((s) => s !== id));
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
+  };
+
+  const toggleSelect = (id: string) => {
     setSelected((prev) => prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]);
   };
 
   const toggleAll = () => {
-    setSelected(selected.length === filtered.length ? [] : filtered.map((a) => a.id));
+    if (!articles) return;
+    setSelected(selected.length === articles.length ? [] : articles.map((a) => a.id));
   };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Maqolalar</h1>
-          <p className="text-sm text-muted-foreground">{mockArticles.length} ta maqola</p>
+          <h1 className="text-2xl font-bold text-foreground">Articles</h1>
+          <p className="text-sm text-muted-foreground">{articles?.length ?? 0} articles</p>
         </div>
         <Button asChild>
-          <Link to="/admin/articles/new"><Plus className="h-4 w-4 mr-1" /> Yangi maqola</Link>
+          <Link to="/admin/articles/new"><Plus className="h-4 w-4 mr-1" /> New Article</Link>
         </Button>
       </div>
 
@@ -66,35 +74,34 @@ const ArticlesAdmin = () => {
           <div className="flex flex-col sm:flex-row gap-3 mb-4">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Maqola qidirish..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+              <Input placeholder="Search articles..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-[180px]"><SelectValue placeholder="Kategoriya" /></SelectTrigger>
+              <SelectTrigger className="w-[180px]"><SelectValue placeholder="Category" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Barcha kategoriyalar</SelectItem>
-                <SelectItem value="Elektrotexnika">Elektrotexnika</SelectItem>
-                <SelectItem value="Mexanika">Mexanika</SelectItem>
-                <SelectItem value="Sun'iy Intellekt">Sun'iy Intellekt</SelectItem>
-                <SelectItem value="Kimyo">Kimyo</SelectItem>
-                <SelectItem value="Motosport">Motosport</SelectItem>
-                <SelectItem value="Kosmik sanoat">Kosmik sanoat</SelectItem>
+                <SelectItem value="all">All Categories</SelectItem>
+                {categories?.map((c) => (
+                  <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[160px]"><SelectValue placeholder="Holat" /></SelectTrigger>
+              <SelectTrigger className="w-[160px]"><SelectValue placeholder="Status" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Barcha holatlar</SelectItem>
-                <SelectItem value="published">Chop etilgan</SelectItem>
-                <SelectItem value="draft">Qoralama</SelectItem>
-                <SelectItem value="scheduled">Rejalashtirilgan</SelectItem>
+                <SelectItem value="all">All Statuses</SelectItem>
+                <SelectItem value="published">Published</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="scheduled">Scheduled</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {selected.length > 0 && (
             <div className="flex items-center gap-3 mb-3 p-2 bg-muted rounded-md">
-              <span className="text-sm text-muted-foreground">{selected.length} ta tanlangan</span>
-              <Button variant="destructive" size="sm"><Trash2 className="h-3 w-3 mr-1" /> O'chirish</Button>
+              <span className="text-sm text-muted-foreground">{selected.length} selected</span>
+              <Button variant="destructive" size="sm" onClick={() => selected.forEach(handleDelete)}>
+                <Trash2 className="h-3 w-3 mr-1" /> Delete
+              </Button>
             </div>
           )}
 
@@ -102,61 +109,77 @@ const ArticlesAdmin = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-10"><Checkbox checked={selected.length === filtered.length && filtered.length > 0} onCheckedChange={toggleAll} /></TableHead>
-                  <TableHead className="w-14">Rasm</TableHead>
-                  <TableHead>Sarlavha</TableHead>
-                  <TableHead className="hidden md:table-cell">Muallif</TableHead>
-                  <TableHead className="hidden sm:table-cell">Kategoriya</TableHead>
-                  <TableHead>Holat</TableHead>
-                  <TableHead className="hidden lg:table-cell text-right">Ko'rishlar</TableHead>
-                  <TableHead className="hidden lg:table-cell">Sana</TableHead>
+                  <TableHead className="w-10">
+                    <Checkbox checked={articles && selected.length === articles.length && articles.length > 0} onCheckedChange={toggleAll} />
+                  </TableHead>
+                  <TableHead className="w-14">Image</TableHead>
+                  <TableHead>Title</TableHead>
+                  <TableHead className="hidden sm:table-cell">Category</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="hidden lg:table-cell text-right">Views</TableHead>
+                  <TableHead className="hidden lg:table-cell">Date</TableHead>
                   <TableHead className="w-10" />
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((article) => {
-                  const st = statusLabels[article.status];
+                {isLoading && Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell colSpan={8}><Skeleton className="h-10 w-full" /></TableCell>
+                  </TableRow>
+                ))}
+                {articles?.map((article: any) => {
+                  const st = statusLabels[article.status] || statusLabels.draft;
                   return (
                     <TableRow key={article.id}>
                       <TableCell><Checkbox checked={selected.includes(article.id)} onCheckedChange={() => toggleSelect(article.id)} /></TableCell>
-                      <TableCell><img src={article.image} alt="" className="h-10 w-10 rounded object-cover" /></TableCell>
+                      <TableCell>
+                        {article.featured_image ? (
+                          <img src={article.featured_image} alt="" className="h-10 w-10 rounded object-cover" />
+                        ) : (
+                          <div className="h-10 w-10 rounded bg-muted" />
+                        )}
+                      </TableCell>
                       <TableCell className="font-medium max-w-[200px] truncate">{article.title}</TableCell>
-                      <TableCell className="hidden md:table-cell text-muted-foreground">{article.author}</TableCell>
-                      <TableCell className="hidden sm:table-cell"><span className="text-xs bg-muted px-2 py-1 rounded-full">{article.category}</span></TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        {article.categories && (
+                          <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: `${article.categories.color}20`, color: article.categories.color }}>
+                            {article.categories.name}
+                          </span>
+                        )}
+                      </TableCell>
                       <TableCell><span className={`text-xs px-2 py-1 rounded-full font-medium ${st.className}`}>{st.label}</span></TableCell>
-                      <TableCell className="hidden lg:table-cell text-right">{article.views.toLocaleString()}</TableCell>
-                      <TableCell className="hidden lg:table-cell text-muted-foreground text-sm">{article.date}</TableCell>
+                      <TableCell className="hidden lg:table-cell text-right">{(article.views_count || 0).toLocaleString()}</TableCell>
+                      <TableCell className="hidden lg:table-cell text-muted-foreground text-sm">
+                        {article.publish_date ? new Date(article.publish_date).toLocaleDateString() : "—"}
+                      </TableCell>
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem><Edit className="h-4 w-4 mr-2" /> Tahrirlash</DropdownMenuItem>
-                            <DropdownMenuItem><Eye className="h-4 w-4 mr-2" /> Ko'rish</DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive"><Trash2 className="h-4 w-4 mr-2" /> O'chirish</DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <Link to={`/admin/articles/${article.id}/edit`}><Edit className="h-4 w-4 mr-2" /> Edit</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <Link to={`/article/${article.slug}`} target="_blank"><Eye className="h-4 w-4 mr-2" /> View</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive" onClick={() => handleDelete(article.id)}>
+                              <Trash2 className="h-4 w-4 mr-2" /> Delete
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
                   );
                 })}
-                {filtered.length === 0 && (
+                {!isLoading && articles?.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center py-10 text-muted-foreground">
-                      Maqola topilmadi
+                    <TableCell colSpan={8} className="text-center py-10 text-muted-foreground">
+                      No articles found
                     </TableCell>
                   </TableRow>
                 )}
               </TableBody>
             </Table>
-          </div>
-
-          <div className="flex items-center justify-between mt-4">
-            <p className="text-sm text-muted-foreground">{filtered.length} ta maqola</p>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" disabled><ChevronLeft className="h-4 w-4" /></Button>
-              <span className="text-sm text-muted-foreground">1 / 1</span>
-              <Button variant="outline" size="sm" disabled><ChevronRight className="h-4 w-4" /></Button>
-            </div>
           </div>
         </CardContent>
       </Card>

@@ -1,71 +1,120 @@
 import { useState } from "react";
 import { Plus, Edit, Trash2, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
-
-const mockCategories = [
-  { id: 1, name: "Elektrotexnika", slug: "elektrotexnika", color: "#00B4D8", articles: 8, description: "Elektr va elektronika muhandisligi" },
-  { id: 2, name: "Mexanika", slug: "mexanika", color: "#6C757D", articles: 5, description: "Mexanik muhandislik" },
-  { id: 3, name: "Sun'iy Intellekt", slug: "suniy-intellekt", color: "#9D4EDD", articles: 6, description: "AI va mashinaviy o'rganish" },
-  { id: 4, name: "Kimyo", slug: "kimyo", color: "#06FFA5", articles: 4, description: "Kimyoviy muhandislik" },
-  { id: 5, name: "Motosport", slug: "motosport", color: "#DC2F02", articles: 3, description: "Avtomobil muhandisligi" },
-  { id: 6, name: "Kosmik sanoat", slug: "kosmik-sanoat", color: "#03045E", articles: 4, description: "Kosmik texnologiyalar" },
-  { id: 7, name: "Dasturiy ta'minot", slug: "dasturiy-taminot", color: "#0066CC", articles: 2, description: "Dasturlash va IT" },
-  { id: 8, name: "Fuqarolik", slug: "fuqarolik", color: "#FF8C00", articles: 1, description: "Qurilish muhandisligi" },
-  { id: 9, name: "Atrof-muhit", slug: "atrof-muhit", color: "#22C55E", articles: 1, description: "Ekologik muhandislik" },
-  { id: 10, name: "Umumiy", slug: "umumiy", color: "#6C757D", articles: 0, description: "Umumiy muhandislik mavzulari" },
-];
+import { useCategories, useCreateCategory, useUpdateCategory, useDeleteCategory, type Category } from "@/hooks/useCategories";
+import { toast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const CategoriesAdmin = () => {
+  const { data: categories, isLoading } = useCategories();
+  const createCategory = useCreateCategory();
+  const updateCategory = useUpdateCategory();
+  const deleteCategory = useDeleteCategory();
+
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editing, setEditing] = useState<Category | null>(null);
+  const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
+  const [color, setColor] = useState("#0066CC");
+  const [description, setDescription] = useState("");
+
+  const openNew = () => {
+    setEditing(null);
+    setName("");
+    setSlug("");
+    setColor("#0066CC");
+    setDescription("");
+    setDialogOpen(true);
+  };
+
+  const openEdit = (cat: Category) => {
+    setEditing(cat);
+    setName(cat.name);
+    setSlug(cat.slug);
+    setColor(cat.color || "#0066CC");
+    setDescription(cat.description || "");
+    setDialogOpen(true);
+  };
+
+  const handleSave = async () => {
+    if (!name || !slug) {
+      toast({ title: "Name and slug are required", variant: "destructive" });
+      return;
+    }
+    try {
+      if (editing) {
+        await updateCategory.mutateAsync({ id: editing.id, name, slug, color, description });
+        toast({ title: "Category updated" });
+      } else {
+        await createCategory.mutateAsync({ name, slug, color, description });
+        toast({ title: "Category created" });
+      }
+      setDialogOpen(false);
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Delete this category?")) return;
+    try {
+      await deleteCategory.mutateAsync(id);
+      toast({ title: "Category deleted" });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
+  };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Kategoriyalar</h1>
-          <p className="text-sm text-muted-foreground">{mockCategories.length} ta kategoriya</p>
+          <h1 className="text-2xl font-bold text-foreground">Categories</h1>
+          <p className="text-sm text-muted-foreground">{categories?.length ?? 0} categories</p>
         </div>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button><Plus className="h-4 w-4 mr-1" /> Yangi kategoriya</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Yangi kategoriya</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Nomi</Label>
-                <Input placeholder="Kategoriya nomi" />
-              </div>
-              <div className="space-y-2">
-                <Label>Slug</Label>
-                <Input placeholder="kategoriya-nomi" />
-              </div>
-              <div className="space-y-2">
-                <Label>Rang</Label>
-                <Input type="color" defaultValue="#0066CC" className="h-10 w-20" />
-              </div>
-              <div className="space-y-2">
-                <Label>Tavsif</Label>
-                <Textarea placeholder="Kategoriya haqida qisqa ma'lumot" rows={3} />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setDialogOpen(false)}>Bekor qilish</Button>
-              <Button onClick={() => setDialogOpen(false)}>Saqlash</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <Button onClick={openNew}><Plus className="h-4 w-4 mr-1" /> New Category</Button>
       </div>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editing ? "Edit Category" : "New Category"}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Name</Label>
+              <Input placeholder="Category name" value={name} onChange={(e) => {
+                setName(e.target.value);
+                if (!editing) setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-"));
+              }} />
+            </div>
+            <div className="space-y-2">
+              <Label>Slug</Label>
+              <Input placeholder="category-name" value={slug} onChange={(e) => setSlug(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Color</Label>
+              <Input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="h-10 w-20" />
+            </div>
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Textarea placeholder="Short description" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleSave}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Card>
         <CardContent className="p-4">
@@ -74,32 +123,33 @@ const CategoriesAdmin = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-10" />
-                  <TableHead>Nomi</TableHead>
+                  <TableHead>Name</TableHead>
                   <TableHead>Slug</TableHead>
-                  <TableHead>Rang</TableHead>
-                  <TableHead className="text-right">Maqolalar</TableHead>
-                  <TableHead className="hidden md:table-cell">Tavsif</TableHead>
+                  <TableHead>Color</TableHead>
+                  <TableHead className="hidden md:table-cell">Description</TableHead>
                   <TableHead className="w-20" />
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockCategories.map((cat) => (
+                {isLoading && Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}><TableCell colSpan={6}><Skeleton className="h-10 w-full" /></TableCell></TableRow>
+                ))}
+                {categories?.map((cat) => (
                   <TableRow key={cat.id}>
                     <TableCell><GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" /></TableCell>
                     <TableCell className="font-medium">{cat.name}</TableCell>
                     <TableCell className="text-muted-foreground text-sm">{cat.slug}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <div className="h-5 w-5 rounded-full border" style={{ backgroundColor: cat.color }} />
+                        <div className="h-5 w-5 rounded-full border" style={{ backgroundColor: cat.color || "#0066CC" }} />
                         <span className="text-xs text-muted-foreground">{cat.color}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-right">{cat.articles}</TableCell>
                     <TableCell className="hidden md:table-cell text-sm text-muted-foreground max-w-[200px] truncate">{cat.description}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button variant="ghost" size="icon"><Edit className="h-4 w-4" /></Button>
-                        <Button variant="ghost" size="icon" className="text-destructive"><Trash2 className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon" onClick={() => openEdit(cat)}><Edit className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(cat.id)}><Trash2 className="h-4 w-4" /></Button>
                       </div>
                     </TableCell>
                   </TableRow>

@@ -9,6 +9,8 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import CategoryPage from "./pages/CategoryPage";
+import ArticlePage from "./pages/ArticlePage";
 import AdminLayout from "./pages/admin/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
 import ArticlesAdmin from "./pages/admin/ArticlesAdmin";
@@ -37,6 +39,8 @@ const App = () => (
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/category/:slug" element={<CategoryPage />} />
+                <Route path="/article/:slug" element={<ArticlePage />} />
                 <Route path="/admin/login" element={<LoginAdmin />} />
                 <Route
                   path="/admin"
