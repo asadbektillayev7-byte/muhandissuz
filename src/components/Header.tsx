@@ -73,7 +73,7 @@ const Header = () => {
                 {categories.map((cat) => (
                   <Link
                     key={cat.slug}
-                    to={`/yonalish/${cat.slug}`}
+                    to={`/maqolalar/${cat.slug}`}
                     className="block px-3 py-2 text-sm text-popover-foreground hover:bg-muted rounded-md transition-colors"
                   >
                     {t(cat.nameKey)}
@@ -157,7 +157,7 @@ const Header = () => {
                   {categories.map((cat) => (
                     <Link
                       key={cat.slug}
-                      to={`/yonalish/${cat.slug}`}
+                      to={`/maqolalar/${cat.slug}`}
                       className="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-md"
                       onClick={() => setMobileOpen(false)}
                     >
