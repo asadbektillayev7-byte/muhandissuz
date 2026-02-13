@@ -38,7 +38,7 @@ const CategoriesSection = () => {
           return (
             <Link
               key={cat.id}
-              to={`/category/${cat.slug}`}
+              to={`/maqolalar/${cat.slug}`}
               className="group flex flex-col items-center gap-3 p-5 bg-card rounded-xl border border-border hover-lift cursor-pointer transition-all"
             >
               <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110" style={{ backgroundColor: `${color}15` }}>

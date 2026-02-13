@@ -5,7 +5,7 @@ type Lang = "uz" | "en";
 const translations: Record<string, Record<Lang, string>> = {
   // Header
   "nav.home": { uz: "Bosh Sahifa", en: "Home" },
-  "nav.directions": { uz: "Yo'nalishlar", en: "Directions" },
+  "nav.directions": { uz: "Maqolalar", en: "Articles" },
   "nav.scientific": { uz: "Ilmiy Maqolalar", en: "Scientific Articles" },
   "nav.media": { uz: "OAV burchagi", en: "Media Corner" },
   "nav.team": { uz: "Jamoa", en: "Team" },
@@ -21,7 +21,7 @@ const translations: Record<string, Record<Lang, string>> = {
   // Sections
   "section.latest": { uz: "So'nggi maqolalar", en: "Latest Articles" },
   "section.popular": { uz: "Eng ko'p ko'rilgan", en: "Most Viewed" },
-  "section.categories": { uz: "Yo'nalishlar", en: "Directions" },
+  "section.categories": { uz: "Maqolalar", en: "Articles" },
   "section.categories_subtitle": { uz: "Muhandislikning turli sohalarini o'rganing", en: "Explore various fields of engineering" },
   "article.readmore": { uz: "Davomini o'qish", en: "Continue Reading" },
   "article.readtime": { uz: "daqiqa", en: "min" },
