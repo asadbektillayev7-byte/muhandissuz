@@ -33,9 +33,9 @@ const Header = () => {
 
   const navLinks = [
     { name: t("nav.scientific"), href: "/maqolalar" },
-    { name: t("nav.media"), href: "/oav" },
+    { name: t("nav.media"), href: "/oav-burchagi" },
     { name: t("nav.team"), href: "/jamoa" },
-    { name: t("nav.about"), href: "/haqida" },
+    { name: t("nav.about"), href: "/loyiha-haqida" },
   ];
 
   return (

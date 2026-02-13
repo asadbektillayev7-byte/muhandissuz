@@ -26,7 +26,7 @@ const Footer = () => {
             <h4 className="font-semibold mb-4">{t("footer.quicklinks")}</h4>
             <ul className="space-y-2 text-sm text-primary-foreground/60">
               <li><Link to="/" className="hover:text-primary-foreground transition-colors">{t("nav.home")}</Link></li>
-              <li><Link to="/haqida" className="hover:text-primary-foreground transition-colors">{t("footer.aboutus")}</Link></li>
+              <li><Link to="/loyiha-haqida" className="hover:text-primary-foreground transition-colors">{t("footer.aboutus")}</Link></li>
               <li><Link to="/aloqa" className="hover:text-primary-foreground transition-colors">{t("footer.contact")}</Link></li>
               <li><Link to="/shartlar" className="hover:text-primary-foreground transition-colors">{t("footer.terms")}</Link></li>
             </ul>

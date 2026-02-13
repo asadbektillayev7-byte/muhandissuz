@@ -11,6 +11,10 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import CategoryPage from "./pages/CategoryPage";
 import ArticlePage from "./pages/ArticlePage";
+import ScientificArticlesPage from "./pages/ScientificArticlesPage";
+import TeamPage from "./pages/TeamPage";
+import AboutPage from "./pages/AboutPage";
+import MediaCornerPage from "./pages/MediaCornerPage";
 import AdminLayout from "./pages/admin/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
 import ArticlesAdmin from "./pages/admin/ArticlesAdmin";
@@ -41,6 +45,10 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/category/:slug" element={<CategoryPage />} />
                 <Route path="/article/:slug" element={<ArticlePage />} />
+                <Route path="/maqolalar" element={<ScientificArticlesPage />} />
+                <Route path="/jamoa" element={<TeamPage />} />
+                <Route path="/loyiha-haqida" element={<AboutPage />} />
+                <Route path="/oav-burchagi" element={<MediaCornerPage />} />
                 <Route path="/admin/login" element={<LoginAdmin />} />
                 <Route
                   path="/admin"
