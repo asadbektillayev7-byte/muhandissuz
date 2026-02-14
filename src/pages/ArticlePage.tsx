@@ -1,16 +1,28 @@
 import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useArticleBySlug } from "@/hooks/useArticles";
+import { useArticleBySlug, useIncrementViews } from "@/hooks/useArticles";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, ArrowLeft, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useEffect } from "react";
 
 const ArticlePage = () => {
   const { slug } = useParams();
   const { lang } = useLanguage();
   const { data: article, isLoading } = useArticleBySlug(slug || "");
+  const incrementViews = useIncrementViews();
+
+  useEffect(() => {
+    if (article?.id) {
+      const key = `viewed_${article.id}`;
+      if (!sessionStorage.getItem(key)) {
+        incrementViews.mutate(article.id);
+        sessionStorage.setItem(key, "1");
+      }
+    }
+  }, [article?.id]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -51,7 +63,7 @@ const ArticlePage = () => {
                   {new Date(article.publish_date).toLocaleDateString()}
                 </div>
               )}
-              {article.views_count !== null && (
+              {article.views_count !== null && article.views_count !== undefined && false && (
                 <span>{article.views_count} views</span>
               )}
             </div>

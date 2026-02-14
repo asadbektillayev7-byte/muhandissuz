@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 interface RichTextEditorProps {
   content: string;
@@ -46,6 +46,7 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." }:
       Placeholder.configure({ placeholder }),
     ],
     content,
+    immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
@@ -55,6 +56,13 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." }:
       },
     },
   });
+
+  // Sync external content changes (e.g. when article data loads)
+  useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content, { emitUpdate: false });
+    }
+  }, [content, editor]);
 
   const addImage = useCallback(() => {
     if (!editor) return;
