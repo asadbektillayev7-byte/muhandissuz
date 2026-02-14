@@ -3,7 +3,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, FileText, FolderOpen, Users, Image,
   MessageSquare, BarChart3, Settings, LogOut, Menu, X,
-  Bell, Search, ExternalLink, GraduationCap, Newspaper,
+  Search, ExternalLink, GraduationCap, Newspaper,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -153,12 +153,6 @@ const AdminLayout = () => {
               </Link>
             </Button>
 
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5" />
-              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-destructive text-destructive-foreground text-[10px] rounded-full flex items-center justify-center">
-                3
-              </span>
-            </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

@@ -129,8 +129,7 @@ export const useDeleteArticle = () => {
 export const useIncrementViews = () => {
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.rpc("increment_article_views" as any, { article_id: id });
-      // Silently fail if function doesn't exist
+      const { error } = await supabase.rpc("increment_article_views", { article_id: id });
       if (error) console.warn("Views increment failed:", error.message);
     },
   });
