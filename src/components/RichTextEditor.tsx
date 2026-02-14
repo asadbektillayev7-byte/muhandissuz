@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useCallback } from "react";
 
 interface RichTextEditorProps {
   content: string;
@@ -23,7 +24,11 @@ const MenuButton = ({ onClick, active, children, title }: { onClick: () => void;
     variant="ghost"
     size="icon"
     className={cn("h-8 w-8", active && "bg-muted text-foreground")}
-    onClick={onClick}
+    onClick={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onClick();
+    }}
     title={title}
   >
     {children}
@@ -44,20 +49,26 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." }:
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
+    editorProps: {
+      attributes: {
+        class: "outline-none min-h-[280px]",
+      },
+    },
   });
 
-  if (!editor) return null;
-
-  const addImage = () => {
+  const addImage = useCallback(() => {
+    if (!editor) return;
     const url = window.prompt("Enter image URL:");
     if (url) {
       editor.chain().focus().setImage({ src: url }).run();
     }
-  };
+  }, [editor]);
+
+  if (!editor) return null;
 
   return (
     <div className="border border-border rounded-lg overflow-hidden">
-      <div className="flex flex-wrap items-center gap-0.5 p-1.5 border-b border-border bg-muted/50">
+      <div className="flex flex-wrap items-center gap-0.5 p-1.5 border-b border-border bg-muted/50 sticky top-0 z-10">
         <MenuButton onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} active={editor.isActive("heading", { level: 1 })} title="Heading 1">
           <Heading1 className="h-4 w-4" />
         </MenuButton>
@@ -108,7 +119,10 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." }:
           <Redo className="h-4 w-4" />
         </MenuButton>
       </div>
-      <EditorContent editor={editor} className="prose prose-sm dark:prose-invert max-w-none p-4 min-h-[300px] focus-within:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[280px] [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-muted-foreground [&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left [&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none [&_.ProseMirror_p.is-editor-empty:first-child::before]:h-0" />
+      <EditorContent
+        editor={editor}
+        className="prose prose-sm dark:prose-invert max-w-none p-4 min-h-[300px] focus-within:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[280px] [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-muted-foreground [&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left [&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none [&_.ProseMirror_p.is-editor-empty:first-child::before]:h-0"
+      />
     </div>
   );
 };

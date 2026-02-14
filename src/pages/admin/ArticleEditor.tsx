@@ -104,10 +104,13 @@ const ArticleEditor = () => {
       if (isEditing) {
         await updateArticle.mutateAsync({ id, ...articleData });
         toast({ title: "Article updated" });
+        if (status === "published") {
+          navigate("/admin/articles");
+        }
       } else {
-        const result = await createArticle.mutateAsync(articleData);
+        await createArticle.mutateAsync(articleData);
         toast({ title: "Article created" });
-        navigate(`/admin/articles/${result.id}/edit`);
+        navigate("/admin/articles");
       }
     } catch (e: any) {
       toast({ title: "Error", description: e.message, variant: "destructive" });
