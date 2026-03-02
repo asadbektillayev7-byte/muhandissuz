@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,95 +6,95 @@
 
 @layer base {
   :root {
-    --background: 210 17% 98%;
-    --foreground: 0 0% 10%;
+    --background: 40 23% 97%;
+    --foreground: 20 14% 12%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card: 40 33% 99%;
+    --card-foreground: 20 14% 12%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover: 40 33% 99%;
+    --popover-foreground: 20 14% 12%;
 
-    --primary: 210 100% 40%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 32 95% 44%;
+    --primary-foreground: 40 33% 99%;
 
-    --secondary: 17 100% 60%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 20 14% 12%;
+    --secondary-foreground: 40 33% 99%;
 
-    --muted: 210 20% 94%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 40 18% 93%;
+    --muted-foreground: 20 10% 48%;
 
-    --accent: 174 71% 47%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 32 95% 44%;
+    --accent-foreground: 40 33% 99%;
 
-    --destructive: 4 90% 50%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 20% 90%;
-    --input: 214 20% 90%;
-    --ring: 210 100% 40%;
+    --border: 36 16% 88%;
+    --input: 36 16% 88%;
+    --ring: 32 95% 44%;
 
-    --radius: 0.625rem;
+    --radius: 0.5rem;
 
     /* Category colors */
     --cat-elektro: 195 100% 42%;
     --cat-mexanika: 210 6% 45%;
     --cat-ai: 271 73% 59%;
-    --cat-kimyo: 157 100% 50%;
-    --cat-motosport: 11 97% 50%;
-    --cat-kosmik: 220 95% 19%;
-    --cat-dasturiy: 210 100% 40%;
-    --cat-fuqarolik: 36 100% 50%;
-    --cat-atrof: 142 71% 45%;
-    --cat-umumiy: 215 16% 47%;
+    --cat-kimyo: 157 72% 40%;
+    --cat-motosport: 0 72% 51%;
+    --cat-kosmik: 220 95% 30%;
+    --cat-dasturiy: 210 80% 42%;
+    --cat-fuqarolik: 32 95% 44%;
+    --cat-atrof: 142 60% 40%;
+    --cat-umumiy: 20 10% 48%;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 40 23% 97%;
+    --sidebar-foreground: 20 14% 12%;
+    --sidebar-primary: 32 95% 44%;
+    --sidebar-primary-foreground: 40 33% 99%;
+    --sidebar-accent: 40 18% 93%;
+    --sidebar-accent-foreground: 20 14% 12%;
+    --sidebar-border: 36 16% 88%;
+    --sidebar-ring: 32 95% 44%;
   }
 
   .dark {
-    --background: 0 0% 7%;
-    --foreground: 210 20% 94%;
+    --background: 20 14% 8%;
+    --foreground: 40 18% 90%;
 
-    --card: 0 0% 11%;
-    --card-foreground: 210 20% 94%;
+    --card: 20 12% 12%;
+    --card-foreground: 40 18% 90%;
 
-    --popover: 0 0% 11%;
-    --popover-foreground: 210 20% 94%;
+    --popover: 20 12% 12%;
+    --popover-foreground: 40 18% 90%;
 
-    --primary: 210 100% 50%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 32 95% 50%;
+    --primary-foreground: 20 14% 8%;
 
-    --secondary: 17 100% 60%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 40 18% 90%;
+    --secondary-foreground: 20 14% 8%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 215 16% 65%;
+    --muted: 20 10% 18%;
+    --muted-foreground: 40 12% 60%;
 
-    --accent: 174 71% 47%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 32 95% 50%;
+    --accent-foreground: 20 14% 8%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62% 35%;
+    --destructive-foreground: 40 18% 90%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 210 100% 50%;
+    --border: 20 8% 22%;
+    --input: 20 8% 22%;
+    --ring: 32 95% 50%;
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 20 14% 10%;
+    --sidebar-foreground: 40 18% 90%;
+    --sidebar-primary: 32 95% 50%;
+    --sidebar-primary-foreground: 20 14% 8%;
+    --sidebar-accent: 20 10% 16%;
+    --sidebar-accent-foreground: 40 18% 90%;
+    --sidebar-border: 20 8% 22%;
+    --sidebar-ring: 32 95% 50%;
   }
 }
 
@@ -104,16 +104,21 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Inter', sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Source Sans 3', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: -0.01em;
   }
 
   .font-content {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  .font-display {
+    font-family: 'Playfair Display', serif;
   }
 }
 
@@ -123,15 +128,15 @@
   }
 
   .gradient-hero {
-    background: linear-gradient(135deg, hsl(210 100% 40% / 0.9), hsl(174 71% 47% / 0.7));
+    background: linear-gradient(135deg, hsl(20 14% 8% / 0.82), hsl(32 95% 44% / 0.55));
   }
 
   .gradient-card {
-    background: linear-gradient(180deg, transparent 0%, hsl(0 0% 0% / 0.7) 100%);
+    background: linear-gradient(180deg, transparent 0%, hsl(20 14% 8% / 0.75) 100%);
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
   }
 
   .hover-lift {
@@ -139,6 +144,10 @@
   }
 
   .hover-glow {
-    @apply transition-shadow duration-300 hover:shadow-[0_0_20px_hsl(210_100%_40%/0.3)];
+    @apply transition-shadow duration-300 hover:shadow-[0_4px_24px_hsl(32_95%_44%/0.15)];
+  }
+
+  .editorial-divider {
+    @apply w-16 h-0.5 bg-primary;
   }
 }

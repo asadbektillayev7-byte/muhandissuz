@@ -12,7 +12,7 @@ interface ArticleCardProps {
 
 const ArticleCard = ({ title, excerpt, image, category, categoryColor, date, readTime }: ArticleCardProps) => {
   return (
-    <article className="group bg-card rounded-xl overflow-hidden border border-border hover-lift hover-glow cursor-pointer">
+    <article className="group bg-card rounded-lg overflow-hidden border border-border hover-lift hover-glow cursor-pointer">
       <div className="relative h-48 overflow-hidden">
         <img
           src={image}
@@ -21,23 +21,23 @@ const ArticleCard = ({ title, excerpt, image, category, categoryColor, date, rea
           loading="lazy"
         />
         <span
-          className="absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold rounded-full text-primary-foreground"
+          className="absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold rounded-sm text-white"
           style={{ backgroundColor: categoryColor }}
         >
           {category}
         </span>
       </div>
       <div className="p-5">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
           <Calendar className="w-3.5 h-3.5" />
           <span>{date}</span>
-          <span className="text-border">•</span>
+          <span className="text-border">·</span>
           <span>{readTime}</span>
         </div>
-        <h3 className="font-semibold text-card-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+        <h3 className="font-display font-semibold text-lg text-card-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors leading-snug">
           {title}
         </h3>
-        <p className="text-sm text-muted-foreground font-content line-clamp-2">
+        <p className="text-sm text-muted-foreground font-content line-clamp-2 leading-relaxed">
           {excerpt}
         </p>
       </div>

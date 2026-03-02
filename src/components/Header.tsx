@@ -42,20 +42,26 @@ const Header = () => {
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
         isScrolled
-          ? "bg-card/95 backdrop-blur-md shadow-md border-b border-border"
+          ? "bg-card/95 backdrop-blur-md shadow-sm border-b border-border"
           : "bg-card border-b border-border"
       }`}
     >
+      {/* Top editorial accent bar */}
+      <div className="h-1 w-full bg-primary" />
+
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
-        <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-lg">M</span>
+        <Link to="/" className="flex items-center gap-3 shrink-0">
+          <div className="w-10 h-10 rounded-md bg-primary flex items-center justify-center">
+            <span className="text-primary-foreground font-display font-bold text-xl">M</span>
           </div>
-          <span className="text-xl font-bold text-foreground tracking-tight">Muhandis</span>
+          <div className="flex flex-col leading-none">
+            <span className="text-xl font-display font-bold text-foreground tracking-tight">Muhandis</span>
+            <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold">Engineering Journal</span>
+          </div>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-1">
-          <Link to="/" className="px-3 py-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors rounded-md">
+        <nav className="hidden lg:flex items-center gap-0.5">
+          <Link to="/" className="px-3 py-2 text-sm font-medium text-foreground/70 hover:text-primary transition-colors rounded-md">
             {t("nav.home")}
           </Link>
 
@@ -64,9 +70,9 @@ const Header = () => {
             onMouseEnter={() => setDropdownOpen(true)}
             onMouseLeave={() => setDropdownOpen(false)}
           >
-            <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors rounded-md">
+            <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-foreground/70 hover:text-primary transition-colors rounded-md">
               {t("nav.directions")}
-              <ChevronDown className="w-4 h-4" />
+              <ChevronDown className="w-3.5 h-3.5" />
             </button>
             {dropdownOpen && (
               <div className="absolute top-full left-0 mt-1 w-56 bg-popover border border-border rounded-lg shadow-xl p-2 animate-slide-down z-50">
@@ -74,7 +80,7 @@ const Header = () => {
                   <Link
                     key={cat.slug}
                     to={`/maqolalar/${cat.slug}`}
-                    className="block px-3 py-2 text-sm text-popover-foreground hover:bg-muted rounded-md transition-colors"
+                    className="block px-3 py-2 text-sm text-popover-foreground hover:bg-muted hover:text-primary rounded-md transition-colors"
                   >
                     {t(cat.nameKey)}
                   </Link>
@@ -87,7 +93,7 @@ const Header = () => {
             <Link
               key={link.href}
               to={link.href}
-              className="px-3 py-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors rounded-md"
+              className="px-3 py-2 text-sm font-medium text-foreground/70 hover:text-primary transition-colors rounded-md"
             >
               {link.name}
             </Link>
@@ -101,7 +107,7 @@ const Header = () => {
                 <input
                   type="text"
                   placeholder={t("nav.search")}
-                  className="w-48 px-3 py-1.5 text-sm bg-muted rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground"
+                  className="w-48 px-3 py-1.5 text-sm bg-muted rounded-md border border-border focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
                   autoFocus
                 />
                 <button onClick={() => setSearchOpen(false)}>
@@ -109,7 +115,7 @@ const Header = () => {
                 </button>
               </div>
             ) : (
-              <button onClick={() => setSearchOpen(true)} className="p-2 text-muted-foreground hover:text-foreground transition-colors">
+              <button onClick={() => setSearchOpen(true)} className="p-2 text-muted-foreground hover:text-primary transition-colors">
                 <Search className="w-5 h-5" />
               </button>
             )}
@@ -117,7 +123,7 @@ const Header = () => {
 
           <ThemeLangToggle />
 
-          <Button size="sm" className="hidden sm:inline-flex gap-1.5 bg-secondary hover:bg-secondary/90 text-secondary-foreground">
+          <Button size="sm" className="hidden sm:inline-flex gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
             <Heart className="w-4 h-4" />
             {t("nav.donate")}
           </Button>
@@ -136,7 +142,7 @@ const Header = () => {
               <input
                 type="text"
                 placeholder={t("nav.search")}
-                className="w-full px-3 py-2 text-sm bg-muted rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground"
+                className="w-full px-3 py-2 text-sm bg-muted rounded-md border border-border focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
               />
             </div>
 
@@ -179,7 +185,7 @@ const Header = () => {
               </Link>
             ))}
 
-            <Button size="sm" className="w-full mt-4 gap-1.5 bg-secondary hover:bg-secondary/90 text-secondary-foreground">
+            <Button size="sm" className="w-full mt-4 gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
               <Heart className="w-4 h-4" />
               {t("nav.donate")}
             </Button>

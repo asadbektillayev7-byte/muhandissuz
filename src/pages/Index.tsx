@@ -20,11 +20,14 @@ const Index = () => {
         <FeaturedArticle />
 
         <section className="container mx-auto px-4 py-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">So'nggi maqolalar</h2>
+          <div className="flex items-center gap-4 mb-10">
+            <div className="editorial-divider" />
+            <h2 className="text-3xl font-display font-bold text-foreground">So'nggi maqolalar</h2>
+          </div>
           <div className="grid lg:grid-cols-4 gap-8">
             <div className="lg:col-span-3 grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {isLoading && Array.from({ length: 6 }).map((_, i) => (
-                <Skeleton key={i} className="h-72 rounded-xl" />
+                <Skeleton key={i} className="h-72 rounded-lg" />
               ))}
               {articles?.slice(0, 9).map((article: any, i: number) => (
                 <Link key={article.id} to={`/article/${article.slug}`}>
@@ -34,7 +37,7 @@ const Index = () => {
                       excerpt={article.excerpt || ""}
                       image={article.featured_image || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80"}
                       category={article.categories?.name || ""}
-                      categoryColor={article.categories?.color || "#0066CC"}
+                      categoryColor={article.categories?.color || "#D97706"}
                       date={article.publish_date ? new Date(article.publish_date).toLocaleDateString() : ""}
                       readTime="5 min"
                     />
@@ -42,7 +45,7 @@ const Index = () => {
                 </Link>
               ))}
               {!isLoading && articles?.length === 0 && (
-                <p className="text-muted-foreground col-span-3 text-center py-10">No articles published yet.</p>
+                <p className="text-muted-foreground col-span-3 text-center py-10 font-content">No articles published yet.</p>
               )}
             </div>
             <div className="lg:col-span-1">
