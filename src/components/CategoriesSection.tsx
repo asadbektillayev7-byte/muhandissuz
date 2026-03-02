@@ -25,33 +25,36 @@ const CategoriesSection = () => {
   const { data: categories, isLoading } = useCategories();
 
   return (
-    <section className="container mx-auto px-4 py-16">
-      <div className="text-center mb-10">
-        <h2 className="text-3xl font-bold text-foreground mb-3">{t("section.categories")}</h2>
-        <p className="text-muted-foreground font-content max-w-md mx-auto">{t("section.categories_subtitle")}</p>
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {isLoading && Array.from({ length: 10 }).map((_, i) => <Skeleton key={i} className="h-28 rounded-xl" />)}
-        {categories?.map((cat) => {
-          const Icon = iconMap[cat.slug] || BookOpen;
-          const color = cat.color || "#0066CC";
-          return (
-            <Link
-              key={cat.id}
-              to={`/maqolalar/${cat.slug}`}
-              className="group flex flex-col items-center gap-3 p-5 bg-card rounded-xl border border-border hover-lift cursor-pointer transition-all"
-            >
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110" style={{ backgroundColor: `${color}15` }}>
-                <Icon className="w-6 h-6" style={{ color }} />
-              </div>
-              <div className="text-center">
-                <span className="text-sm font-medium text-card-foreground block">
-                  {lang === "en" ? (cat.name_en || cat.name) : cat.name}
-                </span>
-              </div>
-            </Link>
-          );
-        })}
+    <section className="bg-muted/50 py-16">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <div className="editorial-divider mx-auto mb-4" />
+          <h2 className="text-3xl font-display font-bold text-foreground mb-3">{t("section.categories")}</h2>
+          <p className="text-muted-foreground font-content max-w-md mx-auto">{t("section.categories_subtitle")}</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {isLoading && Array.from({ length: 10 }).map((_, i) => <Skeleton key={i} className="h-28 rounded-lg" />)}
+          {categories?.map((cat) => {
+            const Icon = iconMap[cat.slug] || BookOpen;
+            const color = cat.color || "#D97706";
+            return (
+              <Link
+                key={cat.id}
+                to={`/maqolalar/${cat.slug}`}
+                className="group flex flex-col items-center gap-3 p-5 bg-card rounded-lg border border-border hover-lift cursor-pointer transition-all"
+              >
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:scale-110" style={{ backgroundColor: `${color}15` }}>
+                  <Icon className="w-6 h-6" style={{ color }} />
+                </div>
+                <div className="text-center">
+                  <span className="text-sm font-medium text-card-foreground block">
+                    {lang === "en" ? (cat.name_en || cat.name) : cat.name}
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
