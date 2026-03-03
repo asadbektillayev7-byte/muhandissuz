@@ -3,8 +3,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useArticleBySlug, useIncrementViews } from "@/hooks/useArticles";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, ArrowLeft, Tag } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useEffect } from "react";
 
@@ -27,79 +25,122 @@ const ArticlePage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 py-12 max-w-4xl">
+      <main className="pt-14">
         {isLoading ? (
-          <div className="space-y-4">
-            <Skeleton className="h-8 w-3/4" />
-            <Skeleton className="h-64 w-full rounded-xl" />
+          <div className="container mx-auto px-4 py-16 max-w-4xl space-y-6">
+            <Skeleton className="h-12 w-3/4" />
+            <Skeleton className="h-80 w-full" />
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-5/6" />
           </div>
         ) : article ? (
-          <article>
-            <Button variant="ghost" size="sm" className="mb-4" asChild>
-              <Link to={article.categories ? `/category/${(article as any).categories.slug}` : "/"}>
-                <ArrowLeft className="h-4 w-4 mr-1" /> Back
-              </Link>
-            </Button>
+          <>
+            {/* Hero header */}
+            <div className="border-b border-border">
+              <div className="container mx-auto px-4 py-16 max-w-4xl">
+                <Link
+                  to="/"
+                  className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors mb-8 inline-block"
+                >
+                  ← BACK
+                </Link>
 
-            {(article as any).categories && (
-              <span
-                className="inline-block px-3 py-1 text-xs font-semibold rounded-full text-primary-foreground mb-4"
-                style={{ backgroundColor: (article as any).categories.color || "#0066CC" }}
-              >
-                {(article as any).categories.name}
-              </span>
-            )}
+                {(article as any).categories && (
+                  <span className="block font-mono text-[10px] uppercase tracking-[0.15em] text-primary mb-4">
+                    {(article as any).categories.name}
+                  </span>
+                )}
 
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {lang === "en" ? (article.title_en || article.title) : article.title}
-            </h1>
+                <h1 className="font-display text-4xl md:text-6xl text-foreground leading-[0.95] mb-6">
+                  {lang === "en" ? (article.title_en || article.title) : article.title}
+                </h1>
 
-            <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
-              {article.publish_date && (
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  {new Date(article.publish_date).toLocaleDateString()}
+                <div className="flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
+                  {article.publish_date && (
+                    <span>{new Date(article.publish_date).toLocaleDateString()}</span>
+                  )}
+                  {article.tags && article.tags.length > 0 && (
+                    <>
+                      <span className="text-border">·</span>
+                      <span>{article.tags.join(", ")}</span>
+                    </>
+                  )}
                 </div>
-              )}
-              {article.views_count !== null && article.views_count !== undefined && false && (
-                <span>{article.views_count} views</span>
-              )}
+              </div>
             </div>
 
-            {article.featured_image && (
-              <img
-                src={article.featured_image}
-                alt={article.title}
-                className="w-full h-64 md:h-96 object-cover rounded-xl mb-8"
-              />
-            )}
+            {/* Content area with sidebar */}
+            <div className="container mx-auto px-4 py-12">
+              <div className="grid lg:grid-cols-[1fr_280px] gap-12 max-w-5xl mx-auto">
+                <div>
+                  {article.featured_image && (
+                    <img
+                      src={article.featured_image}
+                      alt={article.title}
+                      className="w-full h-64 md:h-96 object-cover mb-10 border border-border"
+                    />
+                  )}
 
-            {article.excerpt && (
-              <p className="text-lg text-muted-foreground mb-8 font-content leading-relaxed">
-                {lang === "en" ? (article.excerpt_en || article.excerpt) : article.excerpt}
-              </p>
-            )}
+                  {article.excerpt && (
+                    <p className="font-body text-xl text-muted-foreground mb-10 leading-relaxed italic">
+                      {lang === "en" ? (article.excerpt_en || article.excerpt) : article.excerpt}
+                    </p>
+                  )}
 
-            <div
-              className="prose prose-lg dark:prose-invert max-w-none font-content"
-              dangerouslySetInnerHTML={{
-                __html: lang === "en" ? (article.content_en || article.content || "") : (article.content || ""),
-              }}
-            />
+                  <div
+                    className="prose-editorial"
+                    dangerouslySetInnerHTML={{
+                      __html: lang === "en" ? (article.content_en || article.content || "") : (article.content || ""),
+                    }}
+                  />
+                </div>
 
-            {article.tags && article.tags.length > 0 && (
-              <div className="flex items-center gap-2 mt-8 pt-6 border-t border-border">
-                <Tag className="h-4 w-4 text-muted-foreground" />
-                {article.tags.map((tag) => (
-                  <span key={tag} className="text-xs bg-muted px-2 py-1 rounded-full text-muted-foreground">{tag}</span>
-                ))}
+                {/* Sidebar */}
+                <aside className="hidden lg:block">
+                  <div className="sticky top-20 space-y-8">
+                    <div className="border border-border p-6">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground block mb-3">
+                        Quick Stats
+                      </span>
+                      {[
+                        { value: "43%", label: "bridges over 50yrs" },
+                        { value: "$125B", label: "repair backlog" },
+                      ].map((stat) => (
+                        <div key={stat.label} className="mb-4">
+                          <div className="font-display text-3xl text-primary">{stat.value}</div>
+                          <div className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
+                            {stat.label}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {article.tags && article.tags.length > 0 && (
+                      <div className="border border-border p-6">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground block mb-3">
+                          Tags
+                        </span>
+                        <div className="flex flex-wrap gap-2">
+                          {article.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground border border-border px-2 py-1"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </aside>
               </div>
-            )}
-          </article>
+            </div>
+          </>
         ) : (
-          <p className="text-muted-foreground text-center py-10">Article not found.</p>
+          <div className="container mx-auto px-4 py-20 text-center">
+            <p className="text-muted-foreground font-mono text-sm">Article not found.</p>
+          </div>
         )}
       </main>
       <Footer />
