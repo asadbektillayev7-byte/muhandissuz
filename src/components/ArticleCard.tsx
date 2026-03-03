@@ -1,18 +1,27 @@
-import { Calendar } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface ArticleCardProps {
   title: string;
   excerpt: string;
   image: string;
   category: string;
-  categoryColor: string;
+  categoryColor?: string;
   date: string;
-  readTime: string;
+  readTime?: string;
+  slug?: string;
 }
 
-const ArticleCard = ({ title, excerpt, image, category, categoryColor, date, readTime }: ArticleCardProps) => {
-  return (
-    <article className="group bg-card rounded-lg overflow-hidden border border-border hover-lift hover-glow cursor-pointer">
+const ArticleCard = ({
+  title,
+  excerpt,
+  image,
+  category,
+  date,
+  readTime,
+  slug,
+}: ArticleCardProps) => {
+  const inner = (
+    <div className="group border border-border bg-card overflow-hidden brutalist-hover cursor-pointer h-full flex flex-col">
       <div className="relative h-48 overflow-hidden">
         <img
           src={image}
@@ -20,29 +29,26 @@ const ArticleCard = ({ title, excerpt, image, category, categoryColor, date, rea
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
         />
-        <span
-          className="absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold rounded-sm text-white"
-          style={{ backgroundColor: categoryColor }}
-        >
+        <span className="absolute top-3 left-3 font-mono text-[10px] uppercase tracking-[0.15em] bg-primary text-primary-foreground px-2 py-1">
           {category}
         </span>
       </div>
-      <div className="p-5">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-          <Calendar className="w-3.5 h-3.5" />
-          <span>{date}</span>
-          <span className="text-border">·</span>
-          <span>{readTime}</span>
-        </div>
-        <h3 className="font-display font-semibold text-lg text-card-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors leading-snug">
+      <div className="p-5 flex flex-col flex-1">
+        <h3 className="font-display text-xl leading-tight text-card-foreground mb-2">
           {title}
         </h3>
-        <p className="text-sm text-muted-foreground font-content line-clamp-2 leading-relaxed">
+        <p className="font-body text-sm text-muted-foreground line-clamp-2 mb-4 flex-1">
           {excerpt}
         </p>
+        <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
+          <span>{date}</span>
+          {readTime && <span>{readTime}</span>}
+        </div>
       </div>
-    </article>
+    </div>
   );
+
+  return slug ? <Link to={`/article/${slug}`}>{inner}</Link> : inner;
 };
 
 export default ArticleCard;

@@ -8,6 +8,8 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
+import ExplorePage from "./pages/ExplorePage";
+import WritePage from "./pages/WritePage";
 import NotFound from "./pages/NotFound";
 import CategoryPage from "./pages/CategoryPage";
 import ArticlePage from "./pages/ArticlePage";
@@ -43,6 +45,8 @@ const App = () => (
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/explore" element={<ExplorePage />} />
+                <Route path="/write" element={<WritePage />} />
                 <Route path="/category/:slug" element={<CategoryPage />} />
                 <Route path="/maqolalar/:slug" element={<CategoryPage />} />
                 <Route path="/article/:slug" element={<ArticlePage />} />
