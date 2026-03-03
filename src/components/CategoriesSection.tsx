@@ -1,44 +1,57 @@
 import { Link } from "react-router-dom";
-import { useCategories } from "@/hooks/useCategories";
+import {
+  Cpu, Cog, Brain, FlaskConical, Car, Rocket,
+  Code, Building, TreePine, BookOpen, LucideIcon,
+} from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCategories } from "@/hooks/useCategories";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const placeholderCategories = [
-  { name: "Structures", slug: "structures" },
-  { name: "Energy", slug: "energy" },
-  { name: "Software", slug: "software" },
-  { name: "Space", slug: "space" },
-  { name: "Materials", slug: "materials" },
-  { name: "Infrastructure", slug: "infrastructure" },
-];
+const iconMap: Record<string, LucideIcon> = {
+  elektrotexnika: Cpu,
+  mexanika: Cog,
+  "suniy-intellekt": Brain,
+  kimyo: FlaskConical,
+  motosport: Car,
+  "kosmik-sanoat": Rocket,
+  "dasturiy-taminot": Code,
+  fuqarolik: Building,
+  "atrof-muhit": TreePine,
+  umumiy: BookOpen,
+};
 
 const CategoriesSection = () => {
-  const { data: dbCategories } = useCategories();
-  const { lang } = useLanguage();
-
-  const categories = dbCategories && dbCategories.length > 0
-    ? dbCategories.map((c) => ({ name: lang === "en" ? (c.name_en || c.name) : c.name, slug: c.slug }))
-    : placeholderCategories;
+  const { t, lang } = useLanguage();
+  const { data: categories, isLoading } = useCategories();
 
   return (
-    <section id="categories" className="border-y border-border py-16">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center gap-4 mb-10">
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Categories</span>
-          <div className="flex-1 h-px bg-border" />
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categories.map((cat) => (
+    <section className="container mx-auto px-4 py-16">
+      <div className="text-center mb-10">
+        <h2 className="text-3xl font-bold text-foreground mb-3">{t("section.categories")}</h2>
+        <p className="text-muted-foreground font-content max-w-md mx-auto">{t("section.categories_subtitle")}</p>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {isLoading && Array.from({ length: 10 }).map((_, i) => <Skeleton key={i} className="h-28 rounded-xl" />)}
+        {categories?.map((cat) => {
+          const Icon = iconMap[cat.slug] || BookOpen;
+          const color = cat.color || "#0066CC";
+          return (
             <Link
-              key={cat.slug}
+              key={cat.id}
               to={`/maqolalar/${cat.slug}`}
-              className="group border border-border p-6 text-center brutalist-hover"
+              className="group flex flex-col items-center gap-3 p-5 bg-card rounded-xl border border-border hover-lift cursor-pointer transition-all"
             >
-              <span className="font-display text-lg text-foreground group-hover:text-primary transition-colors">
-                {cat.name}
-              </span>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110" style={{ backgroundColor: `${color}15` }}>
+                <Icon className="w-6 h-6" style={{ color }} />
+              </div>
+              <div className="text-center">
+                <span className="text-sm font-medium text-card-foreground block">
+                  {lang === "en" ? (cat.name_en || cat.name) : cat.name}
+                </span>
+              </div>
             </Link>
-          ))}
-        </div>
+          );
+        })}
       </div>
     </section>
   );

@@ -14,9 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Bebas Neue", "sans-serif"],
-        body: ["Instrument Serif", "serif"],
-        mono: ["DM Mono", "monospace"],
+        sans: ["Inter", "sans-serif"],
+        content: ["Roboto", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -62,17 +61,23 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        void: "#0A0A0A",
-        asphalt: "#1E1E1A",
-        steel: "#3A3A36",
-        paper: "#F5F5F0",
-        gray: "#B0B0A8",
-        voltage: "#E8FF47",
+        category: {
+          elektro: "hsl(var(--cat-elektro))",
+          mexanika: "hsl(var(--cat-mexanika))",
+          ai: "hsl(var(--cat-ai))",
+          kimyo: "hsl(var(--cat-kimyo))",
+          motosport: "hsl(var(--cat-motosport))",
+          kosmik: "hsl(var(--cat-kosmik))",
+          dasturiy: "hsl(var(--cat-dasturiy))",
+          fuqarolik: "hsl(var(--cat-fuqarolik))",
+          atrof: "hsl(var(--cat-atrof))",
+          umumiy: "hsl(var(--cat-umumiy))",
+        },
       },
       borderRadius: {
-        lg: "0px",
-        md: "0px",
-        sm: "0px",
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
         "accordion-down": {
@@ -87,11 +92,21 @@ export default {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "fade-in-up": {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "slide-down": {
+          "0%": { opacity: "0", transform: "translateY(-10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.5s ease-out forwards",
+        "fade-in-up": "fade-in-up 0.6s ease-out forwards",
+        "slide-down": "slide-down 0.3s ease-out",
       },
     },
   },

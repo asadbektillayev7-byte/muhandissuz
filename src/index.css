@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Instrument+Serif:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,209 +6,139 @@
 
 @layer base {
   :root {
-    --background: 60 4% 4%;
-    --foreground: 60 7% 96%;
+    --background: 210 17% 98%;
+    --foreground: 0 0% 10%;
 
-    --card: 60 4% 8%;
-    --card-foreground: 60 7% 96%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
 
-    --popover: 60 4% 8%;
-    --popover-foreground: 60 7% 96%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
 
-    --primary: 72 100% 64%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 210 100% 40%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 60 3% 12%;
-    --secondary-foreground: 60 7% 96%;
+    --secondary: 17 100% 60%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 60 3% 15%;
-    --muted-foreground: 60 3% 68%;
+    --muted: 210 20% 94%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 72 100% 64%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 174 71% 47%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 4 90% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 60 3% 22%;
-    --input: 60 3% 22%;
-    --ring: 72 100% 64%;
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 210 100% 40%;
 
-    --radius: 0px;
+    --radius: 0.625rem;
 
-    --sidebar-background: 60 4% 6%;
-    --sidebar-foreground: 60 7% 96%;
-    --sidebar-primary: 72 100% 64%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 60 3% 15%;
-    --sidebar-accent-foreground: 60 7% 96%;
-    --sidebar-border: 60 3% 22%;
-    --sidebar-ring: 72 100% 64%;
+    /* Category colors */
+    --cat-elektro: 195 100% 42%;
+    --cat-mexanika: 210 6% 45%;
+    --cat-ai: 271 73% 59%;
+    --cat-kimyo: 157 100% 50%;
+    --cat-motosport: 11 97% 50%;
+    --cat-kosmik: 220 95% 19%;
+    --cat-dasturiy: 210 100% 40%;
+    --cat-fuqarolik: 36 100% 50%;
+    --cat-atrof: 142 71% 45%;
+    --cat-umumiy: 215 16% 47%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 60 4% 4%;
-    --foreground: 60 7% 96%;
-    --card: 60 4% 8%;
-    --card-foreground: 60 7% 96%;
-    --popover: 60 4% 8%;
-    --popover-foreground: 60 7% 96%;
-    --primary: 72 100% 64%;
-    --primary-foreground: 0 0% 0%;
-    --secondary: 60 3% 12%;
-    --secondary-foreground: 60 7% 96%;
-    --muted: 60 3% 15%;
-    --muted-foreground: 60 3% 68%;
-    --accent: 72 100% 64%;
-    --accent-foreground: 0 0% 0%;
-    --destructive: 0 62% 35%;
-    --destructive-foreground: 60 7% 96%;
-    --border: 60 3% 22%;
-    --input: 60 3% 22%;
-    --ring: 72 100% 64%;
-    --sidebar-background: 60 4% 6%;
-    --sidebar-foreground: 60 7% 96%;
-    --sidebar-primary: 72 100% 64%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 60 3% 15%;
-    --sidebar-accent-foreground: 60 7% 96%;
-    --sidebar-border: 60 3% 22%;
-    --sidebar-ring: 72 100% 64%;
+    --background: 0 0% 7%;
+    --foreground: 210 20% 94%;
+
+    --card: 0 0% 11%;
+    --card-foreground: 210 20% 94%;
+
+    --popover: 0 0% 11%;
+    --popover-foreground: 210 20% 94%;
+
+    --primary: 210 100% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 17 100% 60%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 215 16% 65%;
+
+    --accent: 174 71% 47%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 210 100% 50%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
-    border-radius: 0 !important;
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
-    font-family: 'DM Mono', monospace;
-    font-weight: 400;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Bebas Neue', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    font-family: 'Inter', sans-serif;
   }
 
-  .font-body {
-    font-family: 'Instrument Serif', serif;
-  }
-
-  .font-mono {
-    font-family: 'DM Mono', monospace;
-  }
-
-  .font-display {
-    font-family: 'Bebas Neue', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+  .font-content {
+    font-family: 'Roboto', sans-serif;
   }
 }
 
 @layer utilities {
-  .brutalist-hover {
-    @apply transition-all duration-150;
-  }
-  .brutalist-hover:hover {
-    transform: translate(3px, -3px);
-    box-shadow: -3px 3px 0px 0px hsl(var(--foreground));
+  .gradient-primary {
+    @apply bg-gradient-to-r from-primary to-accent;
   }
 
-  .noise-overlay {
-    position: relative;
-  }
-  .noise-overlay::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0.04;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1;
+  .gradient-hero {
+    background: linear-gradient(135deg, hsl(210 100% 40% / 0.9), hsl(174 71% 47% / 0.7));
   }
 
-  .grid-overlay {
-    background-image:
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 60px 60px;
+  .gradient-card {
+    background: linear-gradient(180deg, transparent 0%, hsl(0 0% 0% / 0.7) 100%);
   }
 
-  .voltage-rule {
-    @apply relative;
-  }
-  .voltage-rule::after {
-    content: '';
-    @apply absolute top-1/2 right-0 h-px bg-primary;
-    width: calc(100% - 100%);
-    left: 100%;
-    margin-left: 12px;
-    width: 9999px;
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
   }
 
-  .editorial-divider {
-    @apply w-12 h-0.5 bg-primary;
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
   }
-}
 
-/* Ticker / Marquee */
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.animate-marquee {
-  animation: marquee 30s linear infinite;
-}
-
-/* Prose styling for article body */
-.prose-editorial {
-  font-family: 'Instrument Serif', serif;
-  font-size: 1.125rem;
-  line-height: 1.8;
-  color: hsl(60 7% 96%);
-}
-
-.prose-editorial p {
-  margin-bottom: 1.5em;
-}
-
-.prose-editorial h2,
-.prose-editorial h3 {
-  font-family: 'Bebas Neue', sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-top: 2em;
-  margin-bottom: 0.5em;
-}
-
-.prose-editorial blockquote {
-  font-family: 'Instrument Serif', serif;
-  font-style: italic;
-  font-size: 1.5rem;
-  line-height: 1.4;
-  color: hsl(72 100% 64%);
-  border-left: 2px solid hsl(72 100% 64%);
-  padding-left: 1.5rem;
-  margin: 2rem 0;
-}
-
-.prose-editorial a {
-  color: hsl(72 100% 64%);
-  text-decoration: underline;
-}
-
-.prose-editorial img {
-  width: 100%;
-  margin: 2rem 0;
-}
-
-.prose-editorial strong {
-  color: hsl(60 7% 96%);
-  font-weight: 700;
+  .hover-glow {
+    @apply transition-shadow duration-300 hover:shadow-[0_0_20px_hsl(210_100%_40%/0.3)];
+  }
 }

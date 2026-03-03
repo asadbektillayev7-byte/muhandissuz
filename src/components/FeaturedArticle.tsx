@@ -1,61 +1,70 @@
 import { Link } from "react-router-dom";
+import { Calendar, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { usePublishedArticles } from "@/hooks/useArticles";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const FeaturedArticle = () => {
-  const { data: articles } = usePublishedArticles();
-  const featured = articles?.[0];
+  const { t, lang } = useLanguage();
+  const { data: articles, isLoading } = usePublishedArticles();
 
-  if (!featured) {
+  // Use the first published article as featured
+  const article = articles?.[0] as any;
+
+  if (isLoading) {
     return (
-      <section className="container mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-2 gap-0 border border-border">
-          <div className="h-80 md:h-auto bg-secondary" />
-          <div className="p-8 md:p-12 flex flex-col justify-center">
-            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-primary mb-4">
-              Featured
-            </span>
-            <h2 className="font-display text-3xl md:text-4xl text-foreground leading-tight mb-4">
-              WHY CONCRETE CRACKS — AND WHO PAYS FOR IT
-            </h2>
-            <p className="font-body text-muted-foreground leading-relaxed mb-6">
-              An investigation into deteriorating infrastructure across Central Asia, the engineering behind material fatigue, and the economic reality of deferred maintenance.
-            </p>
-            <span className="font-mono text-[11px] uppercase tracking-[2px] text-primary">
-              READ ARTICLE →
-            </span>
-          </div>
-        </div>
+      <section className="container mx-auto px-4 -mt-16 relative z-20">
+        <Skeleton className="h-[300px] rounded-2xl" />
       </section>
     );
   }
 
+  if (!article) return null;
+
   return (
-    <section className="container mx-auto px-4 py-16">
-      <Link to={`/article/${(featured as any).slug}`}>
-        <div className="grid md:grid-cols-2 gap-0 border border-border brutalist-hover">
-          <div className="h-80 md:h-auto overflow-hidden">
+    <section className="container mx-auto px-4 -mt-16 relative z-20">
+      <div className="bg-card rounded-2xl shadow-xl overflow-hidden border border-border">
+        <div className="grid md:grid-cols-2 gap-0">
+          <div className="relative h-64 md:h-auto min-h-[300px]">
             <img
-              src={(featured as any).featured_image || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80"}
-              alt={(featured as any).title}
-              className="w-full h-full object-cover"
+              src={article.featured_image || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80"}
+              alt={article.title}
+              className="absolute inset-0 w-full h-full object-cover"
             />
+            <div className="absolute inset-0 gradient-card" />
+            {article.categories && (
+              <span
+                className="absolute top-4 left-4 px-3 py-1 text-xs font-semibold text-primary-foreground rounded-full"
+                style={{ backgroundColor: article.categories.color || "#0066CC" }}
+              >
+                {article.categories.name}
+              </span>
+            )}
           </div>
-          <div className="p-8 md:p-12 flex flex-col justify-center bg-card">
-            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-primary mb-4">
-              Featured
+          <div className="p-6 md:p-10 flex flex-col justify-center">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+              <Calendar className="w-4 h-4" />
+              <span>{article.publish_date ? new Date(article.publish_date).toLocaleDateString() : ""}</span>
+            </div>
+            <span className="text-xs font-semibold text-secondary uppercase tracking-wider mb-2">
+              {t("featured.tag")}
             </span>
-            <h2 className="font-display text-3xl md:text-4xl text-card-foreground leading-tight mb-4">
-              {(featured as any).title}
+            <h2 className="text-2xl md:text-3xl font-bold text-card-foreground mb-4 leading-tight">
+              {lang === "en" ? (article.title_en || article.title) : article.title}
             </h2>
-            <p className="font-body text-muted-foreground leading-relaxed mb-6">
-              {(featured as any).excerpt || "Read the full article for more details."}
+            <p className="text-muted-foreground font-content leading-relaxed mb-6 line-clamp-3">
+              {lang === "en" ? (article.excerpt_en || article.excerpt) : article.excerpt}
             </p>
-            <span className="font-mono text-[11px] uppercase tracking-[2px] text-primary">
-              READ ARTICLE →
-            </span>
+            <Button className="self-start gap-2 bg-primary hover:bg-primary/90" asChild>
+              <Link to={`/article/${article.slug}`}>
+                {t("article.readmore")}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </Button>
           </div>
         </div>
-      </Link>
+      </div>
     </section>
   );
 };
