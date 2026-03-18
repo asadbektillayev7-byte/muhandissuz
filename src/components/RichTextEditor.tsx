@@ -18,12 +18,25 @@ interface RichTextEditorProps {
   placeholder?: string;
 }
 
-const MenuButton = ({ onClick, active, children, title }: { onClick: () => void; active?: boolean; children: React.ReactNode; title: string }) => (
+const MenuButton = ({
+  onClick,
+  active,
+  children,
+  title,
+  disabled,
+}: {
+  onClick: () => void;
+  active?: boolean;
+  children: React.ReactNode;
+  title: string;
+  disabled?: boolean;
+}) => (
   <Button
     type="button"
     variant="ghost"
     size="icon"
     className={cn("h-8 w-8", active && "bg-muted text-foreground")}
+    disabled={disabled}
     onClick={(e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -35,13 +48,26 @@ const MenuButton = ({ onClick, active, children, title }: { onClick: () => void;
   </Button>
 );
 
-const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." }: RichTextEditorProps) => {
+const RichTextEditor = ({
+  content,
+  onChange,
+  placeholder = "Start writing...",
+}: RichTextEditorProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
+        bulletList: {},
+        orderedList: {},
+        blockquote: {},
+        codeBlock: {},
+        horizontalRule: {},
+        bold: {},
+        italic: {},
+        strike: {},
+        code: {},
       }),
-      Image,
+      Image.configure({ inline: false }),
       Underline,
       Placeholder.configure({ placeholder }),
     ],
@@ -57,10 +83,9 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." }:
     },
   });
 
-  // Sync external content changes (e.g. when article data loads)
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content, { emitUpdate: false });
+      editor.commands.setContent(content, { emitUpdate: false } as any);
     }
   }, [content, editor]);
 
@@ -77,55 +102,120 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." }:
   return (
     <div className="border border-border rounded-lg overflow-hidden">
       <div className="flex flex-wrap items-center gap-0.5 p-1.5 border-b border-border bg-muted/50 sticky top-0 z-10">
-        <MenuButton onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} active={editor.isActive("heading", { level: 1 })} title="Heading 1">
+
+        <MenuButton
+          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          active={editor.isActive("heading", { level: 1 })}
+          title="Heading 1"
+        >
           <Heading1 className="h-4 w-4" />
         </MenuButton>
-        <MenuButton onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive("heading", { level: 2 })} title="Heading 2">
+        <MenuButton
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          active={editor.isActive("heading", { level: 2 })}
+          title="Heading 2"
+        >
           <Heading2 className="h-4 w-4" />
         </MenuButton>
-        <MenuButton onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} active={editor.isActive("heading", { level: 3 })} title="Heading 3">
+        <MenuButton
+          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          active={editor.isActive("heading", { level: 3 })}
+          title="Heading 3"
+        >
           <Heading3 className="h-4 w-4" />
         </MenuButton>
+
         <div className="w-px h-6 bg-border mx-1" />
-        <MenuButton onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive("bold")} title="Bold">
+
+        <MenuButton
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          active={editor.isActive("bold")}
+          title="Bold"
+        >
           <Bold className="h-4 w-4" />
         </MenuButton>
-        <MenuButton onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive("italic")} title="Italic">
+        <MenuButton
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          active={editor.isActive("italic")}
+          title="Italic"
+        >
           <Italic className="h-4 w-4" />
         </MenuButton>
-        <MenuButton onClick={() => editor.chain().focus().toggleUnderline().run()} active={editor.isActive("underline")} title="Underline">
+        <MenuButton
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          active={editor.isActive("underline")}
+          title="Underline"
+        >
           <UnderlineIcon className="h-4 w-4" />
         </MenuButton>
-        <MenuButton onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive("strike")} title="Strikethrough">
+        <MenuButton
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+          active={editor.isActive("strike")}
+          title="Strikethrough"
+        >
           <Strikethrough className="h-4 w-4" />
         </MenuButton>
+
         <div className="w-px h-6 bg-border mx-1" />
-        <MenuButton onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive("bulletList")} title="Bullet List">
+
+        <MenuButton
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          active={editor.isActive("bulletList")}
+          title="Bullet List"
+        >
           <List className="h-4 w-4" />
         </MenuButton>
-        <MenuButton onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive("orderedList")} title="Ordered List">
+        <MenuButton
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          active={editor.isActive("orderedList")}
+          title="Ordered List"
+        >
           <ListOrdered className="h-4 w-4" />
         </MenuButton>
-        <MenuButton onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive("blockquote")} title="Quote">
+        <MenuButton
+          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          active={editor.isActive("blockquote")}
+          title="Blockquote"
+        >
           <Quote className="h-4 w-4" />
         </MenuButton>
-        <MenuButton onClick={() => editor.chain().focus().toggleCodeBlock().run()} active={editor.isActive("codeBlock")} title="Code Block">
+        <MenuButton
+          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+          active={editor.isActive("codeBlock")}
+          title="Code Block"
+        >
           <Code className="h-4 w-4" />
         </MenuButton>
+
         <div className="w-px h-6 bg-border mx-1" />
+
         <MenuButton onClick={addImage} title="Insert Image">
           <ImageIcon className="h-4 w-4" />
         </MenuButton>
-        <MenuButton onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Horizontal Rule">
+        <MenuButton
+          onClick={() => editor.chain().focus().setHorizontalRule().run()}
+          title="Horizontal Rule"
+        >
           <Minus className="h-4 w-4" />
         </MenuButton>
+
         <div className="w-px h-6 bg-border mx-1" />
-        <MenuButton onClick={() => editor.chain().focus().undo().run()} title="Undo">
+
+        <MenuButton
+          onClick={() => editor.chain().focus().undo().run()}
+          disabled={!editor.can().undo()}
+          title="Undo"
+        >
           <Undo className="h-4 w-4" />
         </MenuButton>
-        <MenuButton onClick={() => editor.chain().focus().redo().run()} title="Redo">
+        <MenuButton
+          onClick={() => editor.chain().focus().redo().run()}
+          disabled={!editor.can().redo()}
+          title="Redo"
+        >
           <Redo className="h-4 w-4" />
         </MenuButton>
+
       </div>
       <EditorContent
         editor={editor}
