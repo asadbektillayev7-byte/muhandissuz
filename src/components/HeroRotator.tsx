@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const INTERVAL_SECONDS = 120;
+const INTERVAL_SECONDS = 6;
 
 const departments = [
   {
