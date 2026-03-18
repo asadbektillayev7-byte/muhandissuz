@@ -214,7 +214,7 @@ export default function HeroRotator() {
 
   return (
     <div
-      className="relative w-full h-[500px] overflow-hidden rounded-xl"
+   className="relative w-full h-[580px] overflow-hidden"
      style={{ backgroundColor: dept.bg }}
     >
       {departments.map((d, i) => (
