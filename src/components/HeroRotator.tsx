@@ -215,7 +215,7 @@ export default function HeroRotator() {
   return (
     <div
       className="relative w-full h-[500px] overflow-hidden rounded-xl"
-      style={{ backgroundColor: dept.bg, transition: "background-color 1s ease" }}
+     style={{ backgroundColor: dept.bg }}
     >
       {departments.map((d, i) => (
         <div
