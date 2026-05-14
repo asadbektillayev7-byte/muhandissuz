@@ -122,7 +122,6 @@ const AnalyticsAdmin = () => {
         </div>
       </CardContent>
     </Card>
-  </div>
   </div>;
 };
 
