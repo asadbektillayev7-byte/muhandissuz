@@ -21,23 +21,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
 
-  const fetchRole = async (userId: string) => {
-    const { data } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId)
-      .maybeSingle();
-    setUserRole(data?.role || null);
-  };
-
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-    if (session?.user) {
+        if (session?.user) {
           setUserRole('admin');
-        }
         } else {
           setUserRole(null);
         }
@@ -48,9 +38,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-  if (session?.user) {
-          setUserRole('admin');
-        }
+      if (session?.user) {
+        setUserRole('admin');
       }
       setLoading(false);
     });
