@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";\
 
 interface AuthContextType {
   user: User | null;
@@ -36,8 +36,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setSession(session);
         setUser(session?.user ?? null);
     if (session?.user) {
-  setUserRole('admin');
-}
+          setUserRole('admin');
+        }
         } else {
           setUserRole(null);
         }
@@ -49,8 +49,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSession(session);
       setUser(session?.user ?? null);
   if (session?.user) {
-  setUserRole('admin');
-}
+          setUserRole('admin');
+        }
       }
       setLoading(false);
     });
