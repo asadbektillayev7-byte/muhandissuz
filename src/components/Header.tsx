@@ -1,0 +1,57 @@
+'use client'
+
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import { LanguageSwitcher } from './LanguageSwitcher'
+import { ThemeToggle } from './ThemeToggle'
+
+const navItems = [
+  { key: 'articles', href: '/articles' },
+  { key: 'hackathons', href: '/hackathons' },
+  { key: 'challenges', href: '/projects' },
+  { key: 'about', href: '/about' },
+]
+
+const labels: Record<string, { uz: string; en: string }> = {
+  articles: { uz: 'Maqolalar', en: 'Articles' },
+  hackathons: { uz: 'Hackathonlar', en: 'Hackathons' },
+  challenges: { uz: 'Loyihalar', en: 'Projects' },
+  about: { uz: 'Biz Haqimizda', en: 'About' },
+}
+
+export function Header() {
+  const params = useParams()
+  const locale = (params.locale as string) || 'uz'
+
+  return (
+    <header className="border-b border-border">
+      <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+        <Link href={`/${locale}`} className="flex items-center gap-2">
+          <img
+            src="/logo/muhandis-logo.svg"
+            alt="Muhandis.uz"
+            className="h-7 w-auto dark:invert"
+          />
+        </Link>
+
+        <nav className="hidden md:flex items-center gap-6">
+          {navItems.map((item) => (
+            <Link
+              key={item.key}
+              href={`/${locale}${item.href}`}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {labels[item.key][locale as 'uz' | 'en']}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          <span className="w-px h-4 bg-border" />
+          <ThemeToggle />
+        </div>
+      </div>
+    </header>
+  )
+}

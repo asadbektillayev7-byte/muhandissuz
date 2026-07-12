@@ -1,0 +1,56 @@
+import { getPayloadClient } from '@/utilities/getPayload'
+
+export default async function PartnersPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const payload = await getPayloadClient()
+
+  const { docs: partners } = await payload.find({
+    collection: 'partners',
+    locale: locale as 'uz' | 'en',
+    depth: 0,
+  })
+
+  const label = locale === 'uz'
+    ? { title: 'Hamkorlar', subtitle: 'Biz bilan hamkorlik qilayotgan tashkilotlar', empty: 'Hozircha hamkorlar yo\'q' }
+    : { title: 'Partners', subtitle: 'Organizations we work with', empty: 'No partners yet' }
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 py-12">
+      <h1 className="text-4xl font-bold mb-2">{label.title}</h1>
+      <p className="text-muted-foreground mb-8">{label.subtitle}</p>
+
+      {partners.length === 0 && <p className="text-muted-foreground">{label.empty}</p>}
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {partners.map((partner) => (
+          <div
+            key={partner.id}
+            className="border border-border p-6 flex items-center justify-center"
+            style={{ borderRadius: 'var(--radius)' }}
+          >
+            {partner.logo && typeof partner.logo === 'object' && partner.logo.url ? (
+              <a
+                href={partner.url || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <img
+                  src={partner.logo.url}
+                  alt={partner.name || ''}
+                  className="max-h-12 w-auto grayscale hover:grayscale-0 transition-all"
+                />
+              </a>
+            ) : (
+              <span className="text-sm text-muted-foreground">{partner.name}</span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}

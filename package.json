@@ -1,0 +1,52 @@
+{
+  "name": "muhandissuz",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Muhandis.uz - Engineering & technology content platform",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "payload": "payload",
+    "seed": "npx tsx scripts/seed.ts",
+    "migrate": "npx tsx scripts/migrate-wp.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asadbektillayev7-byte/muhandissuz.git"
+  },
+  "bugs": {
+    "url": "https://github.com/asadbektillayev7-byte/muhandissuz/issues"
+  },
+  "homepage": "https://github.com/asadbektillayev7-byte/muhandissuz#readme",
+  "dependencies": {
+    "@google/model-viewer": "^4.3.1",
+    "@payloadcms/db-postgres": "^3.85.2",
+    "@payloadcms/live-preview-react": "^3.85.2",
+    "@payloadcms/plugin-seo": "^3.85.2",
+    "@payloadcms/richtext-lexical": "^3.85.2",
+    "@payloadcms/storage-vercel-blob": "^3.85.2",
+    "next": "^16.2.10",
+    "payload": "^3.85.2",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "sass": "^1.101.0",
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.2",
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.5.2",
+    "fast-xml-parser": "^5.9.3",
+    "postcss": "^8.5.16",
+    "tailwindcss": "^4.3.2",
+    "tsx": "^4.23.0",
+    "typescript": "5.8"
+  }
+}
