@@ -6,6 +6,7 @@ import Link from 'next/link'
 const links = [
   { key: 'articles', href: '/articles' },
   { key: 'hackathons', href: '/hackathons' },
+  { key: 'quiz', href: '/quiz' },
   { key: 'projects', href: '/projects' },
   { key: 'partners', href: '/partners' },
   { key: 'about', href: '/about' },
@@ -15,6 +16,7 @@ const links = [
 const labels: Record<string, { uz: string; en: string }> = {
   articles: { uz: 'Maqolalar', en: 'Articles' },
   hackathons: { uz: 'Hackathonlar', en: 'Hackathons' },
+  quiz: { uz: 'Test', en: 'Quiz' },
   projects: { uz: 'Loyihalar', en: 'Projects' },
   partners: { uz: 'Hamkorlar', en: 'Partners' },
   about: { uz: 'Biz Haqimizda', en: 'About' },

@@ -8,6 +8,7 @@ import { ThemeToggle } from './ThemeToggle'
 const navItems = [
   { key: 'articles', href: '/articles' },
   { key: 'hackathons', href: '/hackathons' },
+  { key: 'quiz', href: '/quiz' },
   { key: 'challenges', href: '/projects' },
   { key: 'about', href: '/about' },
 ]
@@ -15,6 +16,7 @@ const navItems = [
 const labels: Record<string, { uz: string; en: string }> = {
   articles: { uz: 'Maqolalar', en: 'Articles' },
   hackathons: { uz: 'Hackathonlar', en: 'Hackathons' },
+  quiz: { uz: 'Test', en: 'Quiz' },
   challenges: { uz: 'Loyihalar', en: 'Projects' },
   about: { uz: 'Biz Haqimizda', en: 'About' },
 }
