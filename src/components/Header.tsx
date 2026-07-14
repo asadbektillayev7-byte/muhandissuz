@@ -6,22 +6,6 @@ import { LanguageSwitcher } from './LanguageSwitcher'
 import { ThemeToggle } from './ThemeToggle'
 import { Logo } from './Logo'
 
-const navItems = [
-  { key: 'articles', href: '/articles' },
-  { key: 'hackathons', href: '/hackathons' },
-  { key: 'quiz', href: '/quiz' },
-  { key: 'challenges', href: '/projects' },
-  { key: 'team', href: '/team' },
-]
-
-const labels: Record<string, { uz: string; en: string }> = {
-  articles: { uz: 'Maqolalar', en: 'Articles' },
-  hackathons: { uz: 'Hackathonlar', en: 'Hackathons' },
-  quiz: { uz: 'Quiz', en: 'Quiz' },
-  challenges: { uz: 'Loyihalar', en: 'Projects' },
-  team: { uz: 'Jamoa', en: 'Team' },
-}
-
 export function Header() {
   const params = useParams()
   const locale = (params.locale as string) || 'uz'
@@ -32,18 +16,6 @@ export function Header() {
         <Link href={`/${locale}`} className="flex items-center gap-2">
           <Logo />
         </Link>
-
-        <nav className="hidden md:flex items-center gap-6">
-          {navItems.map((item) => (
-            <Link
-              key={item.key}
-              href={`/${locale}${item.href}`}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {labels[item.key][locale as 'uz' | 'en']}
-            </Link>
-          ))}
-        </nav>
 
         <div className="flex items-center gap-3">
           <LanguageSwitcher />

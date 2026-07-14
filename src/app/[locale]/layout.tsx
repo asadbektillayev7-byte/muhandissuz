@@ -1,5 +1,6 @@
 import { Header } from '@/components/Header'
 import { MinimalFooter } from '@/components/MinimalFooter'
+import { BottomNav } from '@/components/BottomNav'
 import type { Metadata } from 'next'
 
 export async function generateMetadata({
@@ -55,10 +56,11 @@ export default async function LocaleLayout({
   const { locale } = await params
   return (
     <html lang={locale}>
-      <body className="min-h-screen flex flex-col">
+      <body className="min-h-screen flex flex-col pb-14">
         <Header />
         <main className="flex-1">{children}</main>
         <MinimalFooter />
+        <BottomNav />
       </body>
     </html>
   )
