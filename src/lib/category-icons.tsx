@@ -45,14 +45,14 @@ export const categoryMetaMap: Record<string, CategoryMeta> = {
   'environmental-engineering': {
     icon: <Leaf className="h-5 w-5" />,
     description: {
-      uz: 'Atrof-muhit muhandisligi bo\'yicha test',
+      uz: 'Atrofmuhit muhandisligi bo\'yicha test',
       en: 'Test your knowledge of Environmental Engineering',
     },
   },
   'ai': {
     icon: <Cpu className="h-5 w-5" />,
     description: {
-      uz: 'Sun\'iy intellekt bo\'yicha test',
+      uz: 'Suniy intellekt bo\'yicha test',
       en: 'Test your knowledge of AI',
     },
   },

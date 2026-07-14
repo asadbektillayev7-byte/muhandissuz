@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getPayloadClient } from '@/utilities/getPayload'
 import { renderRichText } from '@/utilities/richText'
+import { resolveLocalizedField } from '@/lib/locale'
 import { notFound } from 'next/navigation'
 
 export default async function ArticlePage({
@@ -50,7 +51,7 @@ export default async function ArticlePage({
           <span>{label.published}: {new Date(article.publishedDate).toLocaleDateString()}</span>
         )}
         {article.category && typeof article.category === 'object' && (
-          <span>{label.category}: {article.category.name}</span>
+          <span>{label.category}: {resolveLocalizedField(article.category.name, locale)}</span>
         )}
         {article.relatedHackathon && typeof article.relatedHackathon === 'object' && (
           <Link href={`/${locale}/hackathons/${article.relatedHackathon.slug}`} className="text-chart-2 hover:underline">

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getPayloadClient } from '@/utilities/getPayload'
 import { renderRichText } from '@/utilities/richText'
+import { resolveLocalizedField } from '@/lib/locale'
 import { notFound } from 'next/navigation'
 import { ModelViewer } from '@/components/ModelViewer'
 
@@ -37,7 +38,7 @@ export default async function ProjectPage({
         )}
         {project.ageGroup && <span>{label.age}: {project.ageGroup}</span>}
         {project.discipline && typeof project.discipline === 'object' && (
-          <span>{label.discipline}: {project.discipline.name}</span>
+          <span>{label.discipline}: {resolveLocalizedField(project.discipline.name, locale)}</span>
         )}
         {project.relatedHackathon && typeof project.relatedHackathon === 'object' && (
           <Link href={`/${locale}/hackathons/${project.relatedHackathon.slug}`} className="text-chart-2 hover:underline">
