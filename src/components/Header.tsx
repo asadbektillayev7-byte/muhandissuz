@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { ThemeToggle } from './ThemeToggle'
+import { Logo } from './Logo'
 
 const navItems = [
   { key: 'articles', href: '/articles' },
@@ -29,11 +30,7 @@ export function Header() {
     <header className="border-b border-border">
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
         <Link href={`/${locale}`} className="flex items-center gap-2">
-          <img
-            src="/logo/muhandis-logo.svg"
-            alt="Muhandis.uz"
-            className="h-7 w-auto dark:invert"
-          />
+          <Logo />
         </Link>
 
         <nav className="hidden md:flex items-center gap-6">

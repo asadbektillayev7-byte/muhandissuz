@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { Send } from 'lucide-react'
+import { Logo } from './Logo'
 
 const exploreLinks = [
   { key: 'articles', href: '/articles' },
@@ -43,11 +44,7 @@ export function MinimalFooter() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 p-4 pt-8">
           <div className="col-span-2 flex flex-col gap-4">
             <Link href={`/${locale}`} className="w-max">
-              <img
-                src="/logo/muhandis-logo.svg"
-                alt="Muhandis.uz"
-                className="h-7 w-auto dark:invert"
-              />
+              <Logo />
             </Link>
             <p className="text-muted-foreground max-w-sm text-sm text-balance">
               {locale === 'uz'
