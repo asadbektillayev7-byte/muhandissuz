@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, type ReactNode } from "react"
+import Link from "next/link"
 import { motion, AnimatePresence, LayoutGroup, type PanInfo } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Grid3X3, Layers, LayoutList } from "lucide-react"
@@ -13,6 +14,8 @@ export interface CardData {
   description: string
   icon?: ReactNode
   color?: string
+  href?: string
+  ctaLabel?: string
 }
 
 export interface MorphingCardStackProps {
@@ -84,7 +87,7 @@ export function MorphingCardStack({
 
   const containerStyles = {
     stack: "relative h-64 w-64",
-    grid: "grid grid-cols-2 gap-3",
+    grid: "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3",
     list: "flex flex-col gap-3",
   }
 
@@ -146,12 +149,12 @@ export function MorphingCardStack({
                     onCardClick?.(card)
                   }}
                   className={cn(
-                    "cursor-pointer rounded-xl border border-border bg-card p-4",
-                    "hover:border-primary/50 transition-colors",
-                    layout === "stack" && "absolute w-56 h-48",
+                    "cursor-pointer rounded-xl border border-border bg-card transition-colors",
+                    "hover:border-primary/50",
+                    layout === "stack" && "absolute w-56 h-48 p-4",
                     layout === "stack" && isTopCard && "cursor-grab active:cursor-grabbing",
-                    layout === "grid" && "w-full aspect-square",
-                    layout === "list" && "w-full",
+                    layout === "grid" && "w-full p-3",
+                    layout === "list" && "w-full p-4",
                     isExpanded && "ring-2 ring-primary",
                   )}
                   style={{ backgroundColor: card.color || undefined }}
@@ -176,6 +179,18 @@ export function MorphingCardStack({
                       </p>
                     </div>
                   </div>
+
+                  {card.href && (
+                    <div className={cn("mt-2", layout === "stack" && "absolute bottom-2 left-3")}>
+                      <Link
+                        href={card.href}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-xs font-medium text-chart-2 hover:underline"
+                      >
+                        {card.ctaLabel || "Take the Quiz"} &rarr;
+                      </Link>
+                    </div>
+                  )}
 
                   {isTopCard && (
                     <div className="absolute bottom-2 left-0 right-0 text-center">
