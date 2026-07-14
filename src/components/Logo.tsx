@@ -23,17 +23,18 @@ export function Logo({ className }: { className?: string }) {
       <text
         x="56" y="38"
         fontFamily="'Space Grotesk', sans-serif"
-        fontSize="22"
+        fontSize="20"
         fontWeight="700"
         fill="currentColor"
         className="text-foreground"
       >
-        Muhandis
+        Muhandiss
       </text>
       <text
-        x="160" y="38"
-        fontFamily="'Fira Code', monospace"
-        fontSize="14"
+        x="172" y="38"
+        fontFamily="'Space Grotesk', sans-serif"
+        fontSize="20"
+        fontWeight="700"
         fill="currentColor"
         className="text-muted-foreground"
       >

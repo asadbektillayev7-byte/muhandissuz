@@ -10,10 +10,10 @@ export async function generateMetadata({
   const { locale } = await params
 
   const meta = locale === 'uz' ? {
-    title: 'Muhandis.uz - Muhandislik va texnologiyalar haqida',
+    title: 'Muhandiss.uz - Muhandislik va texnologiyalar haqida',
     description: 'Muhandislik maqolalari, hackathonlar va talabalar loyihalari portali',
   } : {
-    title: 'Muhandis.uz - Engineering & Technology',
+    title: 'Muhandiss.uz - Engineering & Technology',
     description: 'Engineering articles, hackathons and student projects portal',
   }
 
@@ -26,7 +26,7 @@ export async function generateMetadata({
       title: meta.title,
       description: meta.description,
       url: baseUrl,
-      siteName: 'Muhandis.uz',
+      siteName: 'Muhandiss.uz',
       locale: locale === 'uz' ? 'uz_UZ' : 'en_US',
       type: 'website',
     },

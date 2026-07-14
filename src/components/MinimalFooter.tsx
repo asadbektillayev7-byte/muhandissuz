@@ -14,7 +14,7 @@ const exploreLinks = [
 
 const companyLinks = [
   { key: 'partners', href: '/partners' },
-  { key: 'about', href: '/about' },
+  { key: 'team', href: '/team' },
   { key: 'contact', href: '/contact' },
 ]
 
@@ -24,7 +24,7 @@ const labels: Record<string, { uz: string; en: string }> = {
   quiz: { uz: 'Quiz', en: 'Quiz' },
   projects: { uz: 'Loyihalar', en: 'Projects' },
   partners: { uz: 'Hamkorlar', en: 'Partners' },
-  about: { uz: 'Biz Haqimizda', en: 'About' },
+  team: { uz: 'Jamoa', en: 'Team' },
   contact: { uz: 'Aloqa', en: 'Contact' },
 }
 
@@ -115,7 +115,7 @@ export function MinimalFooter() {
         <div className="px-4 pb-6 pt-4">
           <div className="bg-border h-px w-full mb-4" />
           <p className="text-muted-foreground text-center text-xs font-mono">
-            &copy; {year} Muhandis.uz
+            &copy; {year} Muhandiss.uz
           </p>
         </div>
       </div>

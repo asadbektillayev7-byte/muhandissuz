@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Muhandis.uz',
+  title: 'Muhandiss.uz',
   description: 'Muhandislik va texnologiyalar haqida maqolalar',
 }
 

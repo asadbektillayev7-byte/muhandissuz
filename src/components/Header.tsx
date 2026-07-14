@@ -11,7 +11,7 @@ const navItems = [
   { key: 'hackathons', href: '/hackathons' },
   { key: 'quiz', href: '/quiz' },
   { key: 'challenges', href: '/projects' },
-  { key: 'about', href: '/about' },
+  { key: 'team', href: '/team' },
 ]
 
 const labels: Record<string, { uz: string; en: string }> = {
@@ -19,7 +19,7 @@ const labels: Record<string, { uz: string; en: string }> = {
   hackathons: { uz: 'Hackathonlar', en: 'Hackathons' },
   quiz: { uz: 'Quiz', en: 'Quiz' },
   challenges: { uz: 'Loyihalar', en: 'Projects' },
-  about: { uz: 'Biz Haqimizda', en: 'About' },
+  team: { uz: 'Jamoa', en: 'Team' },
 }
 
 export function Header() {

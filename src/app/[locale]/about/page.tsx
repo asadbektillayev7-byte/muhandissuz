@@ -42,7 +42,7 @@ export default async function AboutPage({
     articlesLabel: 'Maqolalar',
     hackathonsLabel: 'Hackathonlar',
     projectsLabel: 'Loyihalar',
-    aboutText: 'Muhandis.uz — bu muhandislik va texnologiyalar sohasida bilimlarni targ\'ib qiluvchi platforma. Biz maqolalar, hackathonlar va talabalar loyihalari orqali yosh muhandislarni qo\'llab-quvvatlaymiz.',
+    aboutText: 'Muhandiss.uz — bu muhandislik va texnologiyalar sohasida bilimlarni targ\'ib qiluvchi platforma. Biz maqolalar, hackathonlar va talabalar loyihalari orqali yosh muhandislarni qo\'llab-quvvatlaymiz.',
   } : {
     title: 'About Us',
     mission: 'Our Mission',
@@ -50,7 +50,7 @@ export default async function AboutPage({
     articlesLabel: 'Articles',
     hackathonsLabel: 'Hackathons',
     projectsLabel: 'Projects',
-    aboutText: 'Muhandis.uz is a platform that promotes knowledge in engineering and technology. We support young engineers through articles, hackathons, and student projects.',
+    aboutText: 'Muhandiss.uz is a platform that promotes knowledge in engineering and technology. We support young engineers through articles, hackathons, and student projects.',
   }
 
   return (

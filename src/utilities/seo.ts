@@ -21,7 +21,7 @@ export function generateMetadata({ title, description, locale, path, image }: SE
       url,
       images: image ? [{ url: image }] : undefined,
       locale: locale === 'uz' ? 'uz_UZ' : 'en_US',
-      siteName: 'Muhandis.uz',
+      siteName: 'Muhandiss.uz',
     },
     alternates: {
       canonical: url,
