@@ -2,6 +2,7 @@
 
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import { Send } from 'lucide-react'
 
 const exploreLinks = [
   { key: 'articles', href: '/articles' },
@@ -53,6 +54,30 @@ export function MinimalFooter() {
                 ? 'Muhandislik maqolalari, hackathonlar va talabalar loyihalari portali'
                 : 'Engineering articles, hackathons and student projects portal'}
             </p>
+            <div className="flex gap-2">
+              <a
+                href="https://t.me/Muhandis_e"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-md border p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                aria-label="Telegram"
+              >
+                <Send className="h-4 w-4" />
+              </a>
+              <a
+                href="https://www.linkedin.com/company/106188701"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-md border p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                aria-label="LinkedIn"
+              >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                  <rect width="4" height="12" x="2" y="9" />
+                  <circle cx="4" cy="4" r="2" />
+                </svg>
+              </a>
+            </div>
           </div>
 
           <div>
