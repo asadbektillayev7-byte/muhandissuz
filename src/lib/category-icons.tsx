@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Settings, Bot, Building2, Zap, FlaskConical, Rocket, Car, Battery, Wrench, Heart } from 'lucide-react'
+import { Cog, Zap, FlaskConical, Gauge, Building2, Leaf, Cpu } from 'lucide-react'
 
 export interface CategoryMeta {
   icon: ReactNode
@@ -8,73 +8,52 @@ export interface CategoryMeta {
 
 export const categoryMetaMap: Record<string, CategoryMeta> = {
   'mechanical-engineering': {
-    icon: <Settings className="h-5 w-5" />,
+    icon: <Cog className="h-5 w-5" />,
     description: {
-      uz: 'Mashinasozlik bo\'yicha bilimingizni sinab ko\'ring',
+      uz: 'Mexanika bo\'yicha bilimingizni sinab ko\'ring',
       en: 'Test your knowledge of Mechanical Engineering',
     },
   },
-  'robotics-mechatronics': {
-    icon: <Bot className="h-5 w-5" />,
-    description: {
-      uz: 'Robototexnika va mexatronika bo\'yicha test',
-      en: 'Test your knowledge of Robotics & Mechatronics',
-    },
-  },
-  'civil-structural': {
-    icon: <Building2 className="h-5 w-5" />,
-    description: {
-      uz: 'Qurilish va konstruksiya bo\'yicha test',
-      en: 'Test your knowledge of Civil & Structural Engineering',
-    },
-  },
-  'electrical-electronics': {
+  'electrical-engineering': {
     icon: <Zap className="h-5 w-5" />,
     description: {
-      uz: 'Elektr va elektronika bo\'yicha test',
-      en: 'Test your knowledge of Electrical & Electronics',
+      uz: 'Elektr muhandisligi bo\'yicha test',
+      en: 'Test your knowledge of Electrical Engineering',
     },
   },
-  'materials-science': {
+  'chemical-engineering': {
     icon: <FlaskConical className="h-5 w-5" />,
     description: {
-      uz: 'Materialshunoslik bo\'yicha test',
-      en: 'Test your knowledge of Materials Science',
+      uz: 'Kimyo muhandisligi bo\'yicha test',
+      en: 'Test your knowledge of Chemical Engineering',
     },
   },
-  'aerospace-engineering': {
-    icon: <Rocket className="h-5 w-5" />,
+  'motorsports-engineering': {
+    icon: <Gauge className="h-5 w-5" />,
     description: {
-      uz: 'Aerokosmik muhandislik bo\'yicha test',
-      en: 'Test your knowledge of Aerospace Engineering',
+      uz: 'Motosport muhandisligi bo\'yicha test',
+      en: 'Test your knowledge of Motorsports Engineering',
     },
   },
-  'automotive-engineering': {
-    icon: <Car className="h-5 w-5" />,
+  'civil-engineering': {
+    icon: <Building2 className="h-5 w-5" />,
     description: {
-      uz: 'Avtomobilsozlik bo\'yicha test',
-      en: 'Test your knowledge of Automotive Engineering',
+      uz: 'Fuqarolik muhandisligi bo\'yicha test',
+      en: 'Test your knowledge of Civil Engineering',
     },
   },
-  'energy-systems': {
-    icon: <Battery className="h-5 w-5" />,
+  'environmental-engineering': {
+    icon: <Leaf className="h-5 w-5" />,
     description: {
-      uz: 'Energiya tizimlari bo\'yicha test',
-      en: 'Test your knowledge of Energy Systems',
+      uz: 'Atrof-muhit muhandisligi bo\'yicha test',
+      en: 'Test your knowledge of Environmental Engineering',
     },
   },
-  'manufacturing-cadcam': {
-    icon: <Wrench className="h-5 w-5" />,
+  'ai': {
+    icon: <Cpu className="h-5 w-5" />,
     description: {
-      uz: 'Ishlab chiqarish va CAD/CAM bo\'yicha test',
-      en: 'Test your knowledge of Manufacturing & CAD/CAM',
-    },
-  },
-  'biomedical-engineering': {
-    icon: <Heart className="h-5 w-5" />,
-    description: {
-      uz: 'Biomedikal muhandislik bo\'yicha test',
-      en: 'Test your knowledge of Biomedical Engineering',
+      uz: 'Sun\'iy intellekt bo\'yicha test',
+      en: 'Test your knowledge of AI',
     },
   },
 }

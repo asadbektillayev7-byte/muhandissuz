@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getPayloadClient } from '@/utilities/getPayload'
+import { resolveLocalizedField } from '@/lib/locale'
 
 export async function DisciplineIndex({ locale }: { locale: string }) {
   const payload = await getPayloadClient()
@@ -28,7 +29,7 @@ export async function DisciplineIndex({ locale }: { locale: string }) {
               `}
               style={{ borderRadius: 'var(--radius)' }}
             >
-              {cat.name}
+              {resolveLocalizedField(cat.name, locale)}
             </Link>
           )
         })}

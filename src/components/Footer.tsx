@@ -16,7 +16,7 @@ const links = [
 const labels: Record<string, { uz: string; en: string }> = {
   articles: { uz: 'Maqolalar', en: 'Articles' },
   hackathons: { uz: 'Hackathonlar', en: 'Hackathons' },
-  quiz: { uz: 'Test', en: 'Quiz' },
+  quiz: { uz: 'Quiz', en: 'Quiz' },
   projects: { uz: 'Loyihalar', en: 'Projects' },
   partners: { uz: 'Hamkorlar', en: 'Partners' },
   about: { uz: 'Biz Haqimizda', en: 'About' },

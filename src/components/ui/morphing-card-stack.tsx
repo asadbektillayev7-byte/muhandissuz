@@ -153,13 +153,13 @@ export function MorphingCardStack({
                     "hover:border-primary/50",
                     layout === "stack" && "absolute w-56 h-48 p-4",
                     layout === "stack" && isTopCard && "cursor-grab active:cursor-grabbing",
-                    layout === "grid" && "w-full p-3",
-                    layout === "list" && "w-full p-4",
+                    layout === "grid" && "w-full p-3 flex flex-col",
+                    layout === "list" && "w-full p-4 flex flex-col",
                     isExpanded && "ring-2 ring-primary",
                   )}
                   style={{ backgroundColor: card.color || undefined }}
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-3 min-h-0">
                     {card.icon && (
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-foreground">
                         {card.icon}
@@ -181,7 +181,11 @@ export function MorphingCardStack({
                   </div>
 
                   {card.href && (
-                    <div className={cn("mt-2", layout === "stack" && "absolute bottom-2 left-3")}>
+                    <div className={cn(
+                      layout === "grid" && "mt-auto pt-2",
+                      layout === "list" && "mt-auto pt-2",
+                      layout === "stack" && "absolute bottom-2 left-3",
+                    )}>
                       <Link
                         href={card.href}
                         onClick={(e) => e.stopPropagation()}

@@ -16,7 +16,7 @@ export default async function QuizPage({
   })
 
   const label = locale === 'uz'
-    ? { title: 'Test', subtitle: 'O\'z bilimingizni sinab ko\'ring' }
+    ? { title: 'Quiz', subtitle: 'O\'z bilimingizni sinab ko\'ring' }
     : { title: 'Quiz', subtitle: 'Test your engineering knowledge' }
 
   return (

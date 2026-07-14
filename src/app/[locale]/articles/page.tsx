@@ -1,4 +1,5 @@
 import { getPayloadClient } from '@/utilities/getPayload'
+import { resolveLocalizedField } from '@/lib/locale'
 import Link from 'next/link'
 
 export default async function ArticlesPage({
@@ -62,7 +63,7 @@ export default async function ArticlesPage({
                 category === cat.slug ? 'border-chart-2 text-chart-2 bg-muted' : 'bg-muted hover:bg-muted'
               }`}
             >
-              {cat.name}
+              {resolveLocalizedField(cat.name, locale)}
             </Link>
           ))}
         </div>
