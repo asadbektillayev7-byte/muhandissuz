@@ -1,5 +1,5 @@
 import { Header } from '@/components/Header'
-import { Footer } from '@/components/Footer'
+import { MinimalFooter } from '@/components/MinimalFooter'
 import type { Metadata } from 'next'
 
 export async function generateMetadata({
@@ -58,7 +58,7 @@ export default async function LocaleLayout({
       <body className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <MinimalFooter />
       </body>
     </html>
   )
