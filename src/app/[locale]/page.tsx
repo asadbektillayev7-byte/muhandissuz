@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { HeroDiagram } from '@/components/HeroDiagram'
 import { StatsStrip } from '@/components/StatsStrip'
 import { DisciplineIndex } from '@/components/DisciplineIndex'
+import { PartnerMarquee } from '@/components/PartnerMarquee'
 
 export default async function HomePage({
   params,
@@ -71,6 +72,14 @@ export default async function HomePage({
 
       {/* Stats */}
       <StatsStrip locale={locale} />
+
+      {/* Partners */}
+      <section className="max-w-6xl mx-auto px-4 py-12">
+        <h2 className="text-2xl font-semibold mb-6">
+          {locale === 'uz' ? 'Hamkorlarimiz' : 'Our Partners'}
+        </h2>
+        <PartnerMarquee />
+      </section>
 
       {/* Disciplines */}
       <DisciplineIndex locale={locale} />

@@ -23,39 +23,46 @@ export function Marquee({
 }: MarqueeProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = React.useState(false);
+  const id = React.useId();
 
   const items = React.Children.toArray(children);
   const isVertical = direction === "up" || direction === "down";
+  const scrollerClass = `marquee-scroller-${id}`;
+
+  const scrollName = `scroll-${id}`;
+  const scrollReverseName = `scroll-reverse-${id}`;
+  const scrollYName = `scroll-y-${id}`;
+  const scrollYReverseName = `scroll-y-reverse-${id}`;
 
   return (
     <>
       <style>
         {`
-        @keyframes scroll {
+        @keyframes ${scrollName} {
           from { transform: translateX(0); }
           to { transform: translateX(-50%); }
         }
-        @keyframes scroll-reverse {
+        @keyframes ${scrollReverseName} {
           from { transform: translateX(-50%); }
           to { transform: translateX(0); }
         }
-        @keyframes scroll-y {
+        @keyframes ${scrollYName} {
           from { transform: translateY(0); }
           to { transform: translateY(-50%); }
         }
-        @keyframes scroll-y-reverse {
+        @keyframes ${scrollYReverseName} {
           from { transform: translateY(-50%); }
           to { transform: translateY(0); }
         }
-        .marquee-scroller {
+        .${scrollerClass} {
           display: flex;
           animation: ${
           isVertical
-            ? (direction === "up" ? "scroll-y" : "scroll-y-reverse")
-            : (direction === "left" ? "scroll" : "scroll-reverse")
+            ? (direction === "up" ? scrollYName : scrollYReverseName)
+            : (direction === "left" ? scrollName : scrollReverseName)
         } ${duration}s linear infinite;
         }
-        .marquee-scroller.paused {
+        .${scrollerClass}.paused {
           animation-play-state: paused;
         }
       `}
@@ -77,7 +84,7 @@ export function Marquee({
         onMouseLeave={() => pauseOnHover && setIsPaused(false)}
         {...props}
       >
-        <div className={cn("marquee-scroller flex shrink-0", isVertical && "flex-col", isPaused && "paused")}>
+        <div className={cn(`${scrollerClass} flex shrink-0`, isVertical && "flex-col", isPaused && "paused")}>
           {items.map((item, index) => (
             <div key={`first-${index}`} className={cn("flex shrink-0", isVertical && "w-full")}>
               {item}

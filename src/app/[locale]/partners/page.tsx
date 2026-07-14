@@ -20,13 +20,11 @@ export default async function PartnersPage({
         title: 'Hamkorlar',
         subtitle: 'Biz bilan hamkorlik qilayotgan tashkilotlar',
         sectionTitle: 'Hamkorlarimiz',
-        empty: 'Hozircha hamkorlar yo\'q',
       }
     : {
         title: 'Partners',
         subtitle: 'Organizations we work with',
         sectionTitle: 'Our Partners',
-        empty: 'No partners yet',
       }
 
   return (
@@ -38,8 +36,6 @@ export default async function PartnersPage({
         <h2 className="text-2xl font-semibold mb-6">{label.sectionTitle}</h2>
         <PartnerMarquee />
       </section>
-
-      {partners.length === 0 && <p className="text-muted-foreground">{label.empty}</p>}
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {partners.map((partner) => (
