@@ -1,4 +1,5 @@
 import { getPayloadClient } from '@/utilities/getPayload'
+import { PartnerMarquee } from '@/components/PartnerMarquee'
 
 export default async function PartnersPage({
   params,
@@ -15,13 +16,28 @@ export default async function PartnersPage({
   })
 
   const label = locale === 'uz'
-    ? { title: 'Hamkorlar', subtitle: 'Biz bilan hamkorlik qilayotgan tashkilotlar', empty: 'Hozircha hamkorlar yo\'q' }
-    : { title: 'Partners', subtitle: 'Organizations we work with', empty: 'No partners yet' }
+    ? {
+        title: 'Hamkorlar',
+        subtitle: 'Biz bilan hamkorlik qilayotgan tashkilotlar',
+        sectionTitle: 'Hamkorlarimiz',
+        empty: 'Hozircha hamkorlar yo\'q',
+      }
+    : {
+        title: 'Partners',
+        subtitle: 'Organizations we work with',
+        sectionTitle: 'Our Partners',
+        empty: 'No partners yet',
+      }
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
       <h1 className="text-4xl font-bold mb-2">{label.title}</h1>
       <p className="text-muted-foreground mb-8">{label.subtitle}</p>
+
+      <section className="mb-16">
+        <h2 className="text-2xl font-semibold mb-6">{label.sectionTitle}</h2>
+        <PartnerMarquee />
+      </section>
 
       {partners.length === 0 && <p className="text-muted-foreground">{label.empty}</p>}
 
