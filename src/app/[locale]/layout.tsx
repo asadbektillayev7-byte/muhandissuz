@@ -56,7 +56,7 @@ export default async function LocaleLayout({
   const { locale } = await params
   return (
     <html lang={locale}>
-      <body className="min-h-screen flex flex-col pb-14">
+      <body className="min-h-screen flex flex-col pb-20">
         <Header />
         <main className="flex-1">{children}</main>
         <MinimalFooter />
