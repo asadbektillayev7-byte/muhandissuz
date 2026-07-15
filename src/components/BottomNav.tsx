@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
-import { Logo } from './Logo'
 
 const navItems = [
   { key: 'articles', href: '/articles' },
@@ -18,6 +17,25 @@ const labels: Record<string, { uz: string; en: string }> = {
   quiz: { uz: 'Quiz', en: 'Quiz' },
   projects: { uz: 'Loyihalar', en: 'Projects' },
   team: { uz: 'Jamoa', en: 'Team' },
+}
+
+function LogoMark() {
+  return (
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 shrink-0">
+      <g stroke="currentColor" className="text-muted-foreground">
+        <circle cx="30" cy="30" r="18" strokeWidth="2.5" />
+        <circle cx="30" cy="30" r="8" strokeWidth="2" />
+        <line x1="30" y1="8" x2="30" y2="16" strokeWidth="2.5" />
+        <line x1="30" y1="44" x2="30" y2="52" strokeWidth="2.5" />
+        <line x1="8" y1="30" x2="16" y2="30" strokeWidth="2.5" />
+        <line x1="44" y1="30" x2="52" y2="30" strokeWidth="2.5" />
+        <line x1="14.5" y1="14.5" x2="20" y2="20" strokeWidth="2" />
+        <line x1="40" y1="40" x2="45.5" y2="45.5" strokeWidth="2" />
+        <line x1="45.5" y1="14.5" x2="40" y2="20" strokeWidth="2" />
+        <line x1="20" y1="40" x2="14.5" y2="45.5" strokeWidth="2" />
+      </g>
+    </svg>
+  )
 }
 
 export function BottomNav() {
@@ -40,8 +58,8 @@ export function BottomNav() {
       }}
     >
       <div className="flex items-center gap-3 md:gap-4 px-3 md:px-4 h-12 min-w-max">
-        <Link href={`/${locale}`} className="shrink-0">
-          <Logo className="h-5" />
+        <Link href={`/${locale}`} className="shrink-0 flex items-center">
+          <LogoMark />
         </Link>
 
         <div className="w-px h-5 shrink-0" style={{ backgroundColor: 'var(--border)' }} />
@@ -54,7 +72,7 @@ export function BottomNav() {
             <Link
               key={item.key}
               href={href}
-              className="relative text-sm font-medium transition-colors shrink-0 pb-0.5"
+              className="relative text-sm font-medium transition-colors shrink-0 pb-0.5 hover:text-foreground"
               style={{
                 color: isActive ? 'var(--chart-2)' : 'var(--muted-foreground)',
               }}

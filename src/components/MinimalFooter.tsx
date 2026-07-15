@@ -28,11 +28,6 @@ const labels: Record<string, { uz: string; en: string }> = {
   contact: { uz: 'Aloqa', en: 'Contact' },
 }
 
-const columnHeaders: Record<string, { uz: string; en: string }> = {
-  explore: { uz: 'Bo\'limlar', en: 'Explore' },
-  company: { uz: 'Tashkilot', en: 'Company' },
-}
-
 export function MinimalFooter() {
   const params = useParams()
   const locale = (params.locale as string) || 'uz'
@@ -78,9 +73,6 @@ export function MinimalFooter() {
           </div>
 
           <div>
-            <span className="text-muted-foreground text-xs font-mono uppercase tracking-wider">
-              {columnHeaders.explore[locale as 'uz' | 'en']}
-            </span>
             <div className="flex flex-col gap-1 mt-2">
               {exploreLinks.map((link) => (
                 <Link
@@ -95,9 +87,6 @@ export function MinimalFooter() {
           </div>
 
           <div>
-            <span className="text-muted-foreground text-xs font-mono uppercase tracking-wider">
-              {columnHeaders.company[locale as 'uz' | 'en']}
-            </span>
             <div className="flex flex-col gap-1 mt-2">
               {companyLinks.map((link) => (
                 <Link
