@@ -57,12 +57,12 @@ export function BottomNav() {
         maxWidth: 'calc(100vw - 40px)',
       }}
     >
-      <div className="flex items-center gap-3 md:gap-4 px-3 md:px-4 h-12 min-w-max">
+      <div className="flex items-center gap-3 md:gap-4 px-4 md:px-5 h-14 min-w-max">
         <Link href={`/${locale}`} className="shrink-0 flex items-center">
           <LogoMark />
         </Link>
 
-        <div className="w-px h-5 shrink-0" style={{ backgroundColor: 'var(--border)' }} />
+        <div className="w-px h-6 shrink-0" style={{ backgroundColor: 'var(--border)' }} />
 
         {navItems.map((item) => {
           const href = `/${locale}${item.href}`
@@ -72,15 +72,17 @@ export function BottomNav() {
             <Link
               key={item.key}
               href={href}
-              className="relative text-sm font-medium transition-colors shrink-0 pb-0.5 hover:text-foreground"
+              className="relative text-base font-medium transition-colors duration-200 shrink-0"
               style={{
                 color: isActive ? 'var(--chart-2)' : 'var(--muted-foreground)',
               }}
             >
-              {labels[item.key][locale as 'uz' | 'en']}
+              <span className="hover:text-chart-2 transition-colors duration-200">
+                {labels[item.key][locale as 'uz' | 'en']}
+              </span>
               {isActive && (
                 <span
-                  className="absolute -bottom-0.5 left-0 right-0 h-0.5"
+                  className="absolute -bottom-1 left-0 right-0 h-0.5"
                   style={{ backgroundColor: 'var(--chart-2)', borderRadius: '1px' }}
                 />
               )}
