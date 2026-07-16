@@ -3,6 +3,7 @@ import { HeroDiagram } from '@/components/HeroDiagram'
 import { StatsStrip } from '@/components/StatsStrip'
 import { DisciplineIndex } from '@/components/DisciplineIndex'
 import { PartnerMarquee } from '@/components/PartnerMarquee'
+import { EngineeringGridBackground } from '@/components/ui/engineering-grid-background'
 
 export default async function HomePage({
   params,
@@ -32,8 +33,9 @@ export default async function HomePage({
   return (
     <>
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-4 py-16 md:py-24">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+      <section className="relative max-w-6xl mx-auto px-4 py-16 md:py-24">
+        <EngineeringGridBackground />
+        <div className="grid md:grid-cols-2 gap-12 items-center relative">
           <div>
             <p className="font-mono text-xs tracking-[0.2em] text-chart-2 mb-4 uppercase">
               {content.eyebrow}
