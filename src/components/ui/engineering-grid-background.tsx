@@ -13,10 +13,6 @@ function getCSSVar(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
 }
 
-function alpha(color: string, opacity: number): string {
-  return color.replace(')', ` / ${opacity})`)
-}
-
 export function EngineeringGridBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -57,24 +53,23 @@ export function EngineeringGridBackground() {
     }
 
     function draw() {
-      const borderColor = alpha(getCSSVar('--border') || 'rgb(128,128,128)', 0.06)
-      const lineColor = alpha(getCSSVar('--muted-foreground') || 'rgb(128,128,128)', 0.1)
-      const accentColor = alpha(getCSSVar('--chart-2') || 'rgb(0,200,150)', 0.15)
-      const dotColor = alpha(getCSSVar('--muted-foreground') || 'rgb(128,128,128)', 0.12)
+      const borderColor = getCSSVar('--border') || '#d0d0d0'
+      const lineColor = getCSSVar('--muted-foreground') || '#808080'
+      const accentColor = getCSSVar('--chart-2') || '#476666'
+      const dotColor = getCSSVar('--muted-foreground') || '#808080'
 
       ctx.clearRect(0, 0, canvasEl.width, canvasEl.height)
 
+      ctx.globalAlpha = 0.06
+      ctx.strokeStyle = borderColor
+      ctx.lineWidth = 0.5
       for (let x = GRID_SPACING; x < canvasEl.width; x += GRID_SPACING) {
-        ctx.strokeStyle = borderColor
-        ctx.lineWidth = 0.5
         ctx.beginPath()
         ctx.moveTo(x, 0)
         ctx.lineTo(x, canvasEl.height)
         ctx.stroke()
       }
       for (let y = GRID_SPACING; y < canvasEl.height; y += GRID_SPACING) {
-        ctx.strokeStyle = borderColor
-        ctx.lineWidth = 0.5
         ctx.beginPath()
         ctx.moveTo(0, y)
         ctx.lineTo(canvasEl.width, y)
@@ -92,16 +87,16 @@ export function EngineeringGridBackground() {
           }
         }
 
+        ctx.globalAlpha = 0.1
+        ctx.strokeStyle = lineColor
+        ctx.lineWidth = 0.5
         for (let i = 0; i < nodes.length; i++) {
           for (let j = i + 1; j < nodes.length; j++) {
             const dx = nodes[j].x - nodes[i].x
             const dy = nodes[j].y - nodes[i].y
             const dist = Math.sqrt(dx * dx + dy * dy)
             if (dist < CONNECTION_DISTANCE) {
-              const a = 1 - dist / CONNECTION_DISTANCE
-              ctx.strokeStyle = lineColor
-              ctx.globalAlpha = a
-              ctx.lineWidth = 0.5
+              ctx.globalAlpha = (1 - dist / CONNECTION_DISTANCE) * 0.1
               ctx.beginPath()
               ctx.moveTo(nodes[i].x, nodes[i].y)
               ctx.lineTo(nodes[j].x, nodes[j].y)
@@ -109,7 +104,6 @@ export function EngineeringGridBackground() {
             }
           }
         }
-        ctx.globalAlpha = 1
 
         let nearestDist = Infinity
         let nearestPair: [number, number] = [0, 1]
@@ -125,6 +119,7 @@ export function EngineeringGridBackground() {
           }
         }
         const [ni, nj] = nearestPair
+        ctx.globalAlpha = 0.15
         ctx.strokeStyle = accentColor
         ctx.lineWidth = 1
         ctx.beginPath()
@@ -133,12 +128,14 @@ export function EngineeringGridBackground() {
         ctx.stroke()
       }
 
+      ctx.globalAlpha = 0.12
       ctx.fillStyle = dotColor
       for (const node of nodes) {
         ctx.beginPath()
         ctx.arc(node.x, node.y, 1.5, 0, Math.PI * 2)
         ctx.fill()
       }
+      ctx.globalAlpha = 1
     }
 
     function loop() {
