@@ -3,7 +3,7 @@ import { HeroDiagram } from '@/components/HeroDiagram'
 import { StatsStrip } from '@/components/StatsStrip'
 import { DisciplineIndex } from '@/components/DisciplineIndex'
 import { PartnerMarquee } from '@/components/PartnerMarquee'
-import { EngineeringGridBackground } from '@/components/ui/engineering-grid-background'
+import { EngineeringGearsBackground } from '@/components/ui/engineering-gears-background'
 
 export default async function HomePage({
   params,
@@ -34,7 +34,7 @@ export default async function HomePage({
     <>
       {/* Hero */}
       <section className="relative overflow-hidden max-w-6xl mx-auto px-4 py-16 md:py-24">
-        <EngineeringGridBackground />
+        <EngineeringGearsBackground />
         <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
           <div>
             <p className="font-mono text-xs tracking-[0.2em] text-chart-2 mb-4 uppercase">
