@@ -1,4 +1,5 @@
 import { getPayloadClient } from '@/utilities/getPayload'
+import { AnimatedStatValue } from './AnimatedStatValue'
 
 export async function StatsStrip({ locale }: { locale: string }) {
   const payload = await getPayloadClient()
@@ -28,14 +29,7 @@ export async function StatsStrip({ locale }: { locale: string }) {
     <div className="border-y border-border py-6">
       <div className="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6">
         {labels.map((stat) => (
-          <div key={stat.label} className="text-center">
-            <div className="text-2xl font-semibold font-sans" style={{ fontWeight: 600 }}>
-              {stat.value}
-            </div>
-            <div className="text-xs font-mono text-muted-foreground mt-0.5 tracking-wider uppercase">
-              {stat.label}
-            </div>
-          </div>
+          <AnimatedStatValue key={stat.label} value={stat.value} label={stat.label} />
         ))}
       </div>
     </div>
