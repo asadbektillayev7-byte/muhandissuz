@@ -33,9 +33,9 @@ export default async function HomePage({
   return (
     <>
       {/* Hero */}
-      <section className="relative max-w-6xl mx-auto px-4 py-16 md:py-24">
+      <section className="relative overflow-hidden max-w-6xl mx-auto px-4 py-16 md:py-24">
         <EngineeringGridBackground />
-        <div className="grid md:grid-cols-2 gap-12 items-center relative">
+        <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
           <div>
             <p className="font-mono text-xs tracking-[0.2em] text-chart-2 mb-4 uppercase">
               {content.eyebrow}
