@@ -72,12 +72,15 @@ export function BottomNav() {
             <Link
               key={item.key}
               href={href}
-              className="relative text-base font-medium transition-colors duration-200 shrink-0"
+              className="relative text-base font-medium transition-all duration-200 shrink-0 px-3.5 py-[7px] border hover:border-chart-2 hover:text-chart-2"
               style={{
                 color: isActive ? 'var(--chart-2)' : 'var(--muted-foreground)',
+                borderColor: isActive ? 'var(--chart-2)' : 'var(--border)',
+                borderRadius: 'var(--radius)',
+                backgroundColor: 'var(--secondary)',
               }}
             >
-              <span className="hover:text-chart-2 transition-colors duration-200">
+              <span className="transition-colors duration-200">
                 {labels[item.key][locale as 'uz' | 'en']}
               </span>
               {isActive && (
