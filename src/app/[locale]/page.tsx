@@ -1,10 +1,8 @@
 import Link from 'next/link'
-import { HeroDiagram } from '@/components/HeroDiagram'
+import { HeroAnimation } from '@/components/HeroAnimation'
 import { StatsStrip } from '@/components/StatsStrip'
 import { DisciplineIndex } from '@/components/DisciplineIndex'
 import { PartnerMarquee } from '@/components/PartnerMarquee'
-import { EngineeringGearsBackground } from '@/components/ui/engineering-gears-background'
-import { F1BlueprintAnimation } from '@/components/ui/f1-blueprint-animation'
 
 export default async function HomePage({
   params,
@@ -33,7 +31,6 @@ export default async function HomePage({
     <>
       {/* Hero */}
       <section className="relative overflow-hidden max-w-6xl mx-auto px-4 py-16 md:py-24">
-        <F1BlueprintAnimation className="absolute inset-0 h-full w-full" />
         <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
           <div>
             <h1
@@ -63,7 +60,7 @@ export default async function HomePage({
             </div>
           </div>
           <div>
-            <HeroDiagram />
+            <HeroAnimation className="w-full" />
           </div>
         </div>
       </section>
