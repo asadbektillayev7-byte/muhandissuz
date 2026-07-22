@@ -3,18 +3,21 @@
 import { Marquee } from '@/components/ui/marquee'
 import { placeholderPartners } from '@/lib/partners-data'
 
-const bottomRowOrder = [3, 7, 1, 5, 9, 2, 6, 0, 4, 8]
-
-function PartnerBadge({ name, icon }: { name: string; icon: React.ReactNode }) {
+function PartnerBadge({ name, url }: { name: string; url: string }) {
   return (
-    <div className="flex items-center gap-3 mx-3 px-4 py-3 rounded-lg border border-border bg-card">
-      <div className="h-10 w-10 shrink-0 rounded-md bg-secondary flex items-center justify-center text-muted-foreground">
-        {icon}
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-3 mx-3 px-4 py-3 rounded-lg border border-border bg-card hover:border-chart-2 transition-colors"
+    >
+      <div className="h-10 w-10 shrink-0 rounded-md bg-secondary flex items-center justify-center text-muted-foreground text-xs font-mono">
+        {name.charAt(0)}
       </div>
       <span className="text-sm font-semibold tracking-wide uppercase text-foreground/80 whitespace-nowrap">
         {name}
       </span>
-    </div>
+    </a>
   )
 }
 
@@ -23,13 +26,13 @@ export function PartnerMarquee() {
     <div className="space-y-6">
       <Marquee direction="right" duration={40} pauseOnHover>
         {placeholderPartners.map((partner, i) => (
-          <PartnerBadge key={`top-${i}`} name={partner.name} icon={partner.icon} />
+          <PartnerBadge key={`top-${i}`} name={partner.name} url={partner.url} />
         ))}
       </Marquee>
 
       <Marquee direction="left" duration={45} pauseOnHover>
-        {bottomRowOrder.map((idx, i) => (
-          <PartnerBadge key={`bottom-${i}`} name={placeholderPartners[idx].name} icon={placeholderPartners[idx].icon} />
+        {[...placeholderPartners].reverse().map((partner, i) => (
+          <PartnerBadge key={`bottom-${i}`} name={partner.name} url={partner.url} />
         ))}
       </Marquee>
     </div>
