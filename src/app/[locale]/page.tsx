@@ -13,15 +13,13 @@ export default async function HomePage({
   const { locale } = await params
 
   const content = locale === 'uz' ? {
-    eyebrow: 'MUHANDISLIK · O\'ZBEKISTON',
     headline: 'Muhandislik \nkelajakni \nquradi',
-    support: 'Biz muhandislik maqolalari, hackathonlar va talabalar loyihalari orqali yosh muhandislarni qo\'llab-quvvatlaymiz.',
+    support: 'Biz muhandislik maqolalari, hakatonlar va talabalar loyihalari orqali yosh muhandislarni qo\'llab-quvvatlaymiz.',
     ctaPrimary: 'Maqolalar',
     ctaPrimaryHref: `/${locale}/articles`,
-    ctaSecondary: 'Hackathonlar',
+    ctaSecondary: 'Hakatonlar',
     ctaSecondaryHref: `/${locale}/hackathons`,
   } : {
-    eyebrow: 'ENGINEERING · UZBEKISTAN',
     headline: 'Engineering \nbuilds the \nfuture',
     support: 'We promote engineering knowledge through articles, hackathons, and student projects for young engineers.',
     ctaPrimary: 'Articles',
@@ -37,9 +35,6 @@ export default async function HomePage({
         <EngineeringGearsBackground />
         <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
           <div>
-            <p className="font-mono text-xs tracking-[0.2em] text-chart-2 mb-4 uppercase">
-              {content.eyebrow}
-            </p>
             <h1
               className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 whitespace-pre-line"
               style={{ fontFamily: 'var(--font-display)' }}

@@ -40,9 +40,9 @@ export default async function AboutPage({
     mission: 'Missiya',
     stats: 'Statistika',
     articlesLabel: 'Maqolalar',
-    hackathonsLabel: 'Hackathonlar',
+    hackathonsLabel: 'Hakatonlar',
     projectsLabel: 'Loyihalar',
-    aboutText: 'Muhandiss.uz — bu muhandislik va texnologiyalar sohasida bilimlarni targ\'ib qiluvchi platforma. Biz maqolalar, hackathonlar va talabalar loyihalari orqali yosh muhandislarni qo\'llab-quvvatlaymiz.',
+    aboutText: 'Muhandiss.uz — bu muhandislik va texnologiyalar sohasida bilimlarni targ\'ib qiluvchi platforma. Biz maqolalar, hakatonlar va talabalar loyihalari orqali yosh muhandislarni qo\'llab-quvvatlaymiz.',
   } : {
     title: 'About Us',
     mission: 'Our Mission',

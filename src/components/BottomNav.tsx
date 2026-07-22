@@ -13,7 +13,7 @@ const navItems = [
 
 const labels: Record<string, { uz: string; en: string }> = {
   articles: { uz: 'Maqolalar', en: 'Articles' },
-  hackathons: { uz: 'Hackathonlar', en: 'Hackathons' },
+  hackathons: { uz: 'Hakatonlar', en: 'Hackathons' },
   quiz: { uz: 'Quiz', en: 'Quiz' },
   projects: { uz: 'Loyihalar', en: 'Projects' },
   team: { uz: 'Jamoa', en: 'Team' },

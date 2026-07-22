@@ -17,7 +17,7 @@ export default async function HackathonsPage({
   })
 
   const label = locale === 'uz'
-    ? { title: 'Hackathonlar', subtitle: 'Yosh muhandislar uchun dasturlar', upcoming: 'Kutilayotgan', ongoing: 'Davom etmoqda', past: "O'tgan", view: "Ko'rish" }
+    ? { title: 'Hakatonlar', subtitle: 'Yosh muhandislar uchun dasturlar', upcoming: 'Kutilayotgan', ongoing: 'Davom etmoqda', past: "O'tgan", view: "Ko'rish" }
     : { title: 'Hackathons', subtitle: 'Programs for young engineers', upcoming: 'Upcoming', ongoing: 'Ongoing', past: 'Past', view: 'View' }
 
   return (

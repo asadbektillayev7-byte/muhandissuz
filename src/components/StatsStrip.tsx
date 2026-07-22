@@ -14,7 +14,7 @@ export async function StatsStrip({ locale }: { locale: string }) {
   const labels = locale === 'uz'
     ? [
         { label: 'Maqolalar', value: articles.totalDocs },
-        { label: 'Hackathonlar', value: hackathons.totalDocs },
+        { label: 'Hakatonlar', value: hackathons.totalDocs },
         { label: "O'quvchilar", value: projects.totalDocs },
         { label: 'Mentorlar', value: mentors.totalDocs },
       ]
