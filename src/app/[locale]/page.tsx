@@ -4,6 +4,8 @@ import { StatsStrip } from '@/components/StatsStrip'
 import { DisciplineIndex } from '@/components/DisciplineIndex'
 import { PartnerMarquee } from '@/components/PartnerMarquee'
 import { TestimonialMarquee } from '@/components/TestimonialMarquee'
+import { EngineeringFlipHeadline } from '@/components/ui/engineering-flip-headline'
+import { categories } from '@/seed'
 
 export default async function HomePage({
   params,
@@ -12,15 +14,16 @@ export default async function HomePage({
 }) {
   const { locale } = await params
 
+  const enLines = categories.map(c => c.name.en === 'AI' ? 'AI shapes tomorrow' : `${c.name.en} shapes tomorrow`)
+  const uzLines = categories.map(c => `${c.name.uz} ertangi kunni shakllantiradi`)
+
   const content = locale === 'uz' ? {
-    headline: 'Muhandislik \nkelajakni \nquradi',
     support: 'Biz muhandislik maqolalari, hakatonlar va talabalar loyihalari orqali yosh muhandislarni qo\'llab-quvvatlaymiz.',
     ctaPrimary: 'Maqolalar',
     ctaPrimaryHref: `/${locale}/articles`,
     ctaSecondary: 'Hakatonlar',
     ctaSecondaryHref: `/${locale}/hackathons`,
   } : {
-    headline: 'Engineering \nbuilds the \nfuture',
     support: 'We promote engineering knowledge through articles, hackathons, and student projects for young engineers.',
     ctaPrimary: 'Articles',
     ctaPrimaryHref: `/${locale}/articles`,
@@ -34,12 +37,10 @@ export default async function HomePage({
       <section className="relative overflow-hidden max-w-6xl mx-auto px-4 py-16 md:py-24">
         <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
           <div>
-            <h1
-              className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 whitespace-pre-line"
-              style={{ fontFamily: 'var(--font-display)' }}
-            >
-              {content.headline}
-            </h1>
+            <EngineeringFlipHeadline
+              lines={locale === 'uz' ? uzLines : enLines}
+              className="mb-4"
+            />
             <p className="text-muted-foreground mb-8 max-w-md">
               {content.support}
             </p>

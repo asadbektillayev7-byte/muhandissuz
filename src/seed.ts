@@ -1,6 +1,6 @@
 import type { Payload } from 'payload'
 
-const categories = [
+export const categories = [
   { name: { uz: 'Mexanika', en: 'Mechanical Engineering' }, slug: 'mechanical-engineering', featured: true },
   { name: { uz: 'Elektr', en: 'Electrical Engineering' }, slug: 'electrical-engineering', featured: false },
   { name: { uz: 'Kimyo', en: 'Chemical Engineering' }, slug: 'chemical-engineering', featured: false },
