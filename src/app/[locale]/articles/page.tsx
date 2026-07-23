@@ -1,6 +1,11 @@
 import { getPayloadClient } from '@/utilities/getPayload'
 import { resolveLocalizedField } from '@/lib/locale'
 import Link from 'next/link'
+import { EngineeringFlipHeadline } from '@/components/ui/engineering-flip-headline'
+import { categories } from '@/seed'
+
+const enWords = categories.map(c => c.name.en === 'AI' ? 'AI' : c.name.en.split(' ')[0])
+const uzWords = categories.map(c => c.name.uz)
 
 export default async function ArticlesPage({
   params,
@@ -13,7 +18,7 @@ export default async function ArticlesPage({
   const { category } = await searchParams
   const payload = await getPayloadClient()
 
-  const { docs: categories } = await payload.find({
+  const { docs: cats } = await payload.find({
     collection: 'categories',
     locale: locale as 'uz' | 'en',
     sort: 'name',
@@ -43,9 +48,13 @@ export default async function ArticlesPage({
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
-      <h1 className="text-4xl font-bold mb-8">{label.title}</h1>
+      <EngineeringFlipHeadline
+        words={locale === 'uz' ? uzWords : enWords}
+        suffixText={locale === 'uz' ? ' muhandisligi' : ' Engineering'}
+        className="mb-8"
+      />
 
-      {categories.length > 0 && (
+      {cats.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-8">
           <Link
             href={`/${locale}/articles`}
@@ -55,7 +64,7 @@ export default async function ArticlesPage({
           >
             {label.all}
           </Link>
-          {categories.map((cat) => (
+          {cats.map((cat) => (
             <Link
               key={cat.id}
               href={`/${locale}/articles?category=${cat.slug}`}
