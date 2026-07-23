@@ -16,6 +16,7 @@ const exploreLinks = [
 const companyLinks = [
   { key: 'partners', href: '/partners' },
   { key: 'team', href: '/team' },
+  { key: 'feedback', href: '/feedback' },
   { key: 'contact', href: '/contact' },
 ]
 
@@ -26,6 +27,7 @@ const labels: Record<string, { uz: string; en: string }> = {
   projects: { uz: 'Loyihalar', en: 'Projects' },
   partners: { uz: 'Hamkorlar', en: 'Partners' },
   team: { uz: 'Jamoa', en: 'Team' },
+  feedback: { uz: 'Baholash', en: 'Rate Us' },
   contact: { uz: 'Aloqa', en: 'Contact' },
 }
 
@@ -100,17 +102,9 @@ export function MinimalFooter() {
 
         <div className="px-4 pb-6 pt-4">
           <div className="bg-border h-px w-full mb-4" />
-          <div className="flex flex-col items-center gap-2">
-            <Link
-              href={`/${locale}/feedback`}
-              className="text-xs text-muted-foreground hover:text-chart-2 transition-colors font-mono"
-            >
-              {locale === 'uz' ? 'Baholash' : 'Rate Us'}
-            </Link>
-            <p className="text-muted-foreground text-center text-xs font-mono">
-              &copy; {year} Muhandiss.uz
-            </p>
-          </div>
+          <p className="text-muted-foreground text-center text-xs font-mono">
+            &copy; {year} Muhandiss.uz
+          </p>
         </div>
       </div>
     </footer>
