@@ -3,6 +3,7 @@ import { HeroAnimation } from '@/components/HeroAnimation'
 import { StatsStrip } from '@/components/StatsStrip'
 import { DisciplineIndex } from '@/components/DisciplineIndex'
 import { PartnerMarquee } from '@/components/PartnerMarquee'
+import { TestimonialMarquee } from '@/components/TestimonialMarquee'
 
 export default async function HomePage({
   params,
@@ -78,6 +79,9 @@ export default async function HomePage({
 
       {/* Disciplines */}
       <DisciplineIndex locale={locale} />
+
+      {/* Testimonials */}
+      <TestimonialMarquee />
     </>
   )
 }

@@ -103,9 +103,17 @@ export function MinimalFooter() {
 
         <div className="px-4 pb-6 pt-4">
           <div className="bg-border h-px w-full mb-4" />
-          <p className="text-muted-foreground text-center text-xs font-mono">
-            &copy; {year} Muhandiss.uz
-          </p>
+          <div className="flex flex-col items-center gap-2">
+            <Link
+              href={`/${locale}/feedback`}
+              className="text-xs text-muted-foreground hover:text-chart-2 transition-colors font-mono"
+            >
+              {locale === 'uz' ? 'Baholash' : 'Rate Us'}
+            </Link>
+            <p className="text-muted-foreground text-center text-xs font-mono">
+              &copy; {year} Muhandiss.uz
+            </p>
+          </div>
         </div>
       </div>
     </footer>
