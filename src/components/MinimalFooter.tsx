@@ -11,6 +11,7 @@ const exploreLinks = [
   { key: 'hackathons', href: '/hackathons' },
   { key: 'quiz', href: '/quiz' },
   { key: 'projects', href: '/projects' },
+  { key: 'media', href: '/media' },
 ]
 
 const companyLinks = [
@@ -25,6 +26,7 @@ const labels: Record<string, { uz: string; en: string }> = {
   hackathons: { uz: 'Hakatonlar', en: 'Hackathons' },
   quiz: { uz: 'Quiz', en: 'Quiz' },
   projects: { uz: 'Loyihalar', en: 'Projects' },
+  media: { uz: 'Media', en: 'Media' },
   partners: { uz: 'Hamkorlar', en: 'Partners' },
   team: { uz: 'Jamoa', en: 'Team' },
   feedback: { uz: 'Baholash', en: 'Rate Us' },

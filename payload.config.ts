@@ -18,6 +18,8 @@ import { GlossaryTerms } from './src/collections/GlossaryTerms'
 import { Partners } from './src/collections/Partners'
 import { Media } from './src/collections/Media'
 import { Users } from './src/collections/Users'
+import { Feedback } from './src/collections/Feedback'
+import { Testimonials } from './src/collections/Testimonials'
 import { SiteSettings } from './src/globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
@@ -49,6 +51,8 @@ export default buildConfig({
     GlossaryTerms,
     Partners,
     Media,
+    Feedback,
+    Testimonials,
   ],
   globals: [SiteSettings],
   localization: {

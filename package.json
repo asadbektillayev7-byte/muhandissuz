@@ -10,6 +10,7 @@
     "start": "next start",
     "payload": "payload",
     "seed": "npx tsx scripts/seed.ts",
+    "create-admin": "npx tsx scripts/create-admin.ts",
     "migrate": "npx tsx scripts/migrate-wp.ts"
   },
   "engines": {
@@ -32,6 +33,7 @@
     "@payloadcms/richtext-lexical": "^3.85.2",
     "@payloadcms/storage-s3": "^3.85.2",
     "clsx": "^2.1.1",
+    "dotenv": "^17.4.2",
     "framer-motion": "^12.42.2",
     "graphql": "^16.9.0",
     "gsap": "^3.15.0",

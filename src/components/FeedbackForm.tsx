@@ -26,6 +26,8 @@ function StarRating({ value, onChange }: { value: number; onChange: (v: number) 
 
 export function FeedbackForm({ locale }: { locale: string }) {
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState(false)
   const [rating, setRating] = useState(0)
 
   const labels = locale === 'uz' ? {
@@ -48,17 +50,29 @@ export function FeedbackForm({ locale }: { locale: string }) {
     messagePlaceholder: 'Write your message...',
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setSubmitting(true)
+    setError(false)
     const formData = new FormData(e.currentTarget)
     const data = {
       name: formData.get('name') as string,
       rating,
       message: formData.get('message') as string,
     }
-    console.log('Feedback submitted:', data)
-    setSubmitted(true)
-    /* TODO: Wire up real submission (e.g. to Supabase) */
+    try {
+      const res = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      if (!res.ok) throw new Error('Failed to submit')
+      setSubmitted(true)
+    } catch {
+      setError(true)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -105,12 +119,18 @@ export function FeedbackForm({ locale }: { locale: string }) {
         />
       </div>
 
+      {error && (
+        <p className="text-sm text-red-500">
+          {locale === 'uz' ? 'Xatolik yuz berdi. Qayta urinib ko\'ring.' : 'Something went wrong. Please try again.'}
+        </p>
+      )}
       <button
         type="submit"
-        className="bg-foreground text-background px-6 py-2 text-sm hover:opacity-90 transition-opacity"
+        disabled={submitting}
+        className="bg-foreground text-background px-6 py-2 text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
         style={{ borderRadius: 'var(--radius)' }}
       >
-        {labels.send}
+        {submitting ? (locale === 'uz' ? 'Yuborilmoqda...' : 'Sending...') : labels.send}
       </button>
     </form>
   )
