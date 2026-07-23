@@ -43,20 +43,19 @@ export function HeroAnimation({
 
     tl.set(f1, { opacity: 1, scale: 1 })
     tl.set(gear, { opacity: 0, scale: 0.95 })
-    tl.to({}, { duration: cfg.interval })
-
-    tl.to(f1, { opacity: 0, scale: 0.95, duration: cfg.transitionDuration, ease: 'power2.inOut' }, 0)
-    tl.to(gear, { opacity: 1, scale: 1, duration: cfg.transitionDuration, ease: 'power2.inOut' }, 0)
 
     tl.to({}, { duration: cfg.interval })
 
-    tl.to(gear, { opacity: 0, scale: 0.95, duration: cfg.transitionDuration, ease: 'power2.inOut' }, 0)
-    tl.to(f1, { opacity: 1, scale: 1, duration: cfg.transitionDuration, ease: 'power2.inOut' }, 0)
+    tl.to(f1, { opacity: 0, scale: 0.95, duration: cfg.transitionDuration, ease: 'power2.inOut' })
+    tl.to(gear, { opacity: 1, scale: 1, duration: cfg.transitionDuration, ease: 'power2.inOut' }, '<')
+
+    tl.to({}, { duration: cfg.interval })
+
+    tl.to(gear, { opacity: 0, scale: 0.95, duration: cfg.transitionDuration, ease: 'power2.inOut' })
+    tl.to(f1, { opacity: 1, scale: 1, duration: cfg.transitionDuration, ease: 'power2.inOut' }, '<')
 
     return () => {
       tl.kill()
-      gsap.set(f1, { clearProps: 'all' })
-      gsap.set(gear, { clearProps: 'all' })
     }
   }, [cfg.interval, cfg.transitionDuration])
 
