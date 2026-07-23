@@ -7,15 +7,15 @@ import { TestimonialMarquee } from '@/components/TestimonialMarquee'
 import { EngineeringFlipHeadline } from '@/components/ui/engineering-flip-headline'
 import { categories } from '@/seed'
 
+const enWords = categories.map(c => c.name.en === 'AI' ? 'AI' : c.name.en.split(' ')[0])
+const uzWords = categories.map(c => c.name.uz)
+
 export default async function HomePage({
   params,
 }: {
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-
-  const enLines = categories.map(c => c.name.en === 'AI' ? 'AI shapes tomorrow' : `${c.name.en} shapes tomorrow`)
-  const uzLines = categories.map(c => `${c.name.uz} ertangi kunni shakllantiradi`)
 
   const content = locale === 'uz' ? {
     support: 'Biz muhandislik maqolalari, hakatonlar va talabalar loyihalari orqali yosh muhandislarni qo\'llab-quvvatlaymiz.',
@@ -38,7 +38,8 @@ export default async function HomePage({
         <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
           <div>
             <EngineeringFlipHeadline
-              lines={locale === 'uz' ? uzLines : enLines}
+              words={locale === 'uz' ? uzWords : enWords}
+              suffixText={locale === 'uz' ? 'muhandisligi ertangi kunni shakllantiradi' : 'Engineering shapes tomorrow'}
               className="mb-4"
             />
             <p className="text-muted-foreground mb-8 max-w-md">
