@@ -18,3 +18,4 @@ const Page = ({ params, searchParams }: Args) => {
 }
 
 export default Page
+export const dynamic = 'force-dynamic'
