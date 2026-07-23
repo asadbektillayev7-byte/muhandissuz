@@ -123,18 +123,11 @@ export function TestimonialMarquee() {
       <h2 className="text-2xl font-semibold mb-6">
         {locale === 'uz' ? 'Hamjamiyat fikrlari' : 'What our community says'}
       </h2>
-      <div className="space-y-5">
-        <Marquee direction="right" duration={50} pauseOnHover fade={true} fadeAmount={5}>
-          {testimonials.map((t, i) => (
-            <TestimonialCard key={`top-${i}`} t={t} locale={locale} />
-          ))}
-        </Marquee>
-        <Marquee direction="left" duration={55} pauseOnHover fade={true} fadeAmount={5}>
-          {[...testimonials].reverse().map((t, i) => (
-            <TestimonialCard key={`bottom-${i}`} t={t} locale={locale} />
-          ))}
-        </Marquee>
-      </div>
+      <Marquee direction="left" duration={60} pauseOnHover fade={true} fadeAmount={5}>
+        {testimonials.map((t, i) => (
+          <TestimonialCard key={`t-${i}`} t={t} locale={locale} />
+        ))}
+      </Marquee>
     </section>
   )
 }

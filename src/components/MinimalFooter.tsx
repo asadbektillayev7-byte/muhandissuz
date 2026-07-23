@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { Send } from 'lucide-react'
 import { Logo } from './Logo'
+import { AnimatedMenuItem } from '@/components/ui/animated-menu-item'
 
 const exploreLinks = [
   { key: 'articles', href: '/articles' },
@@ -73,29 +74,25 @@ export function MinimalFooter() {
           </div>
 
           <div>
-            <div className="flex flex-col gap-1 mt-2">
+            <div className="flex flex-col gap-1.5 mt-2">
               {exploreLinks.map((link) => (
-                <Link
+                <AnimatedMenuItem
                   key={link.key}
                   href={`/${locale}${link.href}`}
-                  className="w-max py-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {labels[link.key][locale as 'uz' | 'en']}
-                </Link>
+                  label={labels[link.key][locale as 'uz' | 'en']}
+                />
               ))}
             </div>
           </div>
 
           <div>
-            <div className="flex flex-col gap-1 mt-2">
+            <div className="flex flex-col gap-1.5 mt-2">
               {companyLinks.map((link) => (
-                <Link
+                <AnimatedMenuItem
                   key={link.key}
                   href={`/${locale}${link.href}`}
-                  className="w-max py-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {labels[link.key][locale as 'uz' | 'en']}
-                </Link>
+                  label={labels[link.key][locale as 'uz' | 'en']}
+                />
               ))}
             </div>
           </div>

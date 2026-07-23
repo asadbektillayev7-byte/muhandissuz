@@ -23,18 +23,10 @@ function PartnerBadge({ name, url }: { name: string; url: string }) {
 
 export function PartnerMarquee() {
   return (
-    <div className="space-y-6">
-      <Marquee direction="right" duration={40} pauseOnHover>
-        {placeholderPartners.map((partner, i) => (
-          <PartnerBadge key={`top-${i}`} name={partner.name} url={partner.url} />
-        ))}
-      </Marquee>
-
-      <Marquee direction="left" duration={45} pauseOnHover>
-        {[...placeholderPartners].reverse().map((partner, i) => (
-          <PartnerBadge key={`bottom-${i}`} name={partner.name} url={partner.url} />
-        ))}
-      </Marquee>
-    </div>
+    <Marquee direction="left" duration={40} pauseOnHover>
+      {placeholderPartners.map((partner, i) => (
+        <PartnerBadge key={`partner-${i}`} name={partner.name} url={partner.url} />
+      ))}
+    </Marquee>
   )
 }
