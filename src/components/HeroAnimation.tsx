@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { cn } from '@/lib/utils'
-import { F1BlueprintAnimation } from '@/components/ui/f1-blueprint-animation'
+import { F1BlueprintAnimation } from '@/components/ui/F1Wireframe'
 import { GearBlueprint } from '@/components/ui/gear-blueprint'
 
 interface HeroAnimationConfig {
