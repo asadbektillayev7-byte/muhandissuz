@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server'
 const locales = ['uz', 'en']
 const defaultLocale = 'uz'
 
-export function proxy(request: NextRequest) {
+export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   if (pathname.startsWith('/admin') || pathname.startsWith('/api') || pathname.startsWith('/_next') || pathname === '/favicon.ico') {
