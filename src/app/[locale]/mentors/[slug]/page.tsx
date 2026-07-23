@@ -1,4 +1,5 @@
-import { getPayloadClient } from '@/utilities/getPayload'
+import { getMentorBySlug } from '@/lib/supabase/queries'
+import { field } from '@/lib/supabase/locale'
 import { notFound } from 'next/navigation'
 
 export default async function MentorPage({
@@ -7,53 +8,35 @@ export default async function MentorPage({
   params: Promise<{ locale: string; slug: string }>
 }) {
   const { locale, slug } = await params
-  const payload = await getPayloadClient()
+  const mentor = await getMentorBySlug(slug, locale)
 
-  const { docs } = await payload.find({
-    collection: 'mentors',
-    where: { slug: { equals: slug } },
-    locale: locale as 'uz' | 'en',
-    depth: 2,
-  })
-
-  if (docs.length === 0) notFound()
-
-  const mentor = docs[0]
+  if (!mentor) notFound()
 
   const label = locale === 'uz'
-    ? { disciplines: 'Fan yo\'nalishlari', contact: 'Aloqa', email: 'Email', telegram: 'Telegram' }
-    : { disciplines: 'Disciplines', contact: 'Contact', email: 'Email', telegram: 'Telegram' }
+    ? { contact: 'Aloqa', email: 'Email', telegram: 'Telegram' }
+    : { contact: 'Contact', email: 'Email', telegram: 'Telegram' }
+
+  const contact = typeof mentor.contact === 'string' ? JSON.parse(mentor.contact) : (mentor.contact || {})
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <div className="flex items-start gap-6 mb-8">
-        {mentor.photo && typeof mentor.photo === 'object' && mentor.photo.url && (
-          <img src={mentor.photo.url} alt={mentor.name} className="w-32 h-32 rounded-full object-cover" />
+        {mentor.photo_url && (
+          <img src={mentor.photo_url} alt={mentor.name} className="w-32 h-32 rounded-full object-cover" />
         )}
         <div>
           <h1 className="text-3xl font-bold mb-1">{mentor.name}</h1>
-          {mentor.title && <p className="text-lg text-muted-foreground mb-2">{mentor.title}</p>}
+          {field(mentor, 'title', locale) && <p className="text-lg text-muted-foreground mb-2">{field(mentor, 'title', locale)}</p>}
         </div>
       </div>
 
-      {mentor.disciplines && mentor.disciplines.length > 0 && (
-        <div className="mb-6">
-          <h2 className="font-semibold mb-2">{label.disciplines}</h2>
-          <div className="flex flex-wrap gap-2">
-            {mentor.disciplines.map((d: any) => (
-              <span key={d.id} className="px-3 py-1 text-sm bg-muted rounded-full">{d.name}</span>
-            ))}
-          </div>
-        </div>
-      )}
+      {field(mentor, 'bio', locale) && <p className="text-muted-foreground mb-6">{field(mentor, 'bio', locale)}</p>}
 
-      {mentor.bio && <p className="text-muted-foreground mb-6">{mentor.bio}</p>}
-
-      {mentor.contact && (mentor.contact.email || mentor.contact.telegram) && (
+      {(contact.email || contact.telegram) && (
         <div className="border border-border p-4" style={{ borderRadius: 'var(--radius)' }}>
           <h2 className="font-semibold mb-2">{label.contact}</h2>
-          {mentor.contact.email && <p className="text-sm">{label.email}: {mentor.contact.email}</p>}
-          {mentor.contact.telegram && <p className="text-sm">{label.telegram}: {mentor.contact.telegram}</p>}
+          {contact.email && <p className="text-sm">{label.email}: {contact.email}</p>}
+          {contact.telegram && <p className="text-sm">{label.telegram}: {contact.telegram}</p>}
         </div>
       )}
     </div>

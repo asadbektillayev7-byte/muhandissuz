@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Star } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 function StarRating({ value, onChange }: { value: number; onChange: (v: number) => void }) {
   return (
@@ -61,12 +62,11 @@ export function FeedbackForm({ locale }: { locale: string }) {
       message: formData.get('message') as string,
     }
     try {
-      const res = await fetch('/api/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
-      if (!res.ok) throw new Error('Failed to submit')
+      const supabase = createClient()
+      const { error: insertError } = await supabase
+        .from('feedback')
+        .insert(data)
+      if (insertError) throw insertError
       setSubmitted(true)
     } catch {
       setError(true)
@@ -86,10 +86,7 @@ export function FeedbackForm({ locale }: { locale: string }) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-5"
-    >
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div>
         <label className="block text-sm font-medium mb-1.5">{labels.name}</label>
         <input

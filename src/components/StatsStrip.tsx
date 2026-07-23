@@ -1,28 +1,21 @@
-import { getPayloadClient } from '@/utilities/getPayload'
+import { getStats } from '@/lib/supabase/queries'
 import { AnimatedStatValue } from './AnimatedStatValue'
 
 export async function StatsStrip({ locale }: { locale: string }) {
-  const payload = await getPayloadClient()
-
-  const [articles, hackathons, projects, mentors] = await Promise.all([
-    payload.find({ collection: 'articles', limit: 0, depth: 0 }),
-    payload.find({ collection: 'hackathons', limit: 0, depth: 0 }),
-    payload.find({ collection: 'student-projects', limit: 0, depth: 0 }),
-    payload.find({ collection: 'mentors', limit: 0, depth: 0 }),
-  ])
+  const stats = await getStats()
 
   const labels = locale === 'uz'
     ? [
-        { label: 'Maqolalar', value: articles.totalDocs },
-        { label: 'Hakatonlar', value: hackathons.totalDocs },
-        { label: "O'quvchilar", value: projects.totalDocs },
-        { label: 'Mentorlar', value: mentors.totalDocs },
+        { label: 'Maqolalar', value: stats.articles },
+        { label: 'Hakatonlar', value: stats.hackathons },
+        { label: "O'quvchilar", value: stats.projects },
+        { label: 'Mentorlar', value: stats.mentors },
       ]
     : [
-        { label: 'Articles', value: articles.totalDocs },
-        { label: 'Hackathons', value: hackathons.totalDocs },
-        { label: 'Students', value: projects.totalDocs },
-        { label: 'Mentors', value: mentors.totalDocs },
+        { label: 'Articles', value: stats.articles },
+        { label: 'Hackathons', value: stats.hackathons },
+        { label: 'Students', value: stats.projects },
+        { label: 'Mentors', value: stats.mentors },
       ]
 
   return (

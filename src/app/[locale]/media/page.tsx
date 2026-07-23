@@ -1,4 +1,5 @@
-import { getPayloadClient } from '@/utilities/getPayload'
+import { getMedia } from '@/lib/supabase/queries'
+import { field } from '@/lib/supabase/locale'
 import Image from 'next/image'
 
 export default async function MediaPage({
@@ -7,14 +8,7 @@ export default async function MediaPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const payload = await getPayloadClient()
-
-  const { docs: mediaItems } = await payload.find({
-    collection: 'media',
-    depth: 0,
-    sort: '-createdAt',
-    limit: 100,
-  })
+  const mediaItems = await getMedia(locale)
 
   const content = locale === 'uz' ? {
     title: 'Media',
@@ -45,28 +39,28 @@ export default async function MediaPage({
         {mediaItems.map((item: any) => (
           <a
             key={item.id}
-            href={item.url || item.filename}
+            href={item.url}
             target="_blank"
             rel="noopener noreferrer"
             className="group relative aspect-[4/3] overflow-hidden rounded-lg border border-border bg-secondary"
           >
-            {item.mimeType?.startsWith('video') ? (
+            {item.mime_type?.startsWith('video') ? (
               <video
-                src={item.url || item.filename}
+                src={item.url}
                 className="h-full w-full object-cover"
               />
             ) : (
               <Image
-                src={item.thumbnailURL || item.url || item.filename}
-                alt={item.alt?.[locale] || ''}
+                src={item.thumbnail_url || item.url}
+                alt={field(item, 'alt', locale)}
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
                 sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
             )}
-            {item.alt?.[locale] && (
+            {field(item, 'alt', locale) && (
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                <p className="text-white text-xs truncate">{item.alt[locale]}</p>
+                <p className="text-white text-xs truncate">{field(item, 'alt', locale)}</p>
               </div>
             )}
           </a>

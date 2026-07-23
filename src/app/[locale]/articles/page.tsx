@@ -1,5 +1,5 @@
-import { getPayloadClient } from '@/utilities/getPayload'
-import { resolveLocalizedField } from '@/lib/locale'
+import { getCategories, getArticles } from '@/lib/supabase/queries'
+import { field } from '@/lib/supabase/locale'
 import Link from 'next/link'
 import { EngineeringFlipHeadline } from '@/components/ui/engineering-flip-headline'
 import { categories } from '@/seed'
@@ -16,28 +16,11 @@ export default async function ArticlesPage({
 }) {
   const { locale } = await params
   const { category } = await searchParams
-  const payload = await getPayloadClient()
 
-  const { docs: cats } = await payload.find({
-    collection: 'categories',
-    locale: locale as 'uz' | 'en',
-    sort: 'name',
-  })
-
-  const { docs: articles } = category
-    ? await payload.find({
-        collection: 'articles',
-        locale: locale as 'uz' | 'en',
-        depth: 2,
-        sort: '-publishedDate',
-        where: { 'category.slug': { equals: category } } as any,
-      })
-    : await payload.find({
-        collection: 'articles',
-        locale: locale as 'uz' | 'en',
-        depth: 2,
-        sort: '-publishedDate',
-      })
+  const cats = await getCategories(locale)
+  const articles = category
+    ? await getArticles(locale, category)
+    : await getArticles(locale)
 
   const labels = {
     uz: { title: 'Maqolalar', all: 'Barchasi', readMore: "O'qish", noArticles: "Hozircha maqolalar yo'q" },
@@ -64,7 +47,7 @@ export default async function ArticlesPage({
           >
             {label.all}
           </Link>
-          {cats.map((cat) => (
+          {cats.map((cat: any) => (
             <Link
               key={cat.id}
               href={`/${locale}/articles?category=${cat.slug}`}
@@ -72,7 +55,7 @@ export default async function ArticlesPage({
                 category === cat.slug ? 'border-chart-2 text-chart-2 bg-muted' : 'bg-muted hover:bg-muted'
               }`}
             >
-              {resolveLocalizedField(cat.name, locale)}
+              {field(cat, 'name', locale)}
             </Link>
           ))}
         </div>
@@ -83,28 +66,27 @@ export default async function ArticlesPage({
       )}
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {articles.map((article) => (
+        {articles.map((article: any) => (
           <Link
             key={article.id}
             href={`/${locale}/articles/${article.slug}`}
             className="block border border-border overflow-hidden hover:shadow-md transition-shadow" style={{ borderRadius: 'var(--radius)' }}
           >
-            {article.coverImage && typeof article.coverImage === 'object' && article.coverImage.url && (
+            {article.cover_image_url && (
                 <div className="aspect-video bg-muted">
                 <img
-                  src={article.coverImage.url}
-                  alt={article.title || ''}
+                  src={article.cover_image_url}
+                  alt={field(article, 'title', locale)}
                   className="w-full h-full object-cover"
                 />
               </div>
             )}
             <div className="p-4">
-              <h2 className="text-lg font-semibold mb-2">{article.title}</h2>
-              {article.excerpt && (
-                <p className="text-sm text-muted-foreground line-clamp-2">{article.excerpt}</p>
+              <h2 className="text-lg font-semibold mb-2">{field(article, 'title', locale)}</h2>
+              {field(article, 'excerpt', locale) && (
+                <p className="text-sm text-muted-foreground line-clamp-2">{field(article, 'excerpt', locale)}</p>
               )}
               <div className="mt-3 flex items-center justify-between text-sm text-muted-foreground">
-                <span>{article.author && typeof article.author === 'object' ? article.author.name : ''}</span>
                 <span>{label.readMore} &rarr;</span>
               </div>
             </div>

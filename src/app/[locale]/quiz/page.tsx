@@ -1,4 +1,4 @@
-import { getPayloadClient } from '@/utilities/getPayload'
+import { getCategoriesList } from '@/lib/supabase/queries'
 import { QuizCardStack } from './QuizCardStack'
 
 export default async function QuizPage({
@@ -7,13 +7,7 @@ export default async function QuizPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const payload = await getPayloadClient()
-
-  const { docs: categories } = await payload.find({
-    collection: 'categories',
-    locale: locale as 'uz' | 'en',
-    sort: 'name',
-  })
+  const categories = await getCategoriesList()
 
   const label = locale === 'uz'
     ? { title: 'Quiz', subtitle: 'O\'z bilimingizni sinab ko\'ring' }

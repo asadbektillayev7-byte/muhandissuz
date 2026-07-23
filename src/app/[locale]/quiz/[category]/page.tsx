@@ -1,5 +1,5 @@
-import { getPayloadClient } from '@/utilities/getPayload'
-import { resolveLocalizedField } from '@/lib/locale'
+import { createClient } from '@/lib/supabase/server'
+import { field } from '@/lib/supabase/locale'
 import { notFound } from 'next/navigation'
 
 export default async function CategoryQuizPage({
@@ -8,19 +8,17 @@ export default async function CategoryQuizPage({
   params: Promise<{ locale: string; category: string }>
 }) {
   const { locale, category } = await params
-  const payload = await getPayloadClient()
+  const supabase = await createClient()
 
-  const { docs } = await payload.find({
-    collection: 'categories',
-    where: { slug: { equals: category } },
-    locale: locale as 'uz' | 'en',
-    limit: 1,
-  })
+  const { data: cat } = await supabase
+    .from('categories')
+    .select('*')
+    .eq('slug', category)
+    .single()
 
-  if (docs.length === 0) notFound()
+  if (!cat) notFound()
 
-  const cat = docs[0]
-  const name = resolveLocalizedField(cat.name, locale) || category
+  const name = field(cat, 'name', locale)
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12 text-center">

@@ -1,4 +1,4 @@
-import { getPayloadClient } from '@/utilities/getPayload'
+import { getPartners } from '@/lib/supabase/queries'
 import { PartnerMarquee } from '@/components/PartnerMarquee'
 
 export default async function PartnersPage({
@@ -7,13 +7,7 @@ export default async function PartnersPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const payload = await getPayloadClient()
-
-  const { docs: partners } = await payload.find({
-    collection: 'partners',
-    locale: locale as 'uz' | 'en',
-    depth: 0,
-  })
+  const partners = await getPartners()
 
   const label = locale === 'uz'
     ? {
@@ -38,13 +32,13 @@ export default async function PartnersPage({
       </section>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {partners.map((partner) => (
+        {partners.map((partner: any) => (
           <div
             key={partner.id}
             className="border border-border p-6 flex items-center justify-center"
             style={{ borderRadius: 'var(--radius)' }}
           >
-            {partner.logo && typeof partner.logo === 'object' && partner.logo.url ? (
+            {partner.logo_url ? (
               <a
                 href={partner.url || '#'}
                 target="_blank"
@@ -52,7 +46,7 @@ export default async function PartnersPage({
                 className="block"
               >
                 <img
-                  src={partner.logo.url}
+                  src={partner.logo_url}
                   alt={partner.name || ''}
                   className="max-h-12 w-auto grayscale hover:grayscale-0 transition-all"
                 />

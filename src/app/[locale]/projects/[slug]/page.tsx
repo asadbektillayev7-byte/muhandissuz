@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { getPayloadClient } from '@/utilities/getPayload'
+import { getProjectBySlug } from '@/lib/supabase/queries'
+import { field } from '@/lib/supabase/locale'
 import { renderRichText } from '@/utilities/richText'
-import { resolveLocalizedField } from '@/lib/locale'
 import { notFound } from 'next/navigation'
 import { ModelViewer } from '@/components/ModelViewer'
 
@@ -11,61 +11,51 @@ export default async function ProjectPage({
   params: Promise<{ locale: string; slug: string }>
 }) {
   const { locale, slug } = await params
-  const payload = await getPayloadClient()
+  const project = await getProjectBySlug(slug, locale)
 
-  const { docs } = await payload.find({
-    collection: 'student-projects',
-    where: { slug: { equals: slug } },
-    locale: locale as 'uz' | 'en',
-    depth: 2,
-  })
-
-  if (docs.length === 0) notFound()
-
-  const project = docs[0]
+  if (!project) notFound()
 
   const label = locale === 'uz'
     ? { students: "O'quvchilar", age: 'Yosh', discipline: 'Fan', video: 'Video' }
     : { students: 'Students', age: 'Age', discipline: 'Discipline', video: 'Video' }
 
+  const images = typeof project.images === 'string' ? JSON.parse(project.images) : (project.images || [])
+  const studentNames = typeof project.student_names === 'string' ? JSON.parse(project.student_names) : (project.student_names || [])
+  const description = locale === 'uz' ? project.description_uz : project.description_en
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
-      <h1 className="text-4xl font-bold mb-4">{project.title}</h1>
+      <h1 className="text-4xl font-bold mb-4">{field(project, 'title', locale)}</h1>
 
       <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-8">
-        {project.studentNames && project.studentNames.length > 0 && (
-          <span>{label.students}: {project.studentNames.map((s: any) => s.name).join(', ')}</span>
+        {studentNames.length > 0 && (
+          <span>{label.students}: {studentNames.join(', ')}</span>
         )}
-        {project.ageGroup && <span>{label.age}: {project.ageGroup}</span>}
-        {project.discipline && typeof project.discipline === 'object' && (
-          <span>{label.discipline}: {resolveLocalizedField(project.discipline.name, locale)}</span>
-        )}
-        {project.relatedHackathon && typeof project.relatedHackathon === 'object' && (
-          <Link href={`/${locale}/hackathons/${project.relatedHackathon.slug}`} className="text-chart-2 hover:underline">
-            {project.relatedHackathon.title}
-          </Link>
+        {project.age_group && <span>{label.age}: {project.age_group}</span>}
+        {project.categories && (
+          <span>{label.discipline}: {field(project.categories, 'name', locale)}</span>
         )}
       </div>
 
-      {project.images && project.images.length > 0 && (
+      {images.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-          {project.images.map((item: any, i: number) => (
-            item.image && typeof item.image === 'object' && item.image.url && (
+          {images.map((item: any, i: number) => (
+            item.url && (
               <div key={i} className="aspect-video overflow-hidden bg-muted" style={{ borderRadius: 'var(--radius)' }}>
-                <img src={item.image.url} alt="" className="w-full h-full object-cover" />
+                <img src={item.url} alt="" className="w-full h-full object-cover" />
               </div>
             )
           ))}
         </div>
       )}
 
-      {project.model3d && typeof project.model3d === 'object' && project.model3d.url && (
-        <ModelViewer src={project.model3d.url} alt={project.title || ''} />
+      {project.model3d_url && (
+        <ModelViewer src={project.model3d_url} alt={field(project, 'title', locale)} />
       )}
 
-      {project.video && (
+      {project.video_url && (
         <div className="mb-8">
-          <a href={project.video} target="_blank" rel="noopener noreferrer"
+          <a href={project.video_url} target="_blank" rel="noopener noreferrer"
              className="inline-flex items-center gap-2 text-chart-2 hover:underline">
             ▶ {label.video}
           </a>
@@ -73,7 +63,7 @@ export default async function ProjectPage({
       )}
 
       <div className="prose max-w-none">
-        {renderRichText(project.description as any)}
+        {renderRichText(description as any)}
       </div>
     </div>
   )

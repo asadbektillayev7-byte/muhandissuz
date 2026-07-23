@@ -8,10 +8,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "payload": "payload",
-    "seed": "npx tsx scripts/seed.ts",
-    "create-admin": "npx tsx scripts/create-admin.ts",
-    "migrate": "npx tsx scripts/migrate-wp.ts"
+    "migrate-data": "npx tsx scripts/migrate-data.ts"
   },
   "engines": {
     "node": ">=20"
@@ -26,24 +23,27 @@
   "homepage": "https://github.com/asadbektillayev7-byte/muhandissuz#readme",
   "dependencies": {
     "@google/model-viewer": "^4.3.1",
-    "@payloadcms/db-postgres": "^3.85.2",
-    "@payloadcms/live-preview-react": "^3.85.2",
-    "@payloadcms/next": "^3.86.0",
-    "@payloadcms/plugin-seo": "^3.85.2",
-    "@payloadcms/richtext-lexical": "^3.85.2",
-    "@payloadcms/storage-s3": "^3.85.2",
+
+    "@supabase/ssr": "^0.12.3",
+    "@supabase/supabase-js": "^2.110.8",
+    "@tiptap/extension-image": "^3.28.0",
+    "@tiptap/extension-link": "^3.28.0",
+    "@tiptap/extension-underline": "^3.28.0",
+    "@tiptap/pm": "^3.28.0",
+    "@tiptap/react": "^3.28.0",
+    "@tiptap/starter-kit": "^3.28.0",
     "clsx": "^2.1.1",
     "dotenv": "^17.4.2",
     "framer-motion": "^12.42.2",
-    "graphql": "^16.9.0",
+
     "gsap": "^3.15.0",
     "lucide-react": "^1.24.0",
     "next": "^16.2.10",
-    "payload": "^3.85.2",
+
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "sass": "^1.101.0",
-    "sharp": "^0.35.3",
+
+
     "tailwind-merge": "^3.6.0",
     "three": "^0.183.2"
   },

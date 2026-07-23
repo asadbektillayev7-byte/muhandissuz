@@ -1,4 +1,4 @@
-import { getPayloadClient } from '@/utilities/getPayload'
+import { createClient } from '@/lib/supabase/server'
 import { ContactForm } from './ContactForm'
 
 export default async function ContactPage({
@@ -7,13 +7,12 @@ export default async function ContactPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const payload = await getPayloadClient()
+  const supabase = await createClient()
 
-  const settings = await payload.findGlobal({
-    slug: 'site-settings',
-    locale: locale as 'uz' | 'en',
-    depth: 0,
-  })
+  const { data: settings } = await supabase
+    .from('site_settings')
+    .select('*')
+    .single()
 
   const content = locale === 'uz' ? {
     title: 'Aloqa',
@@ -29,6 +28,10 @@ export default async function ContactPage({
     formTitle: 'Send a Message',
   }
 
+  const socialLinks = settings?.social_links
+    ? (typeof settings.social_links === 'string' ? JSON.parse(settings.social_links) : settings.social_links)
+    : []
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <h1 className="text-4xl font-bold mb-2">{content.title}</h1>
@@ -36,20 +39,20 @@ export default async function ContactPage({
 
       <div className="grid md:grid-cols-2 gap-8">
         <div>
-          {settings.contactEmail && (
+          {settings?.contact_email && (
             <div className="mb-6">
               <h2 className="font-semibold mb-2">{content.email}</h2>
-              <a href={`mailto:${settings.contactEmail}`} className="text-chart-2 hover:underline">
-                {settings.contactEmail}
+              <a href={`mailto:${settings.contact_email}`} className="text-chart-2 hover:underline">
+                {settings.contact_email}
               </a>
             </div>
           )}
 
-          {settings.socialLinks && settings.socialLinks.length > 0 && (
+          {socialLinks.length > 0 && (
             <div className="mb-6">
               <h2 className="font-semibold mb-2">{content.social}</h2>
               <div className="space-y-2">
-                {settings.socialLinks.map((link: { platform?: string; url?: string }, i: number) => (
+                {socialLinks.map((link: { platform?: string; url?: string }, i: number) => (
                   <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
                      className="block text-chart-2 hover:underline">
                     {link.platform}

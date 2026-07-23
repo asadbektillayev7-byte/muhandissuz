@@ -1,9 +1,9 @@
-import { getPayloadClient } from '@/utilities/getPayload'
+import { createClient } from '@/lib/supabase/server'
 import type { MetadataRoute } from 'next'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://muhandiss.uz'
-  const payload = await getPayloadClient()
+  const supabase = await createClient()
 
   const locales = ['uz', 'en'] as const
 
@@ -25,71 +25,75 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  const { docs: articles } = await payload.find({
-    collection: 'articles',
-    limit: 500,
-    select: { slug: true, updatedAt: true },
-  })
+  const { data: articles } = await supabase
+    .from('articles')
+    .select('slug, updated_at')
+    .limit(500)
 
-  for (const article of articles) {
-    for (const locale of locales) {
-      entries.push({
-        url: `${baseUrl}/${locale}/articles/${article.slug}`,
-        lastModified: new Date(article.updatedAt),
-        changeFrequency: 'monthly',
-        priority: 0.6,
-      })
+  if (articles) {
+    for (const article of articles) {
+      for (const locale of locales) {
+        entries.push({
+          url: `${baseUrl}/${locale}/articles/${article.slug}`,
+          lastModified: new Date(article.updated_at),
+          changeFrequency: 'monthly',
+          priority: 0.6,
+        })
+      }
     }
   }
 
-  const { docs: hackathons } = await payload.find({
-    collection: 'hackathons',
-    limit: 100,
-    select: { slug: true, updatedAt: true },
-  })
+  const { data: hackathons } = await supabase
+    .from('hackathons')
+    .select('slug, updated_at')
+    .limit(100)
 
-  for (const hack of hackathons) {
-    for (const locale of locales) {
-      entries.push({
-        url: `${baseUrl}/${locale}/hackathons/${hack.slug}`,
-        lastModified: new Date(hack.updatedAt),
-        changeFrequency: 'monthly',
-        priority: 0.6,
-      })
+  if (hackathons) {
+    for (const hack of hackathons) {
+      for (const locale of locales) {
+        entries.push({
+          url: `${baseUrl}/${locale}/hackathons/${hack.slug}`,
+          lastModified: new Date(hack.updated_at),
+          changeFrequency: 'monthly',
+          priority: 0.6,
+        })
+      }
     }
   }
 
-  const { docs: projects } = await payload.find({
-    collection: 'student-projects',
-    limit: 100,
-    select: { slug: true, updatedAt: true },
-  })
+  const { data: projects } = await supabase
+    .from('student_projects')
+    .select('slug, updated_at')
+    .limit(100)
 
-  for (const project of projects) {
-    for (const locale of locales) {
-      entries.push({
-        url: `${baseUrl}/${locale}/projects/${project.slug}`,
-        lastModified: new Date(project.updatedAt),
-        changeFrequency: 'monthly',
-        priority: 0.5,
-      })
+  if (projects) {
+    for (const project of projects) {
+      for (const locale of locales) {
+        entries.push({
+          url: `${baseUrl}/${locale}/projects/${project.slug}`,
+          lastModified: new Date(project.updated_at),
+          changeFrequency: 'monthly',
+          priority: 0.5,
+        })
+      }
     }
   }
 
-  const { docs: mentors } = await payload.find({
-    collection: 'mentors',
-    limit: 100,
-    select: { slug: true, updatedAt: true },
-  })
+  const { data: mentors } = await supabase
+    .from('mentors')
+    .select('slug, updated_at')
+    .limit(100)
 
-  for (const mentor of mentors) {
-    for (const locale of locales) {
-      entries.push({
-        url: `${baseUrl}/${locale}/mentors/${mentor.slug}`,
-        lastModified: new Date(mentor.updatedAt),
-        changeFrequency: 'monthly',
-        priority: 0.5,
-      })
+  if (mentors) {
+    for (const mentor of mentors) {
+      for (const locale of locales) {
+        entries.push({
+          url: `${baseUrl}/${locale}/mentors/${mentor.slug}`,
+          lastModified: new Date(mentor.updated_at),
+          changeFrequency: 'monthly',
+          priority: 0.5,
+        })
+      }
     }
   }
 

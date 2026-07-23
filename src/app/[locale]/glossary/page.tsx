@@ -1,4 +1,4 @@
-import { getPayloadClient } from '@/utilities/getPayload'
+import { getGlossaryTerms } from '@/lib/supabase/queries'
 
 export default async function GlossaryPage({
   params,
@@ -6,12 +6,7 @@ export default async function GlossaryPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const payload = await getPayloadClient()
-
-  const { docs: terms } = await payload.find({
-    collection: 'glossary-terms',
-    limit: 500,
-  })
+  const terms = await getGlossaryTerms()
 
   const label = locale === 'uz'
     ? { title: 'Muhandislik Glossariysi', term: 'Termin', definition: 'Ta\'rif' }
@@ -24,7 +19,7 @@ export default async function GlossaryPage({
       {terms.length === 0 && <p className="text-muted-foreground">No glossary terms yet.</p>}
 
       <div className="space-y-6">
-        {terms.map((term) => (
+        {terms.map((term: any) => (
           <div key={term.id} className="border border-border p-6" style={{ borderRadius: 'var(--radius)' }}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>

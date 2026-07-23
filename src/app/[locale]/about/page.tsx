@@ -1,4 +1,5 @@
-import { getPayloadClient } from '@/utilities/getPayload'
+import { getStats, getSiteSettings } from '@/lib/supabase/queries'
+import { field } from '@/lib/supabase/locale'
 
 export default async function AboutPage({
   params,
@@ -6,34 +7,11 @@ export default async function AboutPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const payload = await getPayloadClient()
 
-  const settings = await payload.findGlobal({
-    slug: 'site-settings',
-    locale: locale as 'uz' | 'en',
-    depth: 0,
-  })
-
-  const articlesResult = await payload.find({
-    collection: 'articles',
-    locale: locale as 'uz' | 'en',
-    depth: 0,
-    limit: 0,
-  })
-
-  const hackathonsResult = await payload.find({
-    collection: 'hackathons',
-    locale: locale as 'uz' | 'en',
-    depth: 0,
-    limit: 0,
-  })
-
-  const projectsResult = await payload.find({
-    collection: 'student-projects',
-    locale: locale as 'uz' | 'en',
-    depth: 0,
-    limit: 0,
-  })
+  const [stats, settings] = await Promise.all([
+    getStats(),
+    getSiteSettings(locale),
+  ])
 
   const content = locale === 'uz' ? {
     title: 'Biz Haqimizda',
@@ -59,10 +37,10 @@ export default async function AboutPage({
 
       <p className="text-lg text-muted-foreground mb-8">{content.aboutText}</p>
 
-      {settings.missionStatement && (
+      {settings && field(settings, 'mission_statement', locale) && (
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-4">{content.mission}</h2>
-          <p className="text-muted-foreground">{settings.missionStatement}</p>
+          <p className="text-muted-foreground">{field(settings, 'mission_statement', locale)}</p>
         </section>
       )}
 
@@ -70,15 +48,15 @@ export default async function AboutPage({
         <h2 className="text-2xl font-bold mb-4">{content.stats}</h2>
         <div className="grid grid-cols-3 gap-4">
           <div className="border border-border p-6 text-center" style={{ borderRadius: 'var(--radius)' }}>
-            <div className="text-3xl font-bold text-chart-2">{articlesResult.totalDocs}</div>
+            <div className="text-3xl font-bold text-chart-2">{stats.articles}</div>
             <div className="text-sm text-muted-foreground mt-1">{content.articlesLabel}</div>
           </div>
           <div className="border border-border p-6 text-center" style={{ borderRadius: 'var(--radius)' }}>
-            <div className="text-3xl font-bold text-chart-2">{hackathonsResult.totalDocs}</div>
+            <div className="text-3xl font-bold text-chart-2">{stats.hackathons}</div>
             <div className="text-sm text-muted-foreground mt-1">{content.hackathonsLabel}</div>
           </div>
           <div className="border border-border p-6 text-center" style={{ borderRadius: 'var(--radius)' }}>
-            <div className="text-3xl font-bold text-chart-2">{projectsResult.totalDocs}</div>
+            <div className="text-3xl font-bold text-chart-2">{stats.projects}</div>
             <div className="text-sm text-muted-foreground mt-1">{content.projectsLabel}</div>
           </div>
         </div>

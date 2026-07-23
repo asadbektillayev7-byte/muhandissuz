@@ -1,4 +1,5 @@
-import { getPayloadClient } from '@/utilities/getPayload'
+import { getMentors } from '@/lib/supabase/queries'
+import { field } from '@/lib/supabase/locale'
 import Link from 'next/link'
 
 export default async function MentorsPage({
@@ -7,13 +8,7 @@ export default async function MentorsPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const payload = await getPayloadClient()
-
-  const { docs: mentors } = await payload.find({
-    collection: 'mentors',
-    locale: locale as 'uz' | 'en',
-    depth: 2,
-  })
+  const mentors = await getMentors(locale)
 
   const label = locale === 'uz'
     ? { title: 'Mentorlar', noMentors: 'Hozircha mentorlar yo\'q' }
@@ -26,18 +21,18 @@ export default async function MentorsPage({
       {mentors.length === 0 && <p className="text-muted-foreground">{label.noMentors}</p>}
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {mentors.map((mentor) => (
+        {mentors.map((mentor: any) => (
           <Link
             key={mentor.id}
             href={`/${locale}/mentors/${mentor.slug}`}
             className="flex items-center gap-4 border border-border p-4 hover:shadow-md transition-shadow" style={{ borderRadius: 'var(--radius)' }}
           >
-            {mentor.photo && typeof mentor.photo === 'object' && mentor.photo.url && (
-              <img src={mentor.photo.url} alt={mentor.name} className="w-16 h-16 rounded-full object-cover" />
+            {mentor.photo_url && (
+              <img src={mentor.photo_url} alt={mentor.name} className="w-16 h-16 rounded-full object-cover" />
             )}
             <div>
               <h2 className="font-semibold">{mentor.name}</h2>
-              {mentor.title && <p className="text-sm text-muted-foreground">{mentor.title}</p>}
+              {field(mentor, 'title', locale) && <p className="text-sm text-muted-foreground">{field(mentor, 'title', locale)}</p>}
             </div>
           </Link>
         ))}
