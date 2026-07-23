@@ -1,8 +1,8 @@
 'use client'
 
-import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { adminDeleteRecord } from '@/lib/actions'
 
 export function DeleteButton({ table, id, redirect }: { table: string; id: number | string; redirect: string }) {
   const [loading, setLoading] = useState(false)
@@ -11,10 +11,14 @@ export function DeleteButton({ table, id, redirect }: { table: string; id: numbe
   async function handleDelete() {
     if (!confirm('Delete this item? This cannot be undone.')) return
     setLoading(true)
-    const supabase = createClient()
-    await supabase.from(table).delete().eq('id', id)
-    router.push(redirect)
-    router.refresh()
+    try {
+      await adminDeleteRecord(table, id)
+      router.push(redirect)
+      router.refresh()
+    } catch {
+      alert('Failed to delete. Check console for details.')
+      setLoading(false)
+    }
   }
 
   return (

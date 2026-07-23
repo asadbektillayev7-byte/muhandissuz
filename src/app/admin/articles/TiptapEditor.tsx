@@ -5,18 +5,42 @@ import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import LinkExtension from '@tiptap/extension-link'
 import { useEffect } from 'react'
+import sanitizeHtml from 'sanitize-html'
+
+function sanitizeJson(nodes: any[]): any[] {
+  if (!nodes) return nodes
+  return nodes.map((node) => {
+    if (node.type === 'text' && node.text) {
+      return { ...node, text: sanitizeHtml(node.text, { allowedTags: [], allowedAttributes: {} }) }
+    }
+    if (node.href) {
+      const url = node.href.toLowerCase()
+      if (url.startsWith('javascript:') || url.startsWith('data:') || url.startsWith('vbscript:')) {
+        return { ...node, href: '' }
+      }
+    }
+    if (node.children) {
+      return { ...node, children: sanitizeJson(node.children) }
+    }
+    return node
+  })
+}
 
 export function TiptapEditor({ content, onChange }: { content: any; onChange: (json: any) => void }) {
   const editor = useEditor({
     extensions: [
       StarterKit,
       Underline,
-      LinkExtension.configure({ openOnClick: false }),
+      LinkExtension.configure({
+        openOnClick: false,
+        HTMLAttributes: { rel: 'noopener noreferrer nofollow', target: '_blank' },
+      }),
     ],
     content: content || '',
     onUpdate: ({ editor }) => {
       const json = editor.getJSON()
-      onChange(json)
+      const cleaned = sanitizeJson(json.content || [])
+      onChange({ type: 'doc', content: cleaned })
     },
   })
 
@@ -35,6 +59,11 @@ export function TiptapEditor({ content, onChange }: { content: any; onChange: (j
   const addLink = () => {
     const url = prompt('URL:')
     if (url) {
+      const cleaned = url.toLowerCase()
+      if (cleaned.startsWith('javascript:') || cleaned.startsWith('data:') || cleaned.startsWith('vbscript:')) {
+        alert('Invalid URL')
+        return
+      }
       editor.chain().focus().setLink({ href: url }).run()
     }
   }

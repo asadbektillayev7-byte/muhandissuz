@@ -16,11 +16,12 @@ const navItems = [
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
 
-  if (!session) {
-    redirect('/admin/login')
-  }
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) redirect('/admin/login')
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/admin/login')
 
   return (
     <div className="min-h-screen flex bg-background">

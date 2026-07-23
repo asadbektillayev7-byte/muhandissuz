@@ -4,7 +4,17 @@ type SerializedNode = {
   type: string
   children?: SerializedNode[]
   text?: string
+  href?: string
   [key: string]: unknown
+}
+
+function sanitizeUrl(url: string | undefined): string | undefined {
+  if (!url) return url
+  const lower = url.toLowerCase()
+  if (lower.startsWith('javascript:') || lower.startsWith('data:') || lower.startsWith('vbscript:')) {
+    return undefined
+  }
+  return url
 }
 
 export function renderRichText(nodes: SerializedNode[] | undefined): React.ReactNode {
@@ -31,6 +41,11 @@ function renderNode(node: SerializedNode, key: number): React.ReactNode {
       return <li key={key} className="mb-1">{node.children?.map((child, j) => renderNode(child, j))}</li>
     case 'quote':
       return <blockquote key={key} className="border-l-4 border-gray-300 pl-4 italic my-4">{node.children?.map((child, j) => renderNode(child, j))}</blockquote>
+    case 'link': {
+      const href = sanitizeUrl(node.href)
+      if (!href) return <React.Fragment key={key}>{node.children?.map((child, j) => renderNode(child, j))}</React.Fragment>
+      return <a key={key} href={href} target="_blank" rel="noopener noreferrer nofollow">{node.children?.map((child, j) => renderNode(child, j))}</a>
+    }
     default:
       return <React.Fragment key={key}>{node.text}</React.Fragment>
   }

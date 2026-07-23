@@ -3,12 +3,21 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { DeleteButton } from '../DeleteButton'
+import { adminInsertMedia } from '@/lib/actions'
+
+const MAX_FILE_SIZE = 50 * 1024 * 1024
+const ALLOWED_TYPES = [
+  'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml',
+  'video/mp4', 'video/webm',
+]
 
 export default function AdminMediaPage() {
   const [media, setMedia] = useState<any[]>([])
   const [file, setFile] = useState<File | null>(null)
-  const [description, setDescription] = useState('')
+  const [descriptionUz, setDescriptionUz] = useState('')
+  const [descriptionEn, setDescriptionEn] = useState('')
   const [uploading, setUploading] = useState(false)
+  const [validationError, setValidationError] = useState('')
   const supabase = createClient()
 
   useEffect(() => {
@@ -17,8 +26,28 @@ export default function AdminMediaPage() {
     })
   }, [])
 
+  function validateFile(f: File): string | null {
+    if (!ALLOWED_TYPES.includes(f.type)) {
+      return `Invalid file type: ${f.type}. Allowed: ${ALLOWED_TYPES.join(', ')}`
+    }
+    if (f.size > MAX_FILE_SIZE) {
+      return `File too large: ${(f.size / 1024 / 1024).toFixed(1)}MB. Max: 50MB`
+    }
+    return null
+  }
+
   async function handleUpload() {
+    setValidationError('')
     if (!file) return
+    const validationErr = validateFile(file)
+    if (validationErr) {
+      setValidationError(validationErr)
+      return
+    }
+    if (!descriptionUz.trim() && !descriptionEn.trim()) {
+      if (!confirm('Alt text is empty. Upload anyway?')) return
+    }
+
     setUploading(true)
 
     const ext = file.name.split('.').pop()
@@ -38,17 +67,25 @@ export default function AdminMediaPage() {
       .from('media')
       .getPublicUrl(filename)
 
-    await supabase.from('media').insert({
-      filename,
-      url: publicUrl,
-      thumbnail_url: publicUrl,
-      alt_uz: description,
-      alt_en: description,
-      mime_type: file.type,
-    })
+    try {
+      await adminInsertMedia({
+        filename,
+        url: publicUrl,
+        thumbnail_url: publicUrl,
+        alt_uz: descriptionUz,
+        alt_en: descriptionEn,
+        mime_type: file.type,
+        filesize: file.size,
+      })
+    } catch (e: any) {
+      alert('DB insert failed: ' + (e?.message || 'Unknown error'))
+      setUploading(false)
+      return
+    }
 
     setFile(null)
-    setDescription('')
+    setDescriptionUz('')
+    setDescriptionEn('')
     setUploading(false)
 
     const { data } = await supabase.from('media').select('*').order('created_at', { ascending: false })
@@ -61,22 +98,41 @@ export default function AdminMediaPage() {
 
       <div className="border border-border p-4 mb-6" style={{ borderRadius: 'var(--radius)' }}>
         <h2 className="text-sm font-semibold mb-3">Upload New</h2>
+
+        {validationError && (
+          <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm p-3 rounded mb-3">
+            {validationError}
+          </div>
+        )}
+
         <div className="flex flex-wrap gap-3 items-end">
           <div>
-            <label className="block text-xs text-muted-foreground mb-1">File</label>
+            <label className="block text-xs text-muted-foreground mb-1">File (max 50MB, jpg/png/webp/gif/svg/mp4/webm)</label>
             <input
               type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml,video/mp4,video/webm"
               onChange={(e) => setFile(e.target.files?.[0] || null)}
               className="text-sm"
             />
           </div>
           <div>
-            <label className="block text-xs text-muted-foreground mb-1">Description</label>
+            <label className="block text-xs text-muted-foreground mb-1">Alt text (UZ)</label>
             <input
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={descriptionUz}
+              onChange={(e) => setDescriptionUz(e.target.value)}
               className="border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
               style={{ borderRadius: 'var(--radius)' }}
+              placeholder="Tasvir nomi"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-muted-foreground mb-1">Alt text (EN)</label>
+            <input
+              value={descriptionEn}
+              onChange={(e) => setDescriptionEn(e.target.value)}
+              className="border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
+              style={{ borderRadius: 'var(--radius)' }}
+              placeholder="Image name"
             />
           </div>
           <button
@@ -100,6 +156,7 @@ export default function AdminMediaPage() {
             )}
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
               <span className="text-white text-xs text-center truncate w-full">{item.alt_uz || item.filename}</span>
+              <span className="text-white/60 text-[10px] truncate w-full text-center">{item.mime_type} {item.filesize ? `(${(item.filesize / 1024).toFixed(0)}KB)` : ''}</span>
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(item.url)

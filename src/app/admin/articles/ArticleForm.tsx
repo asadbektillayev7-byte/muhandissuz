@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { adminSaveArticle, adminCheckSlug } from '@/lib/actions'
 import { TiptapEditor } from './TiptapEditor'
 
 type Article = {
@@ -22,6 +22,26 @@ type Article = {
   published_date?: string
   tags?: any
   published?: boolean
+  meta_description_uz?: string
+  meta_description_en?: string
+  og_image_url?: string
+}
+
+function slugify(text: string): string {
+  const map: Record<string, string> = {
+    'o‘': 'o', "o'": 'o', 'O‘': 'o', "O'": 'o', 'g‘': 'g', "g'": 'g',
+    'G‘': 'g', "G'": 'g', 'sh': 'sh', 'Sh': 'sh', 'SH': 'sh',
+    'ch': 'ch', 'Ch': 'ch', 'CH': 'ch', '‘': '', "'": '',
+  }
+  let s = text.toLowerCase()
+  for (const [k, v] of Object.entries(map)) {
+    s = s.replaceAll(k, v)
+  }
+  return s
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
 }
 
 export function ArticleForm({
@@ -35,6 +55,8 @@ export function ArticleForm({
 }) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(false)
   const [form, setForm] = useState({
     title_uz: article?.title_uz || '',
     title_en: article?.title_en || '',
@@ -43,6 +65,9 @@ export function ArticleForm({
     excerpt_uz: article?.excerpt_uz || '',
     excerpt_en: article?.excerpt_en || '',
     cover_image_url: article?.cover_image_url || '',
+    meta_description_uz: article?.meta_description_uz || '',
+    meta_description_en: article?.meta_description_en || '',
+    og_image_url: article?.og_image_url || '',
     original_language: article?.original_language || 'uz',
     author_id: article?.author_id || null,
     translator_id: article?.translator_id || null,
@@ -52,34 +77,92 @@ export function ArticleForm({
   const [bodyUz, setBodyUz] = useState<any>(article?.body_uz || null)
   const [bodyEn, setBodyEn] = useState<any>(article?.body_en || null)
 
-  const handleChange = (field: string, value: any) => {
-    setForm(prev => ({ ...prev, [field]: value }))
-  }
+  const handleChange = useCallback((field: string, value: any) => {
+    setForm(prev => {
+      const next = { ...prev, [field]: value }
+      if (field === 'title_uz' && !slugManuallyEdited && value) {
+        const slug = slugify(value)
+        if (slug) next.slug = slug
+      }
+      return next
+    })
+  }, [slugManuallyEdited])
+
+  const handleSlugChange = useCallback((value: string) => {
+    setSlugManuallyEdited(true)
+    setForm(prev => ({ ...prev, slug: value }))
+  }, [])
+
+  const getEmptyBilingual = useCallback((): string[] => {
+    const warnings: string[] = []
+    if (!!form.title_uz?.trim() !== !!form.title_en?.trim()) {
+      if (!form.title_uz?.trim()) warnings.push('Title (UZ)')
+      if (!form.title_en?.trim()) warnings.push('Title (EN)')
+    }
+    if (!!form.excerpt_uz?.trim() !== !!form.excerpt_en?.trim()) {
+      if (!form.excerpt_uz?.trim()) warnings.push('Excerpt (UZ)')
+      if (!form.excerpt_en?.trim()) warnings.push('Excerpt (EN)')
+    }
+    const hasBodyUz = bodyUz?.content?.length > 0
+    const hasBodyEn = bodyEn?.content?.length > 0
+    if (hasBodyUz !== hasBodyEn) {
+      if (!hasBodyUz) warnings.push('Body (UZ)')
+      if (!hasBodyEn) warnings.push('Body (EN)')
+    }
+    return warnings
+  }, [form, bodyUz, bodyEn])
 
   const handleSave = async () => {
+    setError('')
+
+    const empty = getEmptyBilingual()
+    if (empty.length > 0) {
+      if (!confirm(`Warning: missing translations for: ${empty.join(', ')}. Save anyway?`)) return
+    }
+
+    if (slugManuallyEdited && form.slug) {
+      const exists = await adminCheckSlug(form.slug, 'articles', article?.id)
+      if (exists) {
+        if (!confirm(`Slug "${form.slug}" already exists. Save anyway?`)) return
+      }
+    }
+
     setSaving(true)
-    const supabase = createClient()
-    const data = {
-      ...form,
-      body_uz: bodyUz,
-      body_en: bodyEn,
-      published_date: new Date(form.published_date).toISOString(),
-      tags: [],
+    try {
+      await adminSaveArticle(
+        {
+          ...form,
+          body_uz: bodyUz,
+          body_en: bodyEn,
+          published_date: new Date(form.published_date).toISOString(),
+          tags: [],
+        },
+        article?.id,
+      )
+      router.push('/admin/articles')
+      router.refresh()
+    } catch (e: any) {
+      setError(e?.message || 'Save failed')
+      setSaving(false)
     }
-
-    if (article?.id) {
-      await supabase.from('articles').update(data).eq('id', article.id)
-    } else {
-      await supabase.from('articles').insert(data)
-    }
-
-    setSaving(false)
-    router.push('/admin/articles')
-    router.refresh()
   }
+
+  const emptyBilingual = getEmptyBilingual()
 
   return (
     <div className="space-y-4">
+      {emptyBilingual.length > 0 && (
+        <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200 text-sm p-3 rounded">
+          ⚠ Missing translations: {emptyBilingual.join(', ')}
+        </div>
+      )}
+
+      {error && (
+        <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm p-3 rounded">
+          {error}
+        </div>
+      )}
+
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium mb-1">Title (UZ)</label>
@@ -106,13 +189,36 @@ export function ArticleForm({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium mb-1">Slug</label>
-          <input
-            value={form.slug}
-            onChange={(e) => handleChange('slug', e.target.value)}
-            className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-            style={{ borderRadius: 'var(--radius)' }}
-            required
-          />
+          <div className="flex gap-2">
+            <input
+              value={form.slug}
+              onChange={(e) => handleSlugChange(e.target.value)}
+              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
+              style={{ borderRadius: 'var(--radius)' }}
+              required
+            />
+            {!slugManuallyEdited && form.title_uz && (
+              <button
+                type="button"
+                onClick={() => setSlugManuallyEdited(true)}
+                className="text-xs text-chart-2 hover:underline shrink-0 self-center"
+              >
+                Edit
+              </button>
+            )}
+            {slugManuallyEdited && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSlugManuallyEdited(false)
+                  handleChange('title_uz', form.title_uz)
+                }}
+                className="text-xs text-chart-2 hover:underline shrink-0 self-center"
+              >
+                Auto
+              </button>
+            )}
+          </div>
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Category</label>
@@ -163,6 +269,52 @@ export function ArticleForm({
           placeholder="https://..."
         />
       </div>
+
+      <hr className="border-border" />
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">Meta Description (UZ){" "}
+            <span className="text-muted-foreground">(SEO)</span>
+          </label>
+          <textarea
+            value={form.meta_description_uz}
+            onChange={(e) => handleChange('meta_description_uz', e.target.value)}
+            rows={2}
+            maxLength={160}
+            className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 resize-none"
+            style={{ borderRadius: 'var(--radius)' }}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">Meta Description (EN){" "}
+            <span className="text-muted-foreground">(SEO)</span>
+          </label>
+          <textarea
+            value={form.meta_description_en}
+            onChange={(e) => handleChange('meta_description_en', e.target.value)}
+            rows={2}
+            maxLength={160}
+            className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 resize-none"
+            style={{ borderRadius: 'var(--radius)' }}
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">OG Image URL{" "}
+          <span className="text-muted-foreground">(social sharing)</span>
+        </label>
+        <input
+          value={form.og_image_url}
+          onChange={(e) => handleChange('og_image_url', e.target.value)}
+          className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
+          style={{ borderRadius: 'var(--radius)' }}
+          placeholder="https://..."
+        />
+      </div>
+
+      <hr className="border-border" />
 
       <div>
         <label className="block text-sm font-medium mb-1">Body (UZ)</label>
@@ -222,6 +374,16 @@ export function ArticleForm({
           />
           Published
         </label>
+        {!form.published && article?.id && (
+          <a
+            href={`/${form.original_language}/articles/${form.slug}?preview=true`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-chart-2 hover:underline"
+          >
+            Preview draft
+          </a>
+        )}
       </div>
 
       <div className="flex gap-3 pt-2">

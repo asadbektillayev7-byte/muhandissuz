@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { checkRateLimit, recordLoginAttempt, clearLoginAttempts } from '@/lib/actions'
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('')
@@ -10,11 +11,22 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const checkingRef = useRef(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (checkingRef.current) return
+    checkingRef.current = true
     setLoading(true)
     setError('')
+
+    const { blocked } = await checkRateLimit()
+    if (blocked) {
+      setError('Too many attempts. Try again in 15 minutes.')
+      setLoading(false)
+      checkingRef.current = false
+      return
+    }
 
     const supabase = createClient()
     const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -23,11 +35,14 @@ export default function AdminLoginPage() {
     })
 
     if (signInError) {
-      setError(signInError.message)
+      await recordLoginAttempt()
+      setError(signInError.message === 'Invalid login credentials' ? 'Email yoki parol noto\'g\'ri' : signInError.message)
       setLoading(false)
+      checkingRef.current = false
       return
     }
 
+    await clearLoginAttempts()
     router.push('/admin')
     router.refresh()
   }
@@ -65,7 +80,7 @@ export default function AdminLoginPage() {
             </div>
 
             {error && (
-              <p className="text-sm text-red-500">{error === 'Invalid login credentials' ? 'Email yoki parol noto\'g\'ri' : error}</p>
+              <p className="text-sm text-red-500">{error}</p>
             )}
 
             <button
