@@ -11,7 +11,7 @@ export function Header() {
   const locale = (params.locale as string) || 'uz'
 
   return (
-    <header className="border-b border-border">
+    <header>
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
         <Link href={`/${locale}`} className="flex items-center gap-2">
           <Logo />
