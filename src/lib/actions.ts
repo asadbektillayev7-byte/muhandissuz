@@ -108,6 +108,14 @@ export async function adminInsertMedia(data: {
   alt_en: string
   mime_type: string
   filesize: number
+  title_uz?: string
+  title_en?: string
+  location_uz?: string
+  location_en?: string
+  description_uz?: string
+  description_en?: string
+  event_date?: string
+  poster_url?: string
 }) {
   await getAdminUser()
   const admin = createAdminClient()

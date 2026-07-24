@@ -16,6 +16,13 @@ export default function AdminMediaPage() {
   const [file, setFile] = useState<File | null>(null)
   const [descriptionUz, setDescriptionUz] = useState('')
   const [descriptionEn, setDescriptionEn] = useState('')
+  const [titleUz, setTitleUz] = useState('')
+  const [titleEn, setTitleEn] = useState('')
+  const [locationUz, setLocationUz] = useState('')
+  const [locationEn, setLocationEn] = useState('')
+  const [eventDate, setEventDate] = useState('')
+  const [fullDescriptionUz, setFullDescriptionUz] = useState('')
+  const [fullDescriptionEn, setFullDescriptionEn] = useState('')
   const [uploading, setUploading] = useState(false)
   const [validationError, setValidationError] = useState('')
   const supabase = createClient()
@@ -74,6 +81,13 @@ export default function AdminMediaPage() {
         thumbnail_url: publicUrl,
         alt_uz: descriptionUz,
         alt_en: descriptionEn,
+        title_uz: titleUz || undefined,
+        title_en: titleEn || undefined,
+        location_uz: locationUz || undefined,
+        location_en: locationEn || undefined,
+        description_uz: fullDescriptionUz || undefined,
+        description_en: fullDescriptionEn || undefined,
+        event_date: eventDate || undefined,
         mime_type: file.type,
         filesize: file.size,
       })
@@ -86,6 +100,13 @@ export default function AdminMediaPage() {
     setFile(null)
     setDescriptionUz('')
     setDescriptionEn('')
+    setTitleUz('')
+    setTitleEn('')
+    setLocationUz('')
+    setLocationEn('')
+    setEventDate('')
+    setFullDescriptionUz('')
+    setFullDescriptionEn('')
     setUploading(false)
 
     const { data } = await supabase.from('media').select('*').order('created_at', { ascending: false })
@@ -135,6 +156,40 @@ export default function AdminMediaPage() {
               placeholder="Image name"
             />
           </div>
+        </div>
+        <div className="flex flex-wrap gap-3 items-end mt-3">
+          <div>
+            <label className="block text-xs text-muted-foreground mb-1">Title (UZ)</label>
+            <input value={titleUz} onChange={(e) => setTitleUz(e.target.value)} className="border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2" style={{ borderRadius: 'var(--radius)' }} placeholder="Tadbir nomi" />
+          </div>
+          <div>
+            <label className="block text-xs text-muted-foreground mb-1">Title (EN)</label>
+            <input value={titleEn} onChange={(e) => setTitleEn(e.target.value)} className="border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2" style={{ borderRadius: 'var(--radius)' }} placeholder="Event name" />
+          </div>
+          <div>
+            <label className="block text-xs text-muted-foreground mb-1">Location (UZ)</label>
+            <input value={locationUz} onChange={(e) => setLocationUz(e.target.value)} className="border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2" style={{ borderRadius: 'var(--radius)' }} placeholder="Toshkent" />
+          </div>
+          <div>
+            <label className="block text-xs text-muted-foreground mb-1">Location (EN)</label>
+            <input value={locationEn} onChange={(e) => setLocationEn(e.target.value)} className="border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2" style={{ borderRadius: 'var(--radius)' }} placeholder="Tashkent" />
+          </div>
+          <div>
+            <label className="block text-xs text-muted-foreground mb-1">Event Date</label>
+            <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} className="border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2" style={{ borderRadius: 'var(--radius)' }} />
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3 mt-3">
+          <div className="flex-1 min-w-[200px]">
+            <label className="block text-xs text-muted-foreground mb-1">Full description (UZ)</label>
+            <textarea value={fullDescriptionUz} onChange={(e) => setFullDescriptionUz(e.target.value)} className="border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 w-full" style={{ borderRadius: 'var(--radius)' }} rows={2} placeholder="Tadbir haqida batafsil..." />
+          </div>
+          <div className="flex-1 min-w-[200px]">
+            <label className="block text-xs text-muted-foreground mb-1">Full description (EN)</label>
+            <textarea value={fullDescriptionEn} onChange={(e) => setFullDescriptionEn(e.target.value)} className="border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 w-full" style={{ borderRadius: 'var(--radius)' }} rows={2} placeholder="Detailed event writeup..." />
+          </div>
+        </div>
+        <div className="flex mt-3">
           <button
             onClick={handleUpload}
             disabled={!file || uploading}

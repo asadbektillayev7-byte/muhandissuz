@@ -1,0 +1,9 @@
+-- Migration v3: Extend media table with event context fields
+ALTER TABLE media ADD COLUMN IF NOT EXISTS event_date DATE;
+ALTER TABLE media ADD COLUMN IF NOT EXISTS location_en TEXT;
+ALTER TABLE media ADD COLUMN IF NOT EXISTS location_uz TEXT;
+ALTER TABLE media ADD COLUMN IF NOT EXISTS title_en TEXT;
+ALTER TABLE media ADD COLUMN IF NOT EXISTS title_uz TEXT;
+ALTER TABLE media ADD COLUMN IF NOT EXISTS description_en TEXT;
+ALTER TABLE media ADD COLUMN IF NOT EXISTS description_uz TEXT;
+ALTER TABLE media ADD COLUMN IF NOT EXISTS poster_url TEXT;
