@@ -6,3 +6,4 @@ dist/
 public/uploads/
 public/media/
 .vercel
+supabase/.temp/
