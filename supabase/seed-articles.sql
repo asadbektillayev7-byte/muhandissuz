@@ -71,7 +71,7 @@ FROM categories c, (SELECT id FROM authors WHERE name = 'Demo Content') a
 WHERE c.slug = 'environmental-engineering';
 
 INSERT INTO articles (title_uz, title_en, slug, category_id, excerpt_uz, excerpt_en, cover_image_url, author_id, published, tags)
-SELECT 'Oqova suvlarni tozalash texnologiyalari', 'Wastewater Treatment Technologies', 'wastewater-treatment-tech', c.id, 'Membran bioreaktorlar, aktivated loy va boshqa zamonaviy tozalash usullari haqida.', 'Membrane bioreactors, activated sludge, and other modern treatment methods.', 'https://images.unsplash.com/photo-1466611653917-95081537e5b7?w=800&q=80', a.id, true, '["demo"]'
+SELECT 'Oqova suvlarni tozalash texnologiyalari', 'Wastewater Treatment Technologies', 'wastewater-treatment-tech', c.id, 'Membran bioreaktorlar, aktivated loy va boshqa zamonaviy tozalash usullari haqida.', 'Membrane bioreactors, activated sludge, and other modern treatment methods.', 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&q=80', a.id, true, '["demo"]'
 FROM categories c, (SELECT id FROM authors WHERE name = 'Demo Content') a
 WHERE c.slug = 'environmental-engineering';
 

@@ -156,10 +156,11 @@ export function ArticleCard({ article, locale }: { article: any; locale: string 
         </div>
 
         <div
-          className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+          className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(to top, var(--background), transparent 60%)',
-            opacity: isHovered ? 0.92 : 0,
+            background: 'linear-gradient(to top, rgba(0,0,0,0.65), transparent 60%)',
+            opacity: isHovered ? 1 : 0,
+            transition: 'opacity 0.3s ease',
           }}
         />
 
@@ -171,20 +172,28 @@ export function ArticleCard({ article, locale }: { article: any; locale: string 
           <ArrowUpRight className="w-5 h-5" style={{ color: 'var(--chart-2)' }} />
         </motion.div>
 
-        <motion.div
-          className="absolute bottom-0 left-0 right-0 p-4"
-          animate={{ y: isHovered ? 0 : 16, opacity: isHovered ? 1 : 0.7 }}
-          transition={{ duration: 0.3 }}
-        >
+        <div className="absolute bottom-0 left-0 right-0 p-4">
           {categoryName && (
-            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--chart-2)' }}>
+            <motion.span
+              className="text-xs font-semibold uppercase tracking-wider block"
+              style={{ color: 'var(--chart-2)' }}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: isHovered ? 0 : 20, opacity: isHovered ? 1 : 0 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.05 }}
+            >
               {categoryName}
-            </span>
+            </motion.span>
           )}
-          <h3 className="text-sm font-semibold mt-1.5 line-clamp-2 leading-snug" style={{ color: 'var(--foreground)' }}>
+          <motion.h3
+            className="text-sm font-semibold mt-1.5 line-clamp-2 leading-snug"
+            style={{ color: 'var(--foreground)' }}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: isHovered ? 0 : 20, opacity: isHovered ? 1 : 0 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+          >
             {title}
-          </h3>
-        </motion.div>
+          </motion.h3>
+        </div>
 
         <canvas
           ref={canvasRef}
