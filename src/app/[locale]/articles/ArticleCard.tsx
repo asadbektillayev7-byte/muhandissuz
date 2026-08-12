@@ -142,7 +142,7 @@ export function ArticleCard({ article, locale }: { article: any; locale: string 
           border: '1px solid var(--border)',
           borderRadius: 'var(--radius)',
         }}
-        className="relative overflow-hidden cursor-pointer group"
+        className="relative overflow-hidden cursor-pointer group border border-transparent transition-colors duration-200 hover:border-accent"
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={handleMouseLeave}

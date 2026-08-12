@@ -33,8 +33,8 @@ export default async function HomePage({
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden max-w-6xl mx-auto px-4 py-16 md:py-24">
-        <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
+      <section className="relative overflow-hidden max-w-6xl mx-auto px-4 py-10 md:py-14">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-10 items-center relative z-10">
           <div>
             <h1
               className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 whitespace-pre-line"
@@ -42,20 +42,20 @@ export default async function HomePage({
             >
               {content.headline}
             </h1>
-            <p className="font-display text-muted-foreground mb-8 max-w-md">
+            <p className="font-display text-muted-foreground mb-6 max-w-md">
               {content.support}
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
                 href={content.ctaPrimaryHref}
-                className="px-5 py-2.5 text-sm font-medium bg-foreground text-background hover:opacity-90 transition-opacity"
+                className="px-5 py-2.5 text-sm font-semibold bg-accent text-white transition-all duration-150 hover:bg-accent-hover hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
                 style={{ borderRadius: 'var(--radius)' }}
               >
                 {content.ctaPrimary}
               </Link>
               <Link
                 href={content.ctaSecondaryHref}
-                className="px-5 py-2.5 text-sm font-medium border border-border text-foreground hover:border-chart-2 hover:text-chart-2 transition-colors"
+                className="px-5 py-2.5 text-sm font-semibold border border-border bg-transparent text-foreground transition-all duration-150 hover:border-accent hover:text-accent hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
                 style={{ borderRadius: 'var(--radius)' }}
               >
                 {content.ctaSecondary}
