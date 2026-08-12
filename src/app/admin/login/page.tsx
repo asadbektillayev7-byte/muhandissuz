@@ -20,31 +20,35 @@ export default function AdminLoginPage() {
     setLoading(true)
     setError('')
 
-    const { blocked } = await checkRateLimit()
-    if (blocked) {
-      setError('Too many attempts. Try again in 15 minutes.')
+    try {
+      const { blocked } = await checkRateLimit()
+      if (blocked) {
+        setError('Too many attempts. Try again in 15 minutes.')
+        return
+      }
+
+      const supabase = createClient()
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (signInError) {
+        await recordLoginAttempt()
+        setError(signInError.message === 'Invalid login credentials' ? 'Email yoki parol noto\'g\'ri' : signInError.message)
+        return
+      }
+
+      await clearLoginAttempts()
+      router.push('/admin')
+      router.refresh()
+    } catch (err: any) {
+      // Without this the button sticks on "Kirilmoqda..." forever.
+      setError(err?.message || 'Kirishda xatolik yuz berdi. Qayta urinib ko\'ring.')
+    } finally {
       setLoading(false)
       checkingRef.current = false
-      return
     }
-
-    const supabase = createClient()
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (signInError) {
-      await recordLoginAttempt()
-      setError(signInError.message === 'Invalid login credentials' ? 'Email yoki parol noto\'g\'ri' : signInError.message)
-      setLoading(false)
-      checkingRef.current = false
-      return
-    }
-
-    await clearLoginAttempts()
-    router.push('/admin')
-    router.refresh()
   }
 
   return (

@@ -22,28 +22,43 @@ async function getAdminUser() {
 
 // ── Rate limiting (no auth required) ──
 
+// Rate limiting is best-effort. If it fails (missing service-role key,
+// network trouble, missing table) it must never prevent signing in.
+
 export async function checkRateLimit(): Promise<{ blocked: boolean }> {
-  const ip = await getClientIp()
-  const admin = createAdminClient()
-  const cutoff = new Date(Date.now() - 15 * 60 * 1000).toISOString()
-  const { count } = await admin
-    .from('login_attempts')
-    .select('*', { count: 'exact', head: true })
-    .eq('ip_address', ip)
-    .gte('attempted_at', cutoff)
-  return { blocked: (count || 0) >= 5 }
+  try {
+    const ip = await getClientIp()
+    const admin = createAdminClient()
+    const cutoff = new Date(Date.now() - 15 * 60 * 1000).toISOString()
+    const { count } = await admin
+      .from('login_attempts')
+      .select('*', { count: 'exact', head: true })
+      .eq('ip_address', ip)
+      .gte('attempted_at', cutoff)
+    return { blocked: (count || 0) >= 5 }
+  } catch {
+    return { blocked: false }
+  }
 }
 
 export async function recordLoginAttempt() {
-  const ip = await getClientIp()
-  const admin = createAdminClient()
-  await admin.from('login_attempts').insert({ ip_address: ip, attempted_at: new Date().toISOString() })
+  try {
+    const ip = await getClientIp()
+    const admin = createAdminClient()
+    await admin.from('login_attempts').insert({ ip_address: ip, attempted_at: new Date().toISOString() })
+  } catch {
+    // ignored
+  }
 }
 
 export async function clearLoginAttempts() {
-  const ip = await getClientIp()
-  const admin = createAdminClient()
-  await admin.from('login_attempts').delete().eq('ip_address', ip)
+  try {
+    const ip = await getClientIp()
+    const admin = createAdminClient()
+    await admin.from('login_attempts').delete().eq('ip_address', ip)
+  } catch {
+    // ignored
+  }
 }
 
 // ── Admin record CRUD ──
