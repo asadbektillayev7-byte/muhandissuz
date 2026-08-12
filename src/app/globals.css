@@ -74,7 +74,6 @@
   --destructive-foreground: #ffffff;
   --sidebar-accent-foreground: #333333;
   --sidebar-primary-foreground: #ffffff;
-  --font-display: "Colus", "Space Grotesk", sans-serif;
 }
 
 .dark {
@@ -113,7 +112,6 @@
   --destructive-foreground: #ffffff;
   --sidebar-accent-foreground: #d9d9d9;
   --sidebar-primary-foreground: #1a1a1a;
-  --font-display: "Colus", "Space Grotesk", sans-serif;
 }
 
 body {
@@ -125,4 +123,10 @@ body {
 ::selection {
   background: var(--chart-2);
   color: var(--primary-foreground);
+}
+
+/* Display face, opt-in only. Applied by hand to the hero and landing
+   section headings — never set on body, article, quiz or admin text. */
+.font-display {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
 }

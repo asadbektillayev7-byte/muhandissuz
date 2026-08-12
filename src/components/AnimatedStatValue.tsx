@@ -50,7 +50,7 @@ export function AnimatedStatValue({ value, label }: { value: number; label: stri
         <span className="inline-block w-1.5 h-1.5 rounded-full bg-chart-2 mr-1.5 align-middle animate-pulse" />
         <span className="align-middle">{displayed}</span>
       </div>
-      <div className="text-xs font-mono text-muted-foreground mt-0.5 tracking-wider uppercase">
+      <div className="text-xs font-display text-muted-foreground mt-0.5 tracking-wider uppercase">
         {label}
       </div>
     </div>

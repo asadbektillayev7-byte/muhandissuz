@@ -12,7 +12,7 @@ export function Header() {
 
   return (
     <header>
-      <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
         <Link href={`/${locale}`} className="flex items-center gap-2">
           <Logo />
         </Link>

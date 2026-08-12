@@ -20,9 +20,14 @@ export function Logo({ className }: { className?: string }) {
 
   return (
     <img
-      src={isDark ? '/logo/muhandis-logo-white.png' : '/logo/muhandis-logo-black.png'}
+      src="/logo/muhandis-logo.svg"
       alt="Muhandiss.uz"
-      className={cn('h-12 w-auto shrink-0', className)}
+      width={340}
+      height={160}
+      fetchPriority="high"
+      // The SVG is dark-on-transparent; invert it for the dark theme.
+      style={isDark ? { filter: 'invert(1)' } : undefined}
+      className={cn('h-8 sm:h-10 md:h-12 w-auto shrink-0', className)}
     />
   )
 }

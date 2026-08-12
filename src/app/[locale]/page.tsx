@@ -37,12 +37,12 @@ export default async function HomePage({
         <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
           <div>
             <h1
-              className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 whitespace-pre-line"
+              className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 whitespace-pre-line"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               {content.headline}
             </h1>
-            <p className="text-muted-foreground mb-8 max-w-md">
+            <p className="font-display text-muted-foreground mb-8 max-w-md">
               {content.support}
             </p>
             <div className="flex flex-wrap gap-3">
@@ -73,7 +73,7 @@ export default async function HomePage({
 
       {/* Partners */}
       <section className="max-w-6xl mx-auto px-4 py-12">
-        <h2 className="text-2xl font-semibold mb-6">
+        <h2 className="font-display text-2xl font-semibold mb-6">
           {locale === 'uz' ? 'Hamkorlarimiz' : 'Our Partners'}
         </h2>
         <PartnerMarquee partners={partners} />

@@ -2,6 +2,7 @@ import { Header } from '@/components/Header'
 import { MinimalFooter } from '@/components/MinimalFooter'
 import { BottomNav } from '@/components/BottomNav'
 import type { Metadata } from 'next'
+import { switzer } from '../fonts'
 
 export async function generateMetadata({
   params,
@@ -55,7 +56,7 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params
   return (
-    <html lang={locale}>
+    <html lang={locale} className={switzer.variable}>
       <body className="min-h-screen flex flex-col pb-20">
         <Header />
         <main className="flex-1">{children}</main>
