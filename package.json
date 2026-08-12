@@ -8,7 +8,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "migrate-data": "npx tsx scripts/migrate-data.ts"
+    "migrate-data": "npx tsx scripts/migrate-data.ts",
+    "create-admin": "npx tsx scripts/create-admin.ts"
   },
   "engines": {
     "node": ">=20"

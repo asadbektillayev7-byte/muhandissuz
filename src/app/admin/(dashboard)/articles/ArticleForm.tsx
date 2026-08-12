@@ -94,21 +94,14 @@ export function ArticleForm({
   }, [])
 
   const getEmptyBilingual = useCallback((): string[] => {
+    // Uzbek is the authoring language; English is optional and falls back to
+    // Uzbek on the public site. Only flag a missing Uzbek side.
     const warnings: string[] = []
-    if (!!form.title_uz?.trim() !== !!form.title_en?.trim()) {
-      if (!form.title_uz?.trim()) warnings.push('Title (UZ)')
-      if (!form.title_en?.trim()) warnings.push('Title (EN)')
-    }
-    if (!!form.excerpt_uz?.trim() !== !!form.excerpt_en?.trim()) {
-      if (!form.excerpt_uz?.trim()) warnings.push('Excerpt (UZ)')
-      if (!form.excerpt_en?.trim()) warnings.push('Excerpt (EN)')
-    }
+    if (form.title_en?.trim() && !form.title_uz?.trim()) warnings.push('Title (UZ)')
+    if (form.excerpt_en?.trim() && !form.excerpt_uz?.trim()) warnings.push('Excerpt (UZ)')
     const hasBodyUz = bodyUz?.content?.length > 0
     const hasBodyEn = bodyEn?.content?.length > 0
-    if (hasBodyUz !== hasBodyEn) {
-      if (!hasBodyUz) warnings.push('Body (UZ)')
-      if (!hasBodyEn) warnings.push('Body (EN)')
-    }
+    if (hasBodyEn && !hasBodyUz) warnings.push('Body (UZ)')
     return warnings
   }, [form, bodyUz, bodyEn])
 
@@ -163,27 +156,15 @@ export function ArticleForm({
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Title (UZ)</label>
-          <input
-            value={form.title_uz}
-            onChange={(e) => handleChange('title_uz', e.target.value)}
-            className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-            style={{ borderRadius: 'var(--radius)' }}
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Title (EN)</label>
-          <input
-            value={form.title_en}
-            onChange={(e) => handleChange('title_en', e.target.value)}
-            className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-            style={{ borderRadius: 'var(--radius)' }}
-            required
-          />
-        </div>
+      <div>
+        <label className="block text-sm font-medium mb-1">Title</label>
+        <input
+          value={form.title_uz}
+          onChange={(e) => handleChange('title_uz', e.target.value)}
+          className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
+          style={{ borderRadius: 'var(--radius)' }}
+          required
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -236,27 +217,15 @@ export function ArticleForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Excerpt (UZ)</label>
-          <textarea
-            value={form.excerpt_uz}
-            onChange={(e) => handleChange('excerpt_uz', e.target.value)}
-            rows={3}
-            className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 resize-none"
-            style={{ borderRadius: 'var(--radius)' }}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Excerpt (EN)</label>
-          <textarea
-            value={form.excerpt_en}
-            onChange={(e) => handleChange('excerpt_en', e.target.value)}
-            rows={3}
-            className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 resize-none"
-            style={{ borderRadius: 'var(--radius)' }}
-          />
-        </div>
+      <div>
+        <label className="block text-sm font-medium mb-1">Excerpt</label>
+        <textarea
+          value={form.excerpt_uz}
+          onChange={(e) => handleChange('excerpt_uz', e.target.value)}
+          rows={3}
+          className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 resize-none"
+          style={{ borderRadius: 'var(--radius)' }}
+        />
       </div>
 
       <div>
@@ -272,33 +241,18 @@ export function ArticleForm({
 
       <hr className="border-border" />
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Meta Description (UZ){" "}
-            <span className="text-muted-foreground">(SEO)</span>
-          </label>
-          <textarea
-            value={form.meta_description_uz}
-            onChange={(e) => handleChange('meta_description_uz', e.target.value)}
-            rows={2}
-            maxLength={160}
-            className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 resize-none"
-            style={{ borderRadius: 'var(--radius)' }}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Meta Description (EN){" "}
-            <span className="text-muted-foreground">(SEO)</span>
-          </label>
-          <textarea
-            value={form.meta_description_en}
-            onChange={(e) => handleChange('meta_description_en', e.target.value)}
-            rows={2}
-            maxLength={160}
-            className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 resize-none"
-            style={{ borderRadius: 'var(--radius)' }}
-          />
-        </div>
+      <div>
+        <label className="block text-sm font-medium mb-1">Meta Description{" "}
+          <span className="text-muted-foreground">(SEO)</span>
+        </label>
+        <textarea
+          value={form.meta_description_uz}
+          onChange={(e) => handleChange('meta_description_uz', e.target.value)}
+          rows={2}
+          maxLength={160}
+          className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 resize-none"
+          style={{ borderRadius: 'var(--radius)' }}
+        />
       </div>
 
       <div>
@@ -317,14 +271,60 @@ export function ArticleForm({
       <hr className="border-border" />
 
       <div>
-        <label className="block text-sm font-medium mb-1">Body (UZ)</label>
+        <label className="block text-sm font-medium mb-1">Body</label>
         <TiptapEditor content={bodyUz} onChange={setBodyUz} />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium mb-1">Body (EN)</label>
-        <TiptapEditor content={bodyEn} onChange={setBodyEn} />
-      </div>
+      <details className="border border-border p-4" style={{ borderRadius: 'var(--radius)' }}>
+        <summary className="text-sm font-medium cursor-pointer select-none">
+          English override{" "}
+          <span className="font-normal text-muted-foreground">
+            (optional — leave empty and English is translated automatically)
+          </span>
+        </summary>
+
+        <div className="space-y-4 mt-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Title (EN)</label>
+            <input
+              value={form.title_en}
+              onChange={(e) => handleChange('title_en', e.target.value)}
+              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
+              style={{ borderRadius: 'var(--radius)' }}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Excerpt (EN)</label>
+            <textarea
+              value={form.excerpt_en}
+              onChange={(e) => handleChange('excerpt_en', e.target.value)}
+              rows={3}
+              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 resize-none"
+              style={{ borderRadius: 'var(--radius)' }}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Meta Description (EN){" "}
+              <span className="text-muted-foreground">(SEO)</span>
+            </label>
+            <textarea
+              value={form.meta_description_en}
+              onChange={(e) => handleChange('meta_description_en', e.target.value)}
+              rows={2}
+              maxLength={160}
+              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 resize-none"
+              style={{ borderRadius: 'var(--radius)' }}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Body (EN)</label>
+            <TiptapEditor content={bodyEn} onChange={setBodyEn} />
+          </div>
+        </div>
+      </details>
 
       <div className="grid grid-cols-3 gap-4">
         <div>

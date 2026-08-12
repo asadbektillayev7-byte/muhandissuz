@@ -4,6 +4,7 @@ import { StatsStrip } from '@/components/StatsStrip'
 import { DisciplineIndex } from '@/components/DisciplineIndex'
 import { PartnerMarquee } from '@/components/PartnerMarquee'
 import { TestimonialMarquee } from '@/components/TestimonialMarquee'
+import { getPartners } from '@/lib/supabase/queries'
 
 export default async function HomePage({
   params,
@@ -11,6 +12,7 @@ export default async function HomePage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+  const partners = await getPartners()
 
   const content = locale === 'uz' ? {
     headline: 'Muhandislik \nkelajakni \nquradi',
@@ -74,7 +76,7 @@ export default async function HomePage({
         <h2 className="text-2xl font-semibold mb-6">
           {locale === 'uz' ? 'Hamkorlarimiz' : 'Our Partners'}
         </h2>
-        <PartnerMarquee />
+        <PartnerMarquee partners={partners} />
       </section>
 
       {/* Disciplines */}

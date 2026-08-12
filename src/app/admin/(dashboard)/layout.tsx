@@ -17,9 +17,6 @@ const navItems = [
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
 
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) redirect('/admin/login')
-
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/admin/login')
 
@@ -37,7 +34,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </Link>
         ))}
         <div className="mt-auto pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground mb-2 truncate">{session.user.email}</p>
+          <p className="text-xs text-muted-foreground mb-2 truncate">{user.email}</p>
           <AdminLogoutButton />
         </div>
       </aside>

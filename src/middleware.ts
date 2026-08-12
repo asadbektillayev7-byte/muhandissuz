@@ -1,13 +1,26 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { updateSession } from '@/lib/supabase/middleware'
 
 const locales = ['uz', 'en']
 const defaultLocale = 'uz'
 
-export default function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (pathname.startsWith('/admin') || pathname.startsWith('/api') || pathname.startsWith('/_next') || pathname === '/favicon.ico' || pathname.startsWith('/logo/') || pathname.startsWith('/images/')) {
+  // Admin routes are not localised, but their auth cookies need refreshing.
+  if (pathname.startsWith('/admin')) {
+    // Send /admin to the dashboard here rather than from a Server Component.
+    // A component whose only job is to throw NEXT_REDIRECT breaks React's dev
+    // performance tracks ("cannot have a negative time stamp"), which kills the
+    // client-side navigation after login.
+    if (pathname === '/admin' || pathname === '/admin/') {
+      return NextResponse.redirect(new URL('/admin/articles', request.url))
+    }
+    return updateSession(request)
+  }
+
+  if (pathname.startsWith('/api') || pathname.startsWith('/_next') || pathname === '/favicon.ico' || pathname.startsWith('/logo/') || pathname.startsWith('/images/')) {
     return
   }
 

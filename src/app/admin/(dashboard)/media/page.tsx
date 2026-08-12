@@ -4,12 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { DeleteButton } from '../DeleteButton'
 import { adminInsertMedia } from '@/lib/actions'
-
-const MAX_FILE_SIZE = 50 * 1024 * 1024
-const ALLOWED_TYPES = [
-  'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml',
-  'video/mp4', 'video/webm',
-]
+import { accepts, resolveType, uploadToMediaBucket, validateFile } from '@/lib/upload'
 
 export default function AdminMediaPage() {
   const [media, setMedia] = useState<any[]>([])
@@ -33,16 +28,6 @@ export default function AdminMediaPage() {
     })
   }, [])
 
-  function validateFile(f: File): string | null {
-    if (!ALLOWED_TYPES.includes(f.type)) {
-      return `Invalid file type: ${f.type}. Allowed: ${ALLOWED_TYPES.join(', ')}`
-    }
-    if (f.size > MAX_FILE_SIZE) {
-      return `File too large: ${(f.size / 1024 / 1024).toFixed(1)}MB. Max: 50MB`
-    }
-    return null
-  }
-
   async function handleUpload() {
     setValidationError('')
     if (!file) return
@@ -57,22 +42,17 @@ export default function AdminMediaPage() {
 
     setUploading(true)
 
-    const ext = file.name.split('.').pop()
-    const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-
-    const { error: uploadError } = await supabase.storage
-      .from('media')
-      .upload(filename, file)
-
-    if (uploadError) {
-      alert('Upload failed: ' + uploadError.message)
+    let publicUrl: string
+    let filename: string
+    try {
+      const uploaded = await uploadToMediaBucket(supabase, file)
+      publicUrl = uploaded.url
+      filename = uploaded.filename
+    } catch (e: any) {
+      setValidationError(`Upload to storage failed: ${e?.message || 'unknown error'}`)
       setUploading(false)
       return
     }
-
-    const { data: { publicUrl } } = supabase.storage
-      .from('media')
-      .getPublicUrl(filename)
 
     try {
       await adminInsertMedia({
@@ -88,11 +68,11 @@ export default function AdminMediaPage() {
         description_uz: fullDescriptionUz || undefined,
         description_en: fullDescriptionEn || undefined,
         event_date: eventDate || undefined,
-        mime_type: file.type,
+        mime_type: resolveType(file),
         filesize: file.size,
       })
     } catch (e: any) {
-      alert('DB insert failed: ' + (e?.message || 'Unknown error'))
+      setValidationError(`Saving to the database failed: ${e?.message || 'unknown error'}`)
       setUploading(false)
       return
     }
@@ -128,11 +108,14 @@ export default function AdminMediaPage() {
 
         <div className="flex flex-wrap gap-3 items-end">
           <div>
-            <label className="block text-xs text-muted-foreground mb-1">File (max 50MB, jpg/png/webp/gif/svg/mp4/webm)</label>
+            <label className="block text-xs text-muted-foreground mb-1">File (images max 15MB, video max 200MB)</label>
             <input
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml,video/mp4,video/webm"
-              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              accept={accepts()}
+              onChange={(e) => {
+                setValidationError('')
+                setFile(e.target.files?.[0] || null)
+              }}
               className="text-sm"
             />
           </div>

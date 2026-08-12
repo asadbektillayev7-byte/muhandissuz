@@ -1,6 +1,7 @@
 export interface PartnerItem {
   name: string
   url: string
+  logo_url?: string | null
 }
 
 export const placeholderPartners: PartnerItem[] = [

@@ -28,7 +28,7 @@ export default async function PartnersPage({
 
       <section className="mb-16">
         <h2 className="text-2xl font-semibold mb-6">{label.sectionTitle}</h2>
-        <PartnerMarquee />
+        <PartnerMarquee partners={partners} />
       </section>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

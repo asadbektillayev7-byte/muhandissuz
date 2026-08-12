@@ -105,7 +105,7 @@ export async function adminInsertMedia(data: {
   url: string
   thumbnail_url: string
   alt_uz: string
-  alt_en: string
+  alt_en?: string
   mime_type: string
   filesize: number
   title_uz?: string

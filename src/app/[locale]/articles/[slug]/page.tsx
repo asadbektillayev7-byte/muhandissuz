@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { getArticleBySlug } from '@/lib/supabase/queries'
-import { field } from '@/lib/supabase/locale'
+import { field, localizedBody } from '@/lib/supabase/locale'
 import { renderRichText } from '@/utilities/richText'
 import { resolveLocalizedField } from '@/lib/locale'
 import { notFound } from 'next/navigation'
@@ -22,7 +22,7 @@ export default async function ArticlePage({
 
   const label = locale === 'uz' ? labels.uz : labels.en
 
-  const body = locale === 'uz' ? article.body_uz : article.body_en
+  const body = localizedBody(article, 'body', locale)
 
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">

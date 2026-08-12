@@ -3,11 +3,13 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { adminSaveRecord } from '@/lib/actions'
+import { ImageUpload } from './ImageUpload'
 
 type Field = {
   name: string
   label: string
-  type: 'text' | 'textarea' | 'number' | 'date' | 'select'
+  /** `image` = upload only. `image-url` = upload or paste a URL. */
+  type: 'text' | 'textarea' | 'number' | 'date' | 'select' | 'image' | 'image-url'
   required?: boolean
   options?: string[]
 }
@@ -112,7 +114,13 @@ export function SimpleForm({
             {field.label}
             {field.required && <span className="text-red-500 ml-1">*</span>}
           </label>
-          {field.type === 'textarea' ? (
+          {field.type === 'image' || field.type === 'image-url' ? (
+            <ImageUpload
+              value={form[field.name] || ''}
+              onChange={(url) => handleChange(field.name, url)}
+              allowUrl={field.type === 'image-url'}
+            />
+          ) : field.type === 'textarea' ? (
             <textarea
               value={form[field.name] || ''}
               onChange={(e) => handleChange(field.name, e.target.value)}
