@@ -4,6 +4,22 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { Send } from 'lucide-react'
 import { Logo } from './Logo'
+import { AnimatedMenuItem } from '@/components/ui/animated-menu-item'
+
+const exploreLinks = [
+  { key: 'articles', href: '/articles' },
+  { key: 'hackathons', href: '/hackathons' },
+  { key: 'quiz', href: '/quiz' },
+  { key: 'projects', href: '/projects' },
+  { key: 'media', href: '/media' },
+]
+
+const companyLinks = [
+  { key: 'partners', href: '/partners' },
+  { key: 'team', href: '/team' },
+  { key: 'feedback', href: '/feedback' },
+  { key: 'contact', href: '/contact' },
+]
 
 const labels: Record<string, { uz: string; en: string }> = {
   articles: { uz: 'Maqolalar', en: 'Articles' },
@@ -25,8 +41,8 @@ export function MinimalFooter() {
   return (
     <footer className="border-t border-border mt-16">
       <div className="bg-[radial-gradient(35%_80%_at_30%_0%,color-mix(in_oklch,var(--foreground)_4%,transparent),transparent)] mx-auto max-w-6xl md:border-x border-border">
-        <div className="grid gap-8 p-4 pt-8">
-          <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 p-4 pt-8">
+          <div className="col-span-2 flex flex-col gap-4">
             <Link href={`/${locale}`} className="w-max">
               <Logo />
             </Link>
@@ -40,7 +56,7 @@ export function MinimalFooter() {
                 href="https://t.me/Muhandis_e"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-md border p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                className="rounded-md border p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 aria-label="Telegram"
               >
                 <Send className="h-4 w-4" />
@@ -49,7 +65,7 @@ export function MinimalFooter() {
                 href="https://www.linkedin.com/company/106188701"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-md border p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                className="rounded-md border p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 aria-label="LinkedIn"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -61,7 +77,29 @@ export function MinimalFooter() {
             </div>
           </div>
 
+          <div>
+            <div className="flex flex-col gap-1.5 mt-2">
+              {exploreLinks.map((link) => (
+                <AnimatedMenuItem
+                  key={link.key}
+                  href={`/${locale}${link.href}`}
+                  label={labels[link.key][locale as 'uz' | 'en']}
+                />
+              ))}
+            </div>
+          </div>
 
+          <div>
+            <div className="flex flex-col gap-1.5 mt-2">
+              {companyLinks.map((link) => (
+                <AnimatedMenuItem
+                  key={link.key}
+                  href={`/${locale}${link.href}`}
+                  label={labels[link.key][locale as 'uz' | 'en']}
+                />
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="px-4 pb-6 pt-4">

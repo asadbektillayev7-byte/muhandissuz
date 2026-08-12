@@ -1,5 +1,6 @@
 'use client'
 
+import { Marquee } from '@/components/ui/marquee'
 import { placeholderPartners, type PartnerItem } from '@/lib/partners-data'
 
 function PartnerBadge({ name, url, logo_url }: PartnerItem) {
@@ -8,7 +9,7 @@ function PartnerBadge({ name, url, logo_url }: PartnerItem) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-3 px-4 py-3 rounded-lg border border-border bg-card transition-colors duration-150 hover:border-accent hover:bg-muted"
+      className="flex items-center gap-3 mx-3 px-4 py-3 rounded-lg border border-border bg-card hover:border-chart-2 transition-colors"
     >
       <div className="h-10 w-10 shrink-0 rounded-md bg-secondary flex items-center justify-center text-muted-foreground text-xs font-mono overflow-hidden">
         {logo_url ? (
@@ -28,9 +29,8 @@ export function PartnerMarquee({ partners }: { partners?: PartnerItem[] }) {
   // Fall back to the built-in list so the strip is never empty.
   const items = partners?.length ? partners : placeholderPartners
 
-  // Static row — each partner appears exactly once, nothing scrolls.
   return (
-    <div className="flex flex-wrap gap-3">
+    <Marquee direction="left" duration={40} pauseOnHover>
       {items.map((partner, i) => (
         <PartnerBadge
           key={`partner-${i}`}
@@ -39,6 +39,6 @@ export function PartnerMarquee({ partners }: { partners?: PartnerItem[] }) {
           logo_url={partner.logo_url}
         />
       ))}
-    </div>
+    </Marquee>
   )
 }

@@ -72,19 +72,23 @@ export function BottomNav() {
             <Link
               key={item.key}
               href={href}
-              aria-current={isActive ? 'page' : undefined}
-              className={
-                'relative text-base font-medium transition-all duration-200 shrink-0 px-3.5 py-[7px] border ' +
-                (isActive
-                  ? 'bg-accent text-white border-accent font-semibold'
-                  : 'text-muted-foreground border-border hover:border-accent hover:text-accent hover:bg-muted')
-              }
+              className="relative text-base font-medium transition-all duration-200 shrink-0 px-3.5 py-[7px] border hover:border-chart-2 hover:text-chart-2"
               style={{
+                color: isActive ? 'var(--chart-2)' : 'var(--muted-foreground)',
+                borderColor: isActive ? 'var(--chart-2)' : 'var(--border)',
                 borderRadius: 'var(--radius)',
-                backgroundColor: isActive ? undefined : 'var(--secondary)',
+                backgroundColor: 'var(--secondary)',
               }}
             >
-              {labels[item.key][locale as 'uz' | 'en']}
+              <span className="transition-colors duration-200">
+                {labels[item.key][locale as 'uz' | 'en']}
+              </span>
+              {isActive && (
+                <span
+                  className="absolute -bottom-1 left-0 right-0 h-0.5"
+                  style={{ backgroundColor: 'var(--chart-2)', borderRadius: '1px' }}
+                />
+              )}
             </Link>
           )
         })}
