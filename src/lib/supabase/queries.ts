@@ -28,7 +28,10 @@ export async function getArticleBySlug(slug: string, locale: string) {
   const supabase = await createClient()
   const { data } = await supabase
     .from('articles')
-    .select('*, categories(*), authors(*)')
+    // `authors` must name the FK: articles links to authors twice
+    // (author_id and translator_id), so a bare authors(*) is ambiguous
+    // and PostgREST rejects the whole query with PGRST201.
+    .select('*, categories(*), authors!articles_author_id_fkey(*)')
     .eq('slug', slug)
     .single()
   return data
