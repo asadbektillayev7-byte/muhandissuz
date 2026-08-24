@@ -4,6 +4,7 @@ import { field, localizedBody } from '@/lib/supabase/locale'
 import { renderRichText } from '@/utilities/richText'
 import { resolveLocalizedField } from '@/lib/locale'
 import { notFound } from 'next/navigation'
+import { TrackArticleRead } from '@/components/quiz/TrackArticleRead'
 
 export default async function ArticlePage({
   params,
@@ -26,6 +27,8 @@ export default async function ArticlePage({
 
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
+      <TrackArticleRead articleId={article.id} categoryId={article.category_id ?? null} />
+
       {article.cover_image_url && (
         <div className="aspect-video overflow-hidden mb-8 bg-muted" style={{ borderRadius: 'var(--radius)' }}>
           <img src={article.cover_image_url} alt={field(article, 'title', locale)} className="w-full h-full object-cover" />

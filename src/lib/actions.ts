@@ -88,6 +88,24 @@ export async function adminSaveRecord(table: string, data: Record<string, unknow
   return result
 }
 
+// ── Quiz ↔ article links ──
+
+export async function adminSetQuizArticles(quizId: number, articleIds: number[]) {
+  await getAdminUser()
+  const admin = createAdminClient()
+
+  const { error: delError } = await admin.from('quiz_articles').delete().eq('quiz_id', quizId)
+  if (delError) throw new Error(delError.message)
+
+  if (articleIds.length > 0) {
+    const rows = articleIds.map((article_id) => ({ quiz_id: quizId, article_id }))
+    const { error } = await admin.from('quiz_articles').insert(rows)
+    if (error) throw new Error(error.message)
+  }
+
+  revalidatePath('/admin/quiz')
+}
+
 // ── Article-specific ──
 
 export async function adminSaveArticle(data: Record<string, unknown>, id?: number) {

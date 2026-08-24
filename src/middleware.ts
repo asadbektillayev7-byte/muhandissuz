@@ -20,7 +20,14 @@ export default async function middleware(request: NextRequest) {
     return updateSession(request)
   }
 
-  if (pathname.startsWith('/api') || pathname.startsWith('/_next') || pathname === '/favicon.ico' || pathname.startsWith('/logo/') || pathname.startsWith('/images/')) {
+  // Anything with a file extension is a static asset in /public — never a
+  // localised page. Matching on the extension covers new folders (videos,
+  // fonts, ...) without having to extend this list every time.
+  if (
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/_next') ||
+    pathname.includes('.')
+  ) {
     return
   }
 

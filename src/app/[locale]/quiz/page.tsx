@@ -1,5 +1,6 @@
-import { getCategoriesList } from '@/lib/supabase/queries'
-import { QuizCardStack } from './QuizCardStack'
+import { createClient } from '@/lib/supabase/server'
+import { getQuizzes, getQuizStats } from '@/lib/supabase/quiz-queries'
+import { QuizBrowser } from '@/components/quiz/QuizBrowser'
 
 export default async function QuizPage({
   params,
@@ -7,18 +8,36 @@ export default async function QuizPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const categories = await getCategoriesList()
+  const supabase = await createClient()
 
-  const label = locale === 'uz'
-    ? { title: 'Quiz', subtitle: 'O\'z bilimingizni sinab ko\'ring' }
-    : { title: 'Quiz', subtitle: 'Test your engineering knowledge' }
+  const [quizzes, stats, { data: categories }, { data: links }, { data: articles }] =
+    await Promise.all([
+      getQuizzes(),
+      getQuizStats(),
+      supabase.from('categories').select('id, slug, name_uz, name_en').order('name_uz'),
+      supabase.from('quiz_articles').select('quiz_id, article_id'),
+      supabase.from('articles').select('id, title_uz, title_en'),
+    ])
+
+  // quiz -> articles, for Continue Learning's local-history matching.
+  const quizArticleMap: Record<number, number[]> = {}
+  for (const l of links ?? []) {
+    ;(quizArticleMap[l.quiz_id] ??= []).push(l.article_id)
+  }
+
+  const articleTitles: Record<number, { uz: string; en: string | null }> = {}
+  for (const a of articles ?? []) {
+    articleTitles[a.id] = { uz: a.title_uz, en: a.title_en }
+  }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
-      <h1 className="text-4xl font-bold mb-2">{label.title}</h1>
-      <p className="text-muted-foreground mb-8">{label.subtitle}</p>
-
-      <QuizCardStack categories={categories} locale={locale} />
-    </div>
+    <QuizBrowser
+      quizzes={quizzes}
+      categories={categories ?? []}
+      stats={stats}
+      quizArticleMap={quizArticleMap}
+      articleTitles={articleTitles}
+      locale={locale}
+    />
   )
 }

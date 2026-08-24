@@ -244,7 +244,9 @@ export function F1TunnelDrive({
     <div
       ref={mount}
       aria-hidden="true"
-      className={cn('w-full h-full', className)}
+      // h-full collapses to 0 when the parent has auto height, which left this
+      // rendering into a zero-height canvas. min-h keeps it self-sizing.
+      className={cn('w-full h-full min-h-[320px]', className)}
     />
   )
 }

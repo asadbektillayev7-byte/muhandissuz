@@ -17,12 +17,11 @@ function toOptions(item: any): Option[] {
   return Array.from({ length: len }, (_, i) => ({ uz: uz[i] ?? '', en: en[i] ?? '' }))
 }
 
-export function QuizForm({ categories, item }: { categories: any[]; item?: any }) {
+export function QuestionForm({ quizId, item }: { quizId: number; item?: any }) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
-  const [categoryId, setCategoryId] = useState<string>(item?.category_id?.toString() ?? '')
   const [questionUz, setQuestionUz] = useState(item?.question_uz ?? '')
   const [questionEn, setQuestionEn] = useState(item?.question_en ?? '')
   const [imageUrl, setImageUrl] = useState(item?.image_url ?? '')
@@ -53,7 +52,6 @@ export function QuizForm({ categories, item }: { categories: any[]; item?: any }
     setError('')
 
     if (!questionUz.trim()) return setError('Savol (UZ) bo\'sh bo\'lmasligi kerak.')
-    if (!categoryId) return setError('Kategoriyani tanlang.')
 
     const filled = options.filter((o) => o.uz.trim())
     if (filled.length < 2) return setError('Kamida 2 ta javob variantini kiriting.')
@@ -70,7 +68,7 @@ export function QuizForm({ categories, item }: { categories: any[]; item?: any }
       await adminSaveRecord(
         'quiz_questions',
         {
-          category_id: Number(categoryId),
+          quiz_id: quizId,
           question_uz: questionUz,
           question_en: questionEn || null,
           image_url: imageUrl || null,
@@ -83,7 +81,7 @@ export function QuizForm({ categories, item }: { categories: any[]; item?: any }
         },
         item?.id,
       )
-      router.push('/admin/quiz')
+      router.push(`/admin/quiz/${quizId}`)
       router.refresh()
     } catch (e: any) {
       setError(e?.message || 'Saqlashda xatolik')
@@ -100,24 +98,6 @@ export function QuizForm({ categories, item }: { categories: any[]; item?: any }
       )}
 
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Category <span className="text-red-500">*</span>
-          </label>
-          <select
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-            className={input}
-            style={{ borderRadius: 'var(--radius)' }}
-          >
-            <option value="">Select...</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name_uz} / {c.name_en}
-              </option>
-            ))}
-          </select>
-        </div>
         <div>
           <label className="block text-sm font-medium mb-1">Sort Order</label>
           <input
@@ -252,7 +232,7 @@ export function QuizForm({ categories, item }: { categories: any[]; item?: any }
 
       <div className="flex gap-3 pt-2">
         <button
-          onClick={() => router.push('/admin/quiz')}
+          onClick={() => router.push(`/admin/quiz/${quizId}`)}
           className="border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"
           style={{ borderRadius: 'var(--radius)' }}
         >

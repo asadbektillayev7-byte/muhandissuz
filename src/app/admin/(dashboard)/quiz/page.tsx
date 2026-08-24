@@ -1,59 +1,60 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { DeleteButton } from '../DeleteButton'
+import { DIFFICULTY_LABELS, type Difficulty } from '@/lib/quiz'
 
-export default async function AdminQuizPage() {
+export default async function AdminQuizzesPage() {
   const supabase = await createClient()
-  const { data: items } = await supabase
-    .from('quiz_questions')
-    .select('*, categories(name_uz, name_en)')
-    .order('category_id')
-    .order('sort_order')
+  const { data: quizzes } = await supabase
+    .from('quizzes')
+    .select('*, categories(name_uz), quiz_questions(count), quiz_articles(count)')
+    .order('created_at', { ascending: false })
+
+  const count = (v: any) => (Array.isArray(v) && v[0]?.count) || 0
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Quiz Questions</h1>
+        <h1 className="text-2xl font-bold">Quizzes</h1>
         <Link href="/admin/quiz/new" className="bg-foreground text-background px-4 py-2 text-sm hover:opacity-90" style={{ borderRadius: 'var(--radius)' }}>+ New</Link>
       </div>
+
       <div className="border border-border" style={{ borderRadius: 'var(--radius)' }}>
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50">
+              <th className="text-left p-3">Title</th>
               <th className="text-left p-3">Category</th>
-              <th className="text-left p-3">Question (UZ)</th>
-              <th className="text-left p-3">Answers</th>
-              <th className="text-left p-3">Image</th>
+              <th className="text-left p-3">Difficulty</th>
+              <th className="text-left p-3">Questions</th>
+              <th className="text-left p-3">Articles</th>
+              <th className="text-left p-3">Status</th>
               <th className="text-right p-3">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {items?.map((item: any) => (
-              <tr key={item.id} className="border-b border-border">
-                <td className="p-3 text-muted-foreground">{item.categories?.name_uz || '—'}</td>
-                <td className="p-3">{item.question_uz}</td>
+            {quizzes?.map((q: any) => (
+              <tr key={q.id} className="border-b border-border">
+                <td className="p-3">{q.title_uz}</td>
+                <td className="p-3 text-muted-foreground">{q.categories?.name_uz || '—'}</td>
                 <td className="p-3 text-muted-foreground">
-                  {Array.isArray(item.options_uz) ? item.options_uz.length : 0}
+                  {DIFFICULTY_LABELS[q.difficulty as Difficulty]?.en ?? q.difficulty}
                 </td>
-                <td className="p-3">
-                  {item.image_url ? (
-                    <img src={item.image_url} alt="" className="h-8 w-8 object-cover border border-border" style={{ borderRadius: 'var(--radius)' }} />
-                  ) : (
-                    <span className="text-muted-foreground text-xs">—</span>
-                  )}
-                </td>
+                <td className="p-3 text-muted-foreground">{count(q.quiz_questions)}</td>
+                <td className="p-3 text-muted-foreground">{count(q.quiz_articles)}</td>
+                <td className="p-3 text-muted-foreground">{q.published ? 'Published' : 'Draft'}</td>
                 <td className="p-3 text-right">
                   <div className="flex items-center justify-end gap-2">
-                    <Link href={`/admin/quiz/${item.id}`} className="text-chart-2 hover:underline text-xs">Edit</Link>
-                    <DeleteButton table="quiz_questions" id={item.id} redirect="/admin/quiz" />
+                    <Link href={`/admin/quiz/${q.id}`} className="text-chart-2 hover:underline text-xs">Edit</Link>
+                    <DeleteButton table="quizzes" id={q.id} redirect="/admin/quiz" />
                   </div>
                 </td>
               </tr>
             ))}
-            {!items?.length && (
+            {!quizzes?.length && (
               <tr>
-                <td colSpan={5} className="p-6 text-center text-muted-foreground text-sm">
-                  No questions yet. Click <span className="font-medium">+ New</span> to add the first one.
+                <td colSpan={7} className="p-6 text-center text-muted-foreground text-sm">
+                  No quizzes yet. Click <span className="font-medium">+ New</span> to create one.
                 </td>
               </tr>
             )}
