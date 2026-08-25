@@ -9,11 +9,12 @@ function PartnerBadge({ name, url, logo_url }: PartnerItem) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-3 mx-3 px-4 py-3 rounded-lg border border-border bg-card hover:border-chart-2 transition-colors"
+      style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)' }}
+      className="group flex items-center gap-3 px-4 py-3 rounded-lg border transition-colors duration-150 hover:border-accent"
     >
       <div className="h-10 w-10 shrink-0 rounded-md bg-secondary flex items-center justify-center text-muted-foreground text-xs font-mono overflow-hidden">
         {logo_url ? (
-          <img src={logo_url} alt={name} className="h-full w-full object-contain" />
+          <img src={logo_url} alt={name} className="h-full w-full object-contain grayscale transition-[filter] duration-200 group-hover:grayscale-0" />
         ) : (
           name.charAt(0)
         )}

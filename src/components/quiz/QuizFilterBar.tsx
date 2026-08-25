@@ -1,14 +1,46 @@
 'use client'
 
-import { DIFFICULTIES, DIFFICULTY_LABELS, DURATION_BUCKETS, type Difficulty } from '@/lib/quiz'
-import { CategoryChip } from './CategoryChip'
+import { DIFFICULTIES, DIFFICULTY_LABELS, type Difficulty } from '@/lib/quiz'
 import { outline } from './surface'
 
 export type Filters = {
   search: string
   category: string | null
   difficulty: Difficulty | null
-  duration: string | null
+}
+
+/** Native select, restyled to sit quietly next to the search field. */
+function Dropdown({
+  label,
+  value,
+  onChange,
+  children,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  children: React.ReactNode
+}) {
+  return (
+    <div className="relative">
+      <label className="sr-only">{label}</label>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        aria-label={label}
+        className="w-full appearance-none border bg-transparent py-2.5 pl-4 pr-9 text-sm text-foreground transition-colors duration-150 hover:border-foreground/40 focus:border-chart-2 focus:outline-none sm:w-auto"
+        style={{ borderRadius: 999, ...outline }}
+      >
+        {children}
+      </select>
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground"
+      >
+        ▾
+      </span>
+    </div>
+  )
 }
 
 export function QuizFilterBar({
@@ -24,8 +56,8 @@ export function QuizFilterBar({
 }) {
   const uz = locale === 'uz'
   const t = uz
-    ? { search: 'Quiz qidirish...', all: 'Barchasi', field: 'Yo‘nalish', difficulty: 'Daraja', duration: 'Davomiylik' }
-    : { search: 'Search quizzes...', all: 'All', field: 'Field', difficulty: 'Difficulty', duration: 'Duration' }
+    ? { search: 'Quiz qidirish...', allFields: 'Barcha yo‘nalishlar', allLevels: 'Barcha darajalar', field: 'Yo‘nalish', difficulty: 'Daraja' }
+    : { search: 'Search quizzes...', allFields: 'All fields', allLevels: 'All levels', field: 'Field', difficulty: 'Difficulty' }
 
   const set = (patch: Partial<Filters>) => onChange({ ...filters, ...patch })
 
@@ -35,53 +67,44 @@ export function QuizFilterBar({
       style={outline}
       role="search"
     >
-      <label className="sr-only" htmlFor="quiz-search">{t.search}</label>
-      <input
-        id="quiz-search"
-        type="search"
-        value={filters.search}
-        onChange={(e) => set({ search: e.target.value })}
-        placeholder={t.search}
-        className="mb-4 w-full border border-border bg-transparent px-4 py-2.5 text-sm focus:border-chart-2 focus:outline-none"
-        style={{ borderRadius: 999, ...outline }}
-      />
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <label className="sr-only" htmlFor="quiz-search">{t.search}</label>
+        <input
+          id="quiz-search"
+          type="search"
+          value={filters.search}
+          onChange={(e) => set({ search: e.target.value })}
+          placeholder={t.search}
+          className="w-full flex-1 border bg-transparent px-4 py-2.5 text-sm transition-colors duration-150 hover:border-foreground/40 focus:border-chart-2 focus:outline-none"
+          style={{ borderRadius: 999, ...outline }}
+        />
 
-      <div className="space-y-2.5">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="mr-1 text-xs uppercase tracking-wider text-muted-foreground">{t.field}</span>
-          <CategoryChip label={t.all} selected={filters.category === null} onClick={() => set({ category: null })} />
-          {categories.map((c) => (
-            <CategoryChip
-              key={c.id}
-              label={uz ? c.name_uz : c.name_en}
-              selected={filters.category === c.slug}
-              onClick={() => set({ category: filters.category === c.slug ? null : c.slug })}
-            />
-          ))}
-        </div>
+        <div className="flex gap-3">
+          <Dropdown
+            label={t.field}
+            value={filters.category ?? ''}
+            onChange={(v) => set({ category: v || null })}
+          >
+            <option value="">{t.allFields}</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.slug}>
+                {uz ? c.name_uz : c.name_en}
+              </option>
+            ))}
+          </Dropdown>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="mr-1 text-xs uppercase tracking-wider text-muted-foreground">{t.difficulty}</span>
-          {DIFFICULTIES.map((d) => (
-            <CategoryChip
-              key={d}
-              label={DIFFICULTY_LABELS[d][uz ? 'uz' : 'en']}
-              selected={filters.difficulty === d}
-              onClick={() => set({ difficulty: filters.difficulty === d ? null : d })}
-            />
-          ))}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="mr-1 text-xs uppercase tracking-wider text-muted-foreground">{t.duration}</span>
-          {DURATION_BUCKETS.map((b) => (
-            <CategoryChip
-              key={b.key}
-              label={uz ? b.uz : b.en}
-              selected={filters.duration === b.key}
-              onClick={() => set({ duration: filters.duration === b.key ? null : b.key })}
-            />
-          ))}
+          <Dropdown
+            label={t.difficulty}
+            value={filters.difficulty ?? ''}
+            onChange={(v) => set({ difficulty: (v || null) as Difficulty | null })}
+          >
+            <option value="">{t.allLevels}</option>
+            {DIFFICULTIES.map((d) => (
+              <option key={d} value={d}>
+                {DIFFICULTY_LABELS[d][uz ? 'uz' : 'en']}
+              </option>
+            ))}
+          </Dropdown>
         </div>
       </div>
     </div>

@@ -1,9 +1,8 @@
 import Link from 'next/link'
-import { HeroAnimation } from '@/components/HeroAnimation'
 import { StatsStrip } from '@/components/StatsStrip'
-import { DisciplineIndex } from '@/components/DisciplineIndex'
+import { LatestArticles } from '@/components/LatestArticles'
+import { ActionCards } from '@/components/ActionCards'
 import { PartnerMarquee } from '@/components/PartnerMarquee'
-import { TestimonialMarquee } from '@/components/TestimonialMarquee'
 import { getPartners } from '@/lib/supabase/queries'
 
 export default async function HomePage({
@@ -33,8 +32,8 @@ export default async function HomePage({
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden max-w-6xl mx-auto px-4 py-16 md:py-24">
-        <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
+      <section className="relative overflow-hidden max-w-6xl mx-auto px-4 py-10 md:py-44">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-10 items-center relative z-10">
           <div>
             <h1
               className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 whitespace-pre-line"
@@ -42,20 +41,20 @@ export default async function HomePage({
             >
               {content.headline}
             </h1>
-            <p className="font-display text-muted-foreground mb-8 max-w-md">
+            <p className="font-display text-muted-foreground mb-6 max-w-md">
               {content.support}
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
                 href={content.ctaPrimaryHref}
-                className="px-5 py-2.5 text-sm font-medium bg-foreground text-background hover:opacity-90 transition-opacity"
+                className="px-5 py-2.5 text-sm font-semibold bg-accent text-white transition-colors duration-150 hover:bg-accent-hover"
                 style={{ borderRadius: 'var(--radius)' }}
               >
                 {content.ctaPrimary}
               </Link>
               <Link
                 href={content.ctaSecondaryHref}
-                className="px-5 py-2.5 text-sm font-medium border border-border text-foreground hover:border-chart-2 hover:text-chart-2 transition-colors"
+                className="px-5 py-2.5 text-sm font-semibold border bg-transparent text-foreground transition-colors duration-150 hover:border-accent hover:text-accent"
                 style={{ borderRadius: 'var(--radius)' }}
               >
                 {content.ctaSecondary}
@@ -63,10 +62,21 @@ export default async function HomePage({
             </div>
           </div>
           <div>
-            <HeroAnimation className="w-full" />
+            {/* Reserved for a transparent SVG. No background or card by design. */}
+            <div
+              className="w-full aspect-[4/3] border border-dashed"
+              style={{ borderColor: 'var(--border)', borderRadius: 'var(--radius)', background: 'transparent' }}
+              aria-hidden="true"
+            />
           </div>
         </div>
       </section>
+
+      {/* Latest articles */}
+      <LatestArticles locale={locale} />
+
+      {/* Action cards */}
+      <ActionCards locale={locale} />
 
       {/* Stats */}
       <StatsStrip locale={locale} />
@@ -78,12 +88,6 @@ export default async function HomePage({
         </h2>
         <PartnerMarquee partners={partners} />
       </section>
-
-      {/* Disciplines */}
-      <DisciplineIndex locale={locale} />
-
-      {/* Testimonials */}
-      <TestimonialMarquee />
     </>
   )
 }

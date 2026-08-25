@@ -72,17 +72,21 @@ export function BottomNav() {
             <Link
               key={item.key}
               href={href}
-              className="relative text-base font-medium transition-all duration-200 shrink-0 px-3.5 py-[7px] border hover:border-chart-2 hover:text-chart-2"
+              aria-current={isActive ? 'page' : undefined}
+              // Colours must come from classes, not inline styles: an inline
+              // style beats every hover: rule, which is why hover never worked.
+              className={
+                'relative text-base font-medium transition-colors duration-200 shrink-0 px-3.5 py-[7px] border ' +
+                (isActive
+                  ? 'text-chart-2 border-chart-2'
+                  : 'text-muted-foreground border-border hover:text-chart-2 hover:border-chart-2')
+              }
               style={{
-                color: isActive ? 'var(--chart-2)' : 'var(--muted-foreground)',
-                borderColor: isActive ? 'var(--chart-2)' : 'var(--border)',
                 borderRadius: 'var(--radius)',
                 backgroundColor: 'var(--secondary)',
               }}
             >
-              <span className="transition-colors duration-200">
-                {labels[item.key][locale as 'uz' | 'en']}
-              </span>
+              {labels[item.key][locale as 'uz' | 'en']}
               {isActive && (
                 <span
                   className="absolute -bottom-1 left-0 right-0 h-0.5"

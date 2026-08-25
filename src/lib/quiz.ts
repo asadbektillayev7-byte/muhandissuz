@@ -53,13 +53,6 @@ export const DIFFICULTY_LABELS: Record<Difficulty, { uz: string; en: string }> =
   hard: { uz: 'Qiyin', en: 'Hard' },
 }
 
-/** Reading time buckets used by the duration filter. */
-export const DURATION_BUCKETS = [
-  { key: 'short', uz: '5 daqiqagacha', en: 'Under 5 min', test: (m: number) => m < 5 },
-  { key: 'mid', uz: '5–10 daqiqa', en: '5–10 min', test: (m: number) => m >= 5 && m <= 10 },
-  { key: 'long', uz: '10+ daqiqa', en: '10+ min', test: (m: number) => m > 10 },
-] as const
-
 /** Falls back to ~30s per question when an author leaves duration blank. */
 export function effectiveDuration(quiz: { duration_minutes: number | null }, questionCount: number) {
   if (quiz.duration_minutes && quiz.duration_minutes > 0) return quiz.duration_minutes

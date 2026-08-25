@@ -121,7 +121,7 @@ export function TestimonialMarquee() {
   return (
     <section className="max-w-6xl mx-auto px-4 py-12">
       <h2 className="font-display text-2xl font-semibold mb-6">
-        {locale === 'uz' ? 'Hamjamiyat fikrlari' : 'What our community says'}
+        {locale === 'uz' ? 'Foydalanuvchilar fikri' : 'What our community says'}
       </h2>
       <Marquee direction="left" duration={60} pauseOnHover fade={true} fadeAmount={5}>
         {testimonials.map((t, i) => (

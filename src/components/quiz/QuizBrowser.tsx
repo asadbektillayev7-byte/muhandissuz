@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { DURATION_BUCKETS, effectiveDuration, type QuizWithMeta } from '@/lib/quiz'
+import type { QuizWithMeta } from '@/lib/quiz'
 import { QuizHero } from './QuizHero'
 import { QuizFilterBar, type Filters } from './QuizFilterBar'
 import { FeaturedQuiz } from './FeaturedQuiz'
@@ -10,7 +10,7 @@ import { EmptyQuizState } from './EmptyQuizState'
 import { ContinueLearning } from './ContinueLearning'
 import { QuizStats } from './QuizStats'
 
-const EMPTY: Filters = { search: '', category: null, difficulty: null, duration: null }
+const EMPTY: Filters = { search: '', category: null, difficulty: null }
 
 export function QuizBrowser({
   quizzes,
@@ -29,7 +29,7 @@ export function QuizBrowser({
 }) {
   const [filters, setFilters] = useState<Filters>(EMPTY)
   const isFiltering =
-    filters.search.trim() !== '' || !!filters.category || !!filters.difficulty || !!filters.duration
+    filters.search.trim() !== '' || !!filters.category || !!filters.difficulty
 
   const results = useMemo(() => {
     const q = filters.search.trim().toLowerCase()
@@ -37,10 +37,6 @@ export function QuizBrowser({
       if (filters.category && quiz.categories?.slug !== filters.category) return false
       if (filters.difficulty && quiz.difficulty !== filters.difficulty) return false
 
-      if (filters.duration) {
-        const bucket = DURATION_BUCKETS.find((b) => b.key === filters.duration)
-        if (bucket && !bucket.test(effectiveDuration(quiz, quiz.questionCount))) return false
-      }
 
       if (q) {
         const haystack = [
