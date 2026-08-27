@@ -30,7 +30,7 @@ export function QuizCard({ quiz, locale }: { quiz: QuizWithMeta; locale: string 
         className="group flex h-full flex-col overflow-hidden border border-border bg-card transition-colors duration-150 hover:border-chart-2"
         style={{ borderRadius: 20, ...surface }}
       >
-        <QuizThumbnail src={quiz.thumbnail_url} alt={title} />
+        <QuizThumbnail src={quiz.thumbnail_url} alt={title} category={quiz.categories?.slug} />
 
         <div className="flex flex-1 flex-col p-4">
           <div className="mb-2 flex flex-wrap items-center gap-2">

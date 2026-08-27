@@ -1,11 +1,12 @@
 'use client'
 
-import { useParams, usePathname } from 'next/navigation'
-import Link from 'next/link'
+import { useEffect, useRef, useState } from 'react'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 
 /**
  * Inline SVG rather than emoji: flag emoji do not render on Windows, where
- * they fall back to the letters "UZ" / "US" — the exact thing we're replacing.
+ * they fall back to the letters "UZ" / "US" — the thing we're replacing.
+ * A native <select> can't draw them, so this is a small custom listbox.
  */
 function FlagUZ({ className }: { className?: string }) {
   return (
@@ -18,14 +19,10 @@ function FlagUZ({ className }: { className?: string }) {
       <circle cx="4.6" cy="2.7" r="1.8" fill="#fff" />
       <circle cx="5.4" cy="2.7" r="1.8" fill="#0099B5" />
       <g fill="#fff">
-        <circle cx="8.2" cy="1.4" r="0.42" />
-        <circle cx="8.2" cy="3.1" r="0.42" />
-        <circle cx="10" cy="1.4" r="0.42" />
-        <circle cx="10" cy="3.1" r="0.42" />
-        <circle cx="10" cy="4.6" r="0.42" />
-        <circle cx="11.8" cy="1.4" r="0.42" />
-        <circle cx="11.8" cy="3.1" r="0.42" />
-        <circle cx="11.8" cy="4.6" r="0.42" />
+        <circle cx="8.2" cy="1.4" r="0.42" /><circle cx="8.2" cy="3.1" r="0.42" />
+        <circle cx="10" cy="1.4" r="0.42" /><circle cx="10" cy="3.1" r="0.42" />
+        <circle cx="10" cy="4.6" r="0.42" /><circle cx="11.8" cy="1.4" r="0.42" />
+        <circle cx="11.8" cy="3.1" r="0.42" /><circle cx="11.8" cy="4.6" r="0.42" />
       </g>
     </svg>
   )
@@ -61,31 +58,80 @@ const LOCALES = [
 export function LanguageSwitcher() {
   const pathname = usePathname()
   const params = useParams()
+  const router = useRouter()
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
   const current = (params.locale as string) || 'uz'
   const rest = pathname.replace(/^\/(uz|en)/, '') || '/'
+  const active = LOCALES.find((l) => l.code === current) ?? LOCALES[0]
+
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
+
+  function choose(code: string) {
+    setOpen(false)
+    if (code !== current) router.push(`/${code}${rest}`)
+  }
 
   return (
-    <div className="flex items-center gap-1.5" role="group" aria-label="Language">
-      {LOCALES.map(({ code, label, Flag }) => {
-        const active = current === code
-        return (
-          <Link
-            key={code}
-            href={`/${code}${rest}`}
-            aria-label={label}
-            aria-current={active ? 'true' : undefined}
-            title={label}
-            className={
-              'block overflow-hidden rounded-[3px] border transition-all duration-150 ' +
-              (active
-                ? 'border-foreground/50 opacity-100'
-                : 'border-transparent opacity-45 hover:opacity-90')
-            }
-          >
-            <Flag className="h-[14px] w-[21px] block" />
-          </Link>
-        )
-      })}
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label={`Language: ${active.label}`}
+        className="flex items-center gap-1.5 border px-2 py-1 transition-colors duration-150 hover:border-foreground/40"
+        style={{ borderColor: 'var(--border)', borderRadius: 'var(--radius)' }}
+      >
+        <active.Flag className="h-[13px] w-[19px] block rounded-[2px]" />
+        <span aria-hidden="true" className="text-[10px] text-muted-foreground">▾</span>
+      </button>
+
+      {open && (
+        <ul
+          role="listbox"
+          aria-label="Language"
+          className="absolute right-0 z-50 mt-1 min-w-[150px] overflow-hidden border py-1 shadow-lg"
+          style={{
+            borderColor: 'var(--border)',
+            backgroundColor: 'var(--card)',
+            borderRadius: 'var(--radius)',
+          }}
+        >
+          {LOCALES.map(({ code, label, Flag }) => (
+            <li key={code}>
+              <button
+                type="button"
+                role="option"
+                aria-selected={code === current}
+                onClick={() => choose(code)}
+                className={
+                  'flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm transition-colors duration-150 hover:bg-secondary ' +
+                  (code === current ? 'text-foreground' : 'text-muted-foreground')
+                }
+              >
+                <Flag className="h-[13px] w-[19px] block shrink-0 rounded-[2px]" />
+                {label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }

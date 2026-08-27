@@ -67,7 +67,7 @@ export function FeaturedQuiz({ quiz, locale }: { quiz: QuizWithMeta; locale: str
       </div>
 
       <div className="min-h-[220px] md:min-h-full">
-        <QuizThumbnail src={quiz.thumbnail_url} alt={title} className="h-full min-h-[220px]" />
+        <QuizThumbnail src={quiz.thumbnail_url} alt={title} category={quiz.categories?.slug} className="h-full min-h-[220px]" />
       </div>
     </Link>
   )

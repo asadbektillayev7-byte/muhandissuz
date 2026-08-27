@@ -6,7 +6,7 @@ import { Send } from 'lucide-react'
 import { Logo } from './Logo'
 import { AnimatedMenuItem } from '@/components/ui/animated-menu-item'
 
-const TELEGRAM_URL = process.env.NEXT_PUBLIC_TELEGRAM_URL
+const TELEGRAM_URL = process.env.NEXT_PUBLIC_TELEGRAM_URL || 'https://t.me/Muhandis_e'
 
 /** Every public section of the site lives here — the footer is the sitemap. */
 const COLUMNS = [

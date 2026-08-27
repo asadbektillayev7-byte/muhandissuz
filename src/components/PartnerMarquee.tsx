@@ -14,7 +14,7 @@ function PartnerBadge({ name, url, logo_url }: PartnerItem) {
     >
       <div className="h-10 w-10 shrink-0 rounded-md bg-secondary flex items-center justify-center text-muted-foreground text-xs font-mono overflow-hidden">
         {logo_url ? (
-          <img src={logo_url} alt={name} className="h-full w-full object-contain grayscale transition-[filter] duration-200 group-hover:grayscale-0" />
+          <img src={logo_url} alt={name} className="h-full w-full object-contain" />
         ) : (
           name.charAt(0)
         )}

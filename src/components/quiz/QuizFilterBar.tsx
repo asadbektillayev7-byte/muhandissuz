@@ -56,8 +56,8 @@ export function QuizFilterBar({
 }) {
   const uz = locale === 'uz'
   const t = uz
-    ? { search: 'Quiz qidirish...', allFields: 'Barcha yo‘nalishlar', allLevels: 'Barcha darajalar', field: 'Yo‘nalish', difficulty: 'Daraja' }
-    : { search: 'Search quizzes...', allFields: 'All fields', allLevels: 'All levels', field: 'Field', difficulty: 'Difficulty' }
+    ? { search: 'Quiz qidirish...', allFields: 'Yo‘nalish', allLevels: 'Daraja', field: 'Yo‘nalish', difficulty: 'Daraja' }
+    : { search: 'Search quizzes...', allFields: 'Disciplines', allLevels: 'Levels', field: 'Discipline', difficulty: 'Difficulty' }
 
   const set = (patch: Partial<Filters>) => onChange({ ...filters, ...patch })
 

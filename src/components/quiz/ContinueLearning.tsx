@@ -73,7 +73,7 @@ export function ContinueLearning({
               style={{ borderRadius: 20, ...surface }}
             >
               <div className="w-24 shrink-0 overflow-hidden" style={{ borderRadius: 12 }}>
-                <QuizThumbnail src={quiz.thumbnail_url} alt="" className="aspect-square" />
+                <QuizThumbnail src={quiz.thumbnail_url} alt="" category={quiz.categories?.slug} className="aspect-square" />
               </div>
 
               <div className="min-w-0 flex-1">
