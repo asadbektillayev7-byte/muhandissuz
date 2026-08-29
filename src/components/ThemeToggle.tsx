@@ -1,23 +1,37 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { THEME_KEY, resolveTheme, scheduledTheme, storedTheme } from '@/lib/theme'
 
 export function ThemeToggle() {
   const [dark, setDark] = useState(false)
 
-  useEffect(() => {
-    const stored = localStorage.getItem('theme')
-    const prefers = window.matchMedia('(prefers-color-scheme: dark)').matches
-    const isDark = stored ? stored === 'dark' : prefers
+  const apply = (isDark: boolean) => {
     setDark(isDark)
     document.documentElement.classList.toggle('dark', isDark)
+  }
+
+  useEffect(() => {
+    apply(resolveTheme() === 'dark')
+
+    // Follow the clock while the tab stays open, but never fight a manual
+    // choice — once someone picks a theme it sticks until they clear it.
+    const tick = () => {
+      if (storedTheme()) return
+      apply(scheduledTheme() === 'dark')
+    }
+    const id = setInterval(tick, 60_000)
+    document.addEventListener('visibilitychange', tick)
+    return () => {
+      clearInterval(id)
+      document.removeEventListener('visibilitychange', tick)
+    }
   }, [])
 
   function toggle() {
     const next = !dark
-    setDark(next)
-    document.documentElement.classList.toggle('dark', next)
-    localStorage.setItem('theme', next ? 'dark' : 'light')
+    apply(next)
+    localStorage.setItem(THEME_KEY, next ? 'dark' : 'light')
   }
 
   return (

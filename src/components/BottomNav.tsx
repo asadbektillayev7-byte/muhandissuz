@@ -8,7 +8,7 @@ const navItems = [
   { key: 'hackathons', href: '/hackathons' },
   { key: 'quiz', href: '/quiz' },
   { key: 'projects', href: '/projects' },
-  { key: 'team', href: '/team' },
+  { key: 'media', href: '/media' },
 ]
 
 const labels: Record<string, { uz: string; en: string }> = {
@@ -16,7 +16,7 @@ const labels: Record<string, { uz: string; en: string }> = {
   hackathons: { uz: 'Hakatonlar', en: 'Hackathons' },
   quiz: { uz: 'Quiz', en: 'Quiz' },
   projects: { uz: 'Loyihalar', en: 'Projects' },
-  team: { uz: 'Jamoa', en: 'Team' },
+  media: { uz: 'Media', en: 'Media' },
 }
 
 function LogoMark() {

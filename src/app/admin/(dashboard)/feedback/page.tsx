@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { DeleteButton } from '../DeleteButton'
+import { ApproveButton } from './ApproveButton'
 
 export default async function AdminFeedbackPage() {
   const supabase = await createClient()
@@ -10,7 +11,10 @@ export default async function AdminFeedbackPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Feedback</h1>
+      <h1 className="text-2xl font-bold mb-1">Feedback</h1>
+      <p className="text-sm text-muted-foreground mb-6">
+        Submitted by visitors. Nothing appears on the landing page until you approve it.
+      </p>
 
       <div className="border border-border" style={{ borderRadius: 'var(--radius)' }}>
         <table className="w-full text-sm">
@@ -20,13 +24,14 @@ export default async function AdminFeedbackPage() {
               <th className="text-left p-3">Rating</th>
               <th className="text-left p-3">Message</th>
               <th className="text-left p-3">Date</th>
+              <th className="text-left p-3">On site</th>
               <th className="text-right p-3">Actions</th>
             </tr>
           </thead>
           <tbody>
             {items?.length === 0 && (
               <tr>
-                <td colSpan={5} className="p-6 text-center text-muted-foreground">No feedback yet.</td>
+                <td colSpan={6} className="p-6 text-center text-muted-foreground">No feedback yet.</td>
               </tr>
             )}
             {items?.map((item: any) => (
@@ -36,6 +41,9 @@ export default async function AdminFeedbackPage() {
                 <td className="p-3 text-muted-foreground max-w-xs truncate">{item.message}</td>
                 <td className="p-3 text-muted-foreground text-xs">
                   {new Date(item.created_at).toLocaleDateString()}
+                </td>
+                <td className="p-3">
+                  <ApproveButton id={item.id} approved={item.approved} />
                 </td>
                 <td className="p-3 text-right">
                   <DeleteButton table="feedback" id={item.id} redirect="/admin/feedback" />

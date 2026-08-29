@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { StatsStrip } from '@/components/StatsStrip'
 import { LatestArticles } from '@/components/LatestArticles'
+import { HeroMediaMarquee } from '@/components/HeroMediaMarquee'
 import { ActionCards } from '@/components/ActionCards'
 import { PartnerMarquee } from '@/components/PartnerMarquee'
-import { MediaStrip } from '@/components/MediaStrip'
+import { FeedbackMarquee } from '@/components/FeedbackMarquee'
 import { getPartners } from '@/lib/supabase/queries'
 
 export default async function HomePage({
@@ -33,7 +34,7 @@ export default async function HomePage({
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden max-w-6xl mx-auto px-4 py-10 md:py-44">
+      <section className="relative overflow-hidden max-w-6xl mx-auto px-4 pt-8 pb-14 md:pt-12 md:pb-28">
         <div className="grid md:grid-cols-2 gap-8 md:gap-10 items-center relative z-10">
           <div>
             <h1
@@ -63,12 +64,7 @@ export default async function HomePage({
             </div>
           </div>
           <div>
-            {/* Reserved for a transparent SVG. No background or card by design. */}
-            <div
-              className="w-full aspect-[4/3] border border-dashed"
-              style={{ borderColor: 'var(--border)', borderRadius: 'var(--radius)', background: 'transparent' }}
-              aria-hidden="true"
-            />
+            <HeroMediaMarquee locale={locale} />
           </div>
         </div>
       </section>
@@ -90,8 +86,8 @@ export default async function HomePage({
         <PartnerMarquee partners={partners} />
       </section>
 
-      {/* Media */}
-      <MediaStrip locale={locale} />
+      {/* Visitor feedback — last section before the footer */}
+      <FeedbackMarquee locale={locale} />
     </>
   )
 }

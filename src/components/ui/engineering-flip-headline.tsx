@@ -38,7 +38,8 @@ export function EngineeringFlipHeadline({
 
   return (
     <h1 className={cn("flex flex-wrap items-baseline gap-x-4 gap-y-2 font-bold leading-tight tracking-tight", className)}>
-      <span className="inline-block overflow-hidden text-primary whitespace-nowrap text-4xl sm:text-5xl lg:text-6xl xl:text-7xl">
+      {/* The rotating word carries the accent colour; the fixed suffix stays muted. */}
+      <span className="inline-block overflow-hidden text-accent whitespace-nowrap text-4xl sm:text-5xl lg:text-6xl xl:text-7xl">
         <AnimatePresence mode="wait">
           <motion.span
             key={words[index]}

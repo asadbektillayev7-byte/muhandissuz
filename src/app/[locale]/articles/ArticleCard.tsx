@@ -169,14 +169,15 @@ export function ArticleCard({ article, locale }: { article: any; locale: string 
           animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 6 }}
           transition={{ duration: 0.2 }}
         >
-          <ArrowUpRight className="w-5 h-5" style={{ color: 'var(--chart-2)' }} />
+          <ArrowUpRight className="w-5 h-5" style={{ color: '#fff' }} />
         </motion.div>
 
         <div className="absolute bottom-0 left-0 right-0 p-4">
           {categoryName && (
             <motion.span
               className="text-xs font-semibold uppercase tracking-wider block"
-              style={{ color: 'var(--chart-2)' }}
+              // Always light: the gradient beneath is dark in both themes.
+              style={{ color: 'rgba(255,255,255,0.85)' }}
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: isHovered ? 0 : 20, opacity: isHovered ? 1 : 0 }}
               transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.05 }}
@@ -186,7 +187,7 @@ export function ArticleCard({ article, locale }: { article: any; locale: string 
           )}
           <motion.h3
             className="text-sm font-semibold mt-1.5 line-clamp-2 leading-snug"
-            style={{ color: 'var(--foreground)' }}
+            style={{ color: '#fff' }}
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: isHovered ? 0 : 20, opacity: isHovered ? 1 : 0 }}
             transition={{ type: 'spring', stiffness: 200, damping: 15 }}

@@ -136,6 +136,32 @@ body {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
 }
 
+/* Hero media marquee. The track is two identical halves, so translating it
+   by -50% wraps onto a pixel-identical frame. Duration is set inline, derived
+   from the track width, to keep px/sec constant at any image count. */
+@keyframes hero-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.hero-marquee-track {
+  animation-name: hero-marquee;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-marquee-track {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
 /* ── Interaction states ─────────────────────────────────────── */
 
 /* Keyboard focus. Replaces the UA outline rather than removing it. */

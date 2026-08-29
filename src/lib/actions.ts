@@ -88,6 +88,17 @@ export async function adminSaveRecord(table: string, data: Record<string, unknow
   return result
 }
 
+// ── Feedback moderation ──
+
+/** Visitor feedback only reaches the landing page once approved here. */
+export async function adminSetFeedbackApproved(id: number, approved: boolean) {
+  await getAdminUser()
+  const admin = createAdminClient()
+  const { error } = await admin.from('feedback').update({ approved }).eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin/feedback')
+}
+
 // ── Featured quiz ──
 
 /**
