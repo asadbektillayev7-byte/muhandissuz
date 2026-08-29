@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { adminSaveRecord, adminSetQuizArticles } from '@/lib/actions'
+import { adminSaveRecord, adminSetQuizArticles, adminSetFeaturedQuiz } from '@/lib/actions'
 import { ImageUpload } from '../ImageUpload'
 import { DIFFICULTIES, DIFFICULTY_LABELS } from '@/lib/quiz'
 
@@ -43,6 +43,7 @@ export function QuizMetaForm({
   const [duration, setDuration] = useState<string>(item?.duration_minutes?.toString() ?? '')
   const [thumb, setThumb] = useState(item?.thumbnail_url ?? '')
   const [published, setPublished] = useState<boolean>(item?.published ?? true)
+  const [featured, setFeatured] = useState<boolean>(item?.featured ?? false)
   const [linked, setLinked] = useState<number[]>(linkedArticleIds)
 
   function onTitle(v: string) {
@@ -79,7 +80,13 @@ export function QuizMetaForm({
       )
 
       const quizId = item?.id ?? (Array.isArray(saved) ? saved[0]?.id : undefined)
-      if (quizId) await adminSetQuizArticles(Number(quizId), linked)
+      if (quizId) {
+        await adminSetQuizArticles(Number(quizId), linked)
+        // Runs after the save so it can clear the previously featured quiz.
+        if (featured !== (item?.featured ?? false)) {
+          await adminSetFeaturedQuiz(Number(quizId), featured)
+        }
+      }
 
       router.push(quizId ? `/admin/quiz/${quizId}` : '/admin/quiz')
       router.refresh()
@@ -165,6 +172,19 @@ export function QuizMetaForm({
             <span className="text-muted-foreground">Visible on the site</span>
           </label>
         </div>
+      </div>
+
+      <div className="border p-3" style={{ borderColor: 'var(--border)', borderRadius: 'var(--radius)' }}>
+        <label className="flex items-start gap-2 text-sm">
+          <input type="checkbox" className="mt-1" checked={featured} onChange={(e) => setFeatured(e.target.checked)} />
+          <span>
+            <span className="font-medium">Featured</span>
+            <span className="block text-muted-foreground">
+              Shown in the large card at the top of /quiz. Only one quiz can be
+              featured — ticking this clears it from any other quiz.
+            </span>
+          </span>
+        </label>
       </div>
 
       <div>

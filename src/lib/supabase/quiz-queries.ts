@@ -29,6 +29,8 @@ export async function getQuizzes(): Promise<QuizWithMeta[]> {
     .from('quizzes')
     .select(SELECT_WITH_META)
     .eq('published', true)
+    // Hero takes results[0]: the featured quiz, else the newest.
+    .order('featured', { ascending: false })
     .order('created_at', { ascending: false })
   return (data ?? []).map(shape)
 }

@@ -88,6 +88,32 @@ export async function adminSaveRecord(table: string, data: Record<string, unknow
   return result
 }
 
+// ── Featured quiz ──
+
+/**
+ * At most one quiz is featured. Clearing the previous one first matters:
+ * a unique index rejects a second featured row, so setting before clearing
+ * would fail.
+ */
+export async function adminSetFeaturedQuiz(quizId: number, featured: boolean) {
+  await getAdminUser()
+  const admin = createAdminClient()
+
+  if (featured) {
+    const { error: clearError } = await admin
+      .from('quizzes')
+      .update({ featured: false })
+      .eq('featured', true)
+      .neq('id', quizId)
+    if (clearError) throw new Error(clearError.message)
+  }
+
+  const { error } = await admin.from('quizzes').update({ featured }).eq('id', quizId)
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/admin/quiz')
+}
+
 // ── Quiz ↔ article links ──
 
 export async function adminSetQuizArticles(quizId: number, articleIds: number[]) {

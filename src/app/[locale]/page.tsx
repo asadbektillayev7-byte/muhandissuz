@@ -3,6 +3,7 @@ import { StatsStrip } from '@/components/StatsStrip'
 import { LatestArticles } from '@/components/LatestArticles'
 import { ActionCards } from '@/components/ActionCards'
 import { PartnerMarquee } from '@/components/PartnerMarquee'
+import { MediaStrip } from '@/components/MediaStrip'
 import { getPartners } from '@/lib/supabase/queries'
 
 export default async function HomePage({
@@ -88,6 +89,9 @@ export default async function HomePage({
         </h2>
         <PartnerMarquee partners={partners} />
       </section>
+
+      {/* Media */}
+      <MediaStrip locale={locale} />
     </>
   )
 }

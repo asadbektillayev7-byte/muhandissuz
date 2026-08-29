@@ -21,6 +21,7 @@ export type Quiz = {
   thumbnail_url: string | null
   language_mode: LanguageMode
   published: boolean
+  featured: boolean
   created_at: string
 }
 

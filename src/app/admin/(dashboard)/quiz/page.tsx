@@ -35,7 +35,14 @@ export default async function AdminQuizzesPage() {
           <tbody>
             {quizzes?.map((q: any) => (
               <tr key={q.id} className="border-b border-border">
-                <td className="p-3">{q.title_uz}</td>
+                <td className="p-3">
+                  {q.title_uz}
+                  {q.featured && (
+                    <span className="ml-2 border border-chart-2 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-chart-2" style={{ borderRadius: 999 }}>
+                      Featured
+                    </span>
+                  )}
+                </td>
                 <td className="p-3 text-muted-foreground">{q.categories?.name_uz || '—'}</td>
                 <td className="p-3 text-muted-foreground">
                   {DIFFICULTY_LABELS[q.difficulty as Difficulty]?.en ?? q.difficulty}
