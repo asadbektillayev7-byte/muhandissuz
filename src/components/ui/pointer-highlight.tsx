@@ -60,7 +60,12 @@ export function PointerHighlight({
         >
           <motion.div
             className={cn(
-              "absolute inset-0 border border-neutral-800 dark:border-neutral-200",
+              // Upstream used `border-neutral-800 dark:border-neutral-200`, but
+              // this site switches theme with a `.dark` class while Tailwind's
+              // `dark:` variant follows prefers-color-scheme — so on a dark OS
+              // the light border leaked into day mode. The token follows the
+              // class, and is near-identical to neutral-200 in dark mode.
+              "absolute inset-0 border border-foreground",
               rectangleClassName,
             )}
             initial={{
