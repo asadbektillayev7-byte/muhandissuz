@@ -1,7 +1,9 @@
-import { createClient } from './server'
+// Public content only — read through the cookie-free client so pages that
+// use these stay statically renderable and cacheable. See ./public.ts.
+import { createPublicClient } from './public'
 
 export async function getCategories(locale: string) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('categories')
     .select('*')
@@ -10,7 +12,7 @@ export async function getCategories(locale: string) {
 }
 
 export async function getArticles(locale: string, categorySlug?: string) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   let query = supabase
     .from('articles')
     .select('*, categories!inner(*)')
@@ -25,7 +27,7 @@ export async function getArticles(locale: string, categorySlug?: string) {
 }
 
 export async function getArticleBySlug(slug: string, locale: string) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('articles')
     // `authors` must name the FK: articles links to authors twice
@@ -38,7 +40,7 @@ export async function getArticleBySlug(slug: string, locale: string) {
 }
 
 export async function getHackathons(locale: string) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('hackathons')
     .select('*, media(*)')
@@ -47,7 +49,7 @@ export async function getHackathons(locale: string) {
 }
 
 export async function getHackathonBySlug(slug: string, locale: string) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('hackathons')
     .select('*')
@@ -57,7 +59,7 @@ export async function getHackathonBySlug(slug: string, locale: string) {
 }
 
 export async function getTeamMembers(locale: string) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('team_members')
     .select('*')
@@ -65,7 +67,7 @@ export async function getTeamMembers(locale: string) {
 }
 
 export async function getPartners() {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('partners')
     .select('*')
@@ -73,7 +75,7 @@ export async function getPartners() {
 }
 
 export async function getProjects(locale: string) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('student_projects')
     .select('*, categories(*)')
@@ -81,7 +83,7 @@ export async function getProjects(locale: string) {
 }
 
 export async function getProjectBySlug(slug: string, locale: string) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('student_projects')
     .select('*, categories(*), hackathons(*)')
@@ -91,7 +93,7 @@ export async function getProjectBySlug(slug: string, locale: string) {
 }
 
 export async function getMentors(locale: string) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('mentors')
     .select('*')
@@ -99,7 +101,7 @@ export async function getMentors(locale: string) {
 }
 
 export async function getMentorBySlug(slug: string, locale: string) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('mentors')
     .select('*')
@@ -109,7 +111,7 @@ export async function getMentorBySlug(slug: string, locale: string) {
 }
 
 export async function getGlossaryTerms() {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('glossary_terms')
     .select('*')
@@ -117,7 +119,7 @@ export async function getGlossaryTerms() {
 }
 
 export async function getMedia(locale: string) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('media')
     .select('*')
@@ -127,7 +129,7 @@ export async function getMedia(locale: string) {
 }
 
 export async function getStats() {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const [articles, hackathons, projects, mentors] = await Promise.all([
     supabase.from('articles').select('id', { count: 'exact', head: true }),
     supabase.from('hackathons').select('id', { count: 'exact', head: true }),
@@ -143,7 +145,7 @@ export async function getStats() {
 }
 
 export async function getSiteSettings(locale: string) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('site_settings')
     .select('*')
@@ -152,7 +154,7 @@ export async function getSiteSettings(locale: string) {
 }
 
 export async function getCategoriesList() {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('categories')
     .select('*')

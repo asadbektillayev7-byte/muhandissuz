@@ -119,6 +119,14 @@
   --sidebar-primary-foreground: #1a1a1a;
 }
 
+/* The background lives on html as well as body. A background set only on
+   body is propagated to the canvas by the browser, but that propagation is
+   lost behind extensions, forced-colour modes and full-page capture — which
+   leaves a white canvas under dark-theme text. */
+html {
+  background: var(--background);
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

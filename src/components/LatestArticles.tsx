@@ -1,10 +1,10 @@
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 import { field } from '@/lib/supabase/locale'
 
 /** Three most recent published articles. Renders only what exists. */
 export async function LatestArticles({ locale }: { locale: string }) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data: articles } = await supabase
     .from('articles')
     .select('id, slug, title_uz, title_en, cover_image_url, categories(name_uz, name_en)')

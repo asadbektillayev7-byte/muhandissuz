@@ -1,27 +1,30 @@
 import { getCategories, getArticles } from '@/lib/supabase/queries'
-import { field } from '@/lib/supabase/locale'
-import Link from 'next/link'
 import { EngineeringFlipHeadline } from '@/components/ui/engineering-flip-headline'
-import { ArticleCard } from './ArticleCard'
+import { ArticlesBrowser } from './ArticlesBrowser'
 import { categories } from '@/seed'
+
+// Public content: served from cache and rebuilt in the background, so a
+// navigation does not wait on a server render plus a database round-trip.
+// Next only accepts a literal here, so the shared PUBLIC_REVALIDATE in
+// lib/supabase/public.ts documents the value rather than supplying it.
+export const revalidate = 600
 
 const enWords = categories.map(c => c.name.en === 'AI' ? 'AI' : c.name.en.split(' ')[0])
 const uzWords = categories.map(c => c.name.uz)
 
 export default async function ArticlesPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ locale: string }>
-  searchParams: Promise<{ category?: string }>
 }) {
   const { locale } = await params
-  const { category } = await searchParams
 
-  const cats = await getCategories(locale)
-  const articles = category
-    ? await getArticles(locale, category)
-    : await getArticles(locale)
+  // Everything is fetched once; ArticlesBrowser filters it in the browser, so
+  // the category chips no longer cost a navigation and this route stays static.
+  const [cats, articles] = await Promise.all([
+    getCategories(locale),
+    getArticles(locale),
+  ])
 
   const labels = {
     uz: { title: 'Maqolalar', all: 'Barchasi', noArticles: "Hozircha maqolalar yo'q" },
@@ -38,39 +41,12 @@ export default async function ArticlesPage({
         className="mb-8"
       />
 
-      {cats.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-8">
-          <Link
-            href={`/${locale}/articles`}
-            className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
-              !category ? 'border-chart-2 text-chart-2 bg-muted' : 'bg-muted hover:bg-muted'
-            }`}
-          >
-            {label.all}
-          </Link>
-          {cats.map((cat: any) => (
-            <Link
-              key={cat.id}
-              href={`/${locale}/articles?category=${cat.slug}`}
-              className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
-                category === cat.slug ? 'border-chart-2 text-chart-2 bg-muted' : 'bg-muted hover:bg-muted'
-              }`}
-            >
-              {field(cat, 'name', locale)}
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {articles.length === 0 && (
-        <p className="text-muted-foreground">{label.noArticles}</p>
-      )}
-
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {articles.map((article: any) => (
-          <ArticleCard key={article.id} article={article} locale={locale} />
-        ))}
-      </div>
+      <ArticlesBrowser
+        articles={articles}
+        categories={cats}
+        locale={locale}
+        labels={{ all: label.all, noArticles: label.noArticles }}
+      />
     </div>
   )
 }

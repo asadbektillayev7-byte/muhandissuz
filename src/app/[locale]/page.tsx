@@ -7,6 +7,12 @@ import { PartnerMarquee } from '@/components/PartnerMarquee'
 import { FeedbackMarquee } from '@/components/FeedbackMarquee'
 import { getPartners } from '@/lib/supabase/queries'
 
+// Public content: served from cache and rebuilt in the background, so a
+// navigation does not wait on a server render plus a database round-trip.
+// Next only accepts a literal here, so the shared PUBLIC_REVALIDATE in
+// lib/supabase/public.ts documents the value rather than supplying it.
+export const revalidate = 600
+
 export default async function HomePage({
   params,
 }: {
@@ -17,18 +23,19 @@ export default async function HomePage({
 
   const content = locale === 'uz' ? {
     headline: 'Muhandislik \nkelajakni \nquradi',
-    support: 'Biz muhandislik maqolalari, hakatonlar va talabalar loyihalari orqali yosh muhandislarni qo\'llab-quvvatlaymiz.',
-    ctaPrimary: 'Maqolalar',
-    ctaPrimaryHref: `/${locale}/articles`,
-    ctaSecondary: 'Hakatonlar',
-    ctaSecondaryHref: `/${locale}/hackathons`,
+    support:
+      'Muhandiss.uz — talabalar va yosh muhandislar uchun ochiq platforma. Maqolalar, quizlar, hakatonlar va loyihalar, barchasi bepul.',
+    // Deliberately not a section link: the pill nav and the action cards below
+    // already reach all three sections, and About is the only page that
+    // answers "what is this project?".
+    ctaPrimary: 'Biz haqimizda',
+    ctaPrimaryHref: `/${locale}/about`,
   } : {
     headline: 'Engineering \nbuilds the \nfuture',
-    support: 'We promote engineering knowledge through articles, hackathons, and student projects for young engineers.',
-    ctaPrimary: 'Articles',
-    ctaPrimaryHref: `/${locale}/articles`,
-    ctaSecondary: 'Hackathons',
-    ctaSecondaryHref: `/${locale}/hackathons`,
+    support:
+      'Muhandiss.uz is an open platform for students and young engineers. Articles, quizzes, hackathons and projects, all free.',
+    ctaPrimary: 'About us',
+    ctaPrimaryHref: `/${locale}/about`,
   }
 
   return (
@@ -53,13 +60,6 @@ export default async function HomePage({
                 style={{ borderRadius: 'var(--radius)' }}
               >
                 {content.ctaPrimary}
-              </Link>
-              <Link
-                href={content.ctaSecondaryHref}
-                className="px-5 py-2.5 text-sm font-semibold border bg-transparent text-foreground transition-colors duration-150 hover:border-accent hover:text-accent"
-                style={{ borderRadius: 'var(--radius)' }}
-              >
-                {content.ctaSecondary}
               </Link>
             </div>
           </div>

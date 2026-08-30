@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 import { field } from '@/lib/supabase/locale'
 import { Gallery, GalleryImage } from '@/components/ui/shared-element-gallery'
 
@@ -8,14 +8,16 @@ function mediaProps(item: any, locale: string) {
   const isVideo = typeof item.mime_type === 'string' && item.mime_type.startsWith('video/')
   return {
     kind: (isVideo ? 'video' : 'image') as 'video' | 'image',
-    poster: isVideo ? item.poster_url || item.thumbnail_url || undefined : undefined,
+    // Only a real poster counts. thumbnail_url used to be set to the video's
+    // own URL, which an <img> cannot decode — hence the grey fallback tiles.
+    poster: isVideo ? item.poster_url || undefined : undefined,
     title: field(item, 'title', locale) || undefined,
   }
 }
 
 /** Newest media as a horizontal snapping row. */
 export async function MediaStrip({ locale }: { locale: string }) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data: items } = await supabase
     .from('media')
     .select('*')

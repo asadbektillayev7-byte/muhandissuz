@@ -173,7 +173,8 @@ export async function adminCheckSlug(slug: string, table: string, excludeId?: nu
 export async function adminInsertMedia(data: {
   filename: string
   url: string
-  thumbnail_url: string
+  // Optional: a video has no thumbnail of its own to point at.
+  thumbnail_url?: string
   alt_uz: string
   alt_en?: string
   mime_type: string

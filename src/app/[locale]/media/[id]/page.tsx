@@ -1,8 +1,14 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 import { field } from '@/lib/supabase/locale'
+
+// Public content: served from cache and rebuilt in the background, so a
+// navigation does not wait on a server render plus a database round-trip.
+// Next only accepts a literal here, so the shared PUBLIC_REVALIDATE in
+// lib/supabase/public.ts documents the value rather than supplying it.
+export const revalidate = 600
 
 export default async function MediaDetailPage({
   params,
@@ -10,7 +16,7 @@ export default async function MediaDetailPage({
   params: Promise<{ locale: string; id: string }>
 }) {
   const { locale, id } = await params
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data: item } = await supabase.from('media').select('*').eq('id', id).single()
 
   if (!item) notFound()
@@ -51,7 +57,7 @@ export default async function MediaDetailPage({
             <video
               src={item.url}
               controls
-              poster={item.poster_url || item.thumbnail_url || undefined}
+              poster={item.poster_url || undefined}
               className="w-full max-h-[70vh] object-contain bg-black"
             />
           ) : (

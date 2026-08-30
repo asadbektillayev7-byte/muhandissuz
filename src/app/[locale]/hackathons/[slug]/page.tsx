@@ -4,6 +4,12 @@ import { renderRichText } from '@/utilities/richText'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+// Public content: served from cache and rebuilt in the background, so a
+// navigation does not wait on a server render plus a database round-trip.
+// Next only accepts a literal here, so the shared PUBLIC_REVALIDATE in
+// lib/supabase/public.ts documents the value rather than supplying it.
+export const revalidate = 600
+
 export default async function HackathonPage({
   params,
 }: {

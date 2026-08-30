@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 import { FeedbackMarqueeClient } from './FeedbackMarqueeClient'
 
 /**
@@ -6,7 +6,7 @@ import { FeedbackMarqueeClient } from './FeedbackMarqueeClient'
  * no rating, role or avatar. Renders nothing until something is approved.
  */
 export async function FeedbackMarquee({ locale }: { locale: string }) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data: items } = await supabase
     .from('feedback')
     .select('id, name, message')

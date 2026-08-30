@@ -130,6 +130,17 @@ export function ArticleCard({ article, locale }: { article: any; locale: string 
   const title = field(article, 'title', locale)
   const categoryName = article.categories ? field(article.categories, 'name', locale) : ''
 
+  // A cover that 404s must not leave a broken-image glyph with alt text
+  // spilling across the card. onError alone misses it: the server-rendered
+  // <img> can finish failing before React hydrates, so re-check on mount.
+  const [coverFailed, setCoverFailed] = useState(false)
+  const coverRef = useRef<HTMLImageElement>(null)
+  useEffect(() => {
+    const el = coverRef.current
+    if (el && el.complete && el.naturalWidth === 0) setCoverFailed(true)
+  }, [article.cover_image_url])
+  const showCover = Boolean(article.cover_image_url) && !coverFailed
+
   return (
     <Link href={`/${locale}/articles/${article.slug}`} className="block [perspective:1000px]">
       <motion.div
@@ -148,11 +159,26 @@ export function ArticleCard({ article, locale }: { article: any; locale: string 
         onMouseLeave={handleMouseLeave}
       >
         <div className="aspect-[4/3] overflow-hidden">
-          <img
-            src={article.cover_image_url}
-            alt={title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
+          {showCover ? (
+            <img
+              ref={coverRef}
+              src={article.cover_image_url}
+              alt={title}
+              onError={() => setCoverFailed(true)}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            // No usable cover: a quiet themed panel carrying the category,
+            // so the card keeps its shape and stays readable in both themes.
+            <div
+              className="flex h-full w-full items-center justify-center p-4 text-center"
+              style={{ backgroundColor: 'var(--secondary)' }}
+            >
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {categoryName || title}
+              </span>
+            </div>
+          )}
         </div>
 
         <div

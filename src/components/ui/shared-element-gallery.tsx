@@ -119,9 +119,14 @@ export function GalleryImage({
   const isVideo = kind === "video"
   // A poster that 404s must fall back too, not just a missing one.
   const [stillFailed, setStillFailed] = React.useState(false)
+  const [frameFailed, setFrameFailed] = React.useState(false)
   const stillRef = React.useRef<HTMLImageElement>(null)
   const stillSrc = isVideo ? poster : src
   const showStill = Boolean(stillSrc) && !stillFailed
+  // No uploaded poster: let the browser paint the video's own first frame.
+  // #t=0.1 seeks just past the start, because frame zero of a fade-in is
+  // often solid black. Only metadata is fetched, so this costs a few KB.
+  const showFrame = isVideo && !showStill && !frameFailed
 
   // onError alone is not enough: the server-rendered <img> can finish failing
   // before React hydrates, so the handler is never attached. Re-check on mount.
@@ -152,8 +157,23 @@ export function GalleryImage({
           variants={{ hover: { scale: 0.98 }, tap: { scale: 0.95 } }}
           transition={spring}
         />
+      ) : showFrame ? (
+        <motion.video
+          layoutId={`image-${id}`}
+          data-gallery-media
+          src={`${src}#t=0.1`}
+          preload="metadata"
+          muted
+          playsInline
+          // The parent handles the click; the element is a still, not a player.
+          className="pointer-events-none aspect-video w-full rounded-xl object-cover"
+          onError={() => setFrameFailed(true)}
+          variants={{ hover: { scale: 0.98 }, tap: { scale: 0.95 } }}
+          transition={spring}
+        />
       ) : (
-        // No usable poster: a titled tile, still the shared element.
+        // Neither a poster nor a decodable frame: a titled tile, still the
+        // shared element.
         <motion.div
           layoutId={`image-${id}`}
           data-gallery-media

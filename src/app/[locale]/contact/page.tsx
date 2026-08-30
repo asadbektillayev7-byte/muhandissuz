@@ -1,5 +1,11 @@
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 import { ContactForm } from './ContactForm'
+
+// Public content: served from cache and rebuilt in the background, so a
+// navigation does not wait on a server render plus a database round-trip.
+// Next only accepts a literal here, so the shared PUBLIC_REVALIDATE in
+// lib/supabase/public.ts documents the value rather than supplying it.
+export const revalidate = 600
 
 export default async function ContactPage({
   params,
@@ -7,7 +13,7 @@ export default async function ContactPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const supabase = await createClient()
+  const supabase = createPublicClient()
 
   const { data: settings } = await supabase
     .from('site_settings')

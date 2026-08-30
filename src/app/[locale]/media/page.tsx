@@ -1,13 +1,21 @@
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 import { field } from '@/lib/supabase/locale'
 import { Gallery, GalleryGrid, GalleryImage } from '@/components/ui/shared-element-gallery'
+
+// Public content: served from cache and rebuilt in the background, so a
+// navigation does not wait on a server render plus a database round-trip.
+// Next only accepts a literal here, so the shared PUBLIC_REVALIDATE in
+// lib/supabase/public.ts documents the value rather than supplying it.
+export const revalidate = 600
 
 /** Video rows render a poster plus play badge; images render themselves. */
 function mediaProps(item: any, locale: string) {
   const isVideo = typeof item.mime_type === 'string' && item.mime_type.startsWith('video/')
   return {
     kind: (isVideo ? 'video' : 'image') as 'video' | 'image',
-    poster: isVideo ? item.poster_url || item.thumbnail_url || undefined : undefined,
+    // Only a real poster counts. thumbnail_url used to be set to the video's
+    // own URL, which an <img> cannot decode — hence the grey fallback tiles.
+    poster: isVideo ? item.poster_url || undefined : undefined,
     title: field(item, 'title', locale) || undefined,
   }
 }
@@ -18,7 +26,7 @@ export default async function MediaPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const supabase = await createClient()
+  const supabase = createPublicClient()
 
   const { data: mediaItems } = await supabase
     .from('media')

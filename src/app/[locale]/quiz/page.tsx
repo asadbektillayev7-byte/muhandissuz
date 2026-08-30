@@ -1,6 +1,12 @@
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 import { getQuizzes, getQuizStats } from '@/lib/supabase/quiz-queries'
 import { QuizBrowser } from '@/components/quiz/QuizBrowser'
+
+// Public content: served from cache and rebuilt in the background, so a
+// navigation does not wait on a server render plus a database round-trip.
+// Next only accepts a literal here, so the shared PUBLIC_REVALIDATE in
+// lib/supabase/public.ts documents the value rather than supplying it.
+export const revalidate = 600
 
 export default async function QuizPage({
   params,
@@ -8,7 +14,7 @@ export default async function QuizPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const supabase = await createClient()
+  const supabase = createPublicClient()
 
   const [quizzes, stats, { data: categories }, { data: links }, { data: articles }] =
     await Promise.all([

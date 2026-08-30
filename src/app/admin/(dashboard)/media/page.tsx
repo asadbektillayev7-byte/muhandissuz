@@ -9,6 +9,7 @@ import { accepts, resolveType, uploadToMediaBucket, validateFile } from '@/lib/u
 export default function AdminMediaPage() {
   const [media, setMedia] = useState<any[]>([])
   const [file, setFile] = useState<File | null>(null)
+  const [posterFile, setPosterFile] = useState<File | null>(null)
   const [descriptionUz, setDescriptionUz] = useState('')
   const [descriptionEn, setDescriptionEn] = useState('')
   const [titleUz, setTitleUz] = useState('')
@@ -54,11 +55,29 @@ export default function AdminMediaPage() {
       return
     }
 
+    // Optional still for a video. Videos show their own first frame without
+    // one; this is the override for when that frame is a bad one.
+    let posterUrl: string | undefined
+    if (posterFile) {
+      try {
+        posterUrl = (await uploadToMediaBucket(supabase, posterFile)).url
+      } catch (e: any) {
+        setValidationError(`Poster upload failed: ${e?.message || 'unknown error'}`)
+        setUploading(false)
+        return
+      }
+    }
+
+    const isVideo = resolveType(file).startsWith('video/')
+
     try {
       await adminInsertMedia({
         filename,
         url: publicUrl,
-        thumbnail_url: publicUrl,
+        // A video's own URL is not a thumbnail — feeding it to an <img> just
+        // fails to decode. Only images are their own thumbnail.
+        thumbnail_url: isVideo ? undefined : publicUrl,
+        poster_url: posterUrl,
         alt_uz: descriptionUz,
         alt_en: descriptionEn,
         title_uz: titleUz || undefined,
@@ -78,6 +97,7 @@ export default function AdminMediaPage() {
     }
 
     setFile(null)
+    setPosterFile(null)
     setDescriptionUz('')
     setDescriptionEn('')
     setTitleUz('')
@@ -156,6 +176,15 @@ export default function AdminMediaPage() {
           <div>
             <label className="block text-xs text-muted-foreground mb-1">Location (EN)</label>
             <input value={locationEn} onChange={(e) => setLocationEn(e.target.value)} className="border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2" style={{ borderRadius: 'var(--radius)' }} placeholder="Tashkent" />
+          </div>
+          <div>
+            <label className="block text-xs text-muted-foreground mb-1">Poster image (videos only, optional)</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setPosterFile(e.target.files?.[0] || null)}
+              className="text-sm"
+            />
           </div>
           <div>
             <label className="block text-xs text-muted-foreground mb-1">Event Date</label>

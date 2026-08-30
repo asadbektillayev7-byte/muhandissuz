@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 
 /**
  * Decorative hero backdrop: a single track of portrait cards sliding right to
@@ -19,7 +19,7 @@ const PX_PER_SECOND = 45
 const MIN_PER_PASS = 6
 
 export async function HeroMediaMarquee({ locale }: { locale: string }) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('media')
     .select('id, url, alt_uz, alt_en')
