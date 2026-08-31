@@ -20,8 +20,13 @@ function chatApiKey(): string | undefined {
   return process.env.GEMINI_CHAT_API_KEY || process.env.GEMINI_API_KEY
 }
 
-/** What the assistant calls itself. */
-export const BOT_NAME = 'Murvatcha'
+/** The assistant is named per language, not translated on the fly. */
+export const BOT_NAME_UZ = 'Murvatcha'
+export const BOT_NAME_EN = 'The Fixy'
+
+export function botName(locale: string): string {
+  return locale === 'en' ? BOT_NAME_EN : BOT_NAME_UZ
+}
 
 /** Kept short: a chat reply should read like a person, not a brochure. */
 const MAX_OUTPUT_TOKENS = 500
@@ -86,12 +91,13 @@ export function renderSiteContext(ctx: SiteContext, locale: string): string {
 }
 
 export function buildSystemInstruction(catalogue: string, locale: string): string {
+  const name = botName(locale)
   const language =
     locale === 'en'
       ? 'Reply in English unless the visitor writes in Uzbek, in which case reply in Uzbek.'
       : 'Reply in Uzbek unless the visitor writes in English, in which case reply in English.'
 
-  return `You are ${BOT_NAME}, the assistant on muhandiss.uz, an open engineering platform in Uzbek for students and young engineers.
+  return `You are ${name}, the assistant on muhandiss.uz, an open engineering platform in Uzbek for students and young engineers.
 
 You do two things:
 1. Help visitors find their way around the site — which articles exist, what the quizzes and hackathons are, where to submit a project.
@@ -105,7 +111,7 @@ Rules:
 - The catalogue gives titles and short excerpts only. You have NOT read the full articles, so do not claim to summarise their contents — point the visitor to the page instead.
 - When answering from your own engineering knowledge rather than from the site, answer normally but do not attribute it to Muhandiss.uz.
 - If you do not know something, say so plainly.
-- You are not a person. If asked, say you are ${BOT_NAME}, an AI assistant for this site.
+- You are not a person. If asked, say you are ${name}, an AI assistant for this site.
 - Stay on engineering, technology, and this site. If asked about something unrelated, say that is outside what you can help with and offer what you can do instead.
 
 SITE CATALOGUE
