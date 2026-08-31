@@ -28,8 +28,13 @@ export function botName(locale: string): string {
   return locale === 'en' ? BOT_NAME_EN : BOT_NAME_UZ
 }
 
-/** Kept short: a chat reply should read like a person, not a brochure. */
-const MAX_OUTPUT_TOKENS = 500
+/**
+ * A safety net, not a style control — brevity is asked for in the prompt.
+ * It was 500, which truncated real answers mid-word: this model spends part
+ * of the output budget on internal reasoning before it writes, so the visible
+ * reply gets whatever is left.
+ */
+const MAX_OUTPUT_TOKENS = 2048
 
 /** Long enough for a real question, short enough to bound the cost. */
 export const MAX_MESSAGE_CHARS = 800
