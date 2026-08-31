@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { QuizMetaForm } from '../QuizMetaForm'
 import { DeleteButton } from '../../DeleteButton'
+import { GenerateQuestions } from './GenerateQuestions'
 
 export default async function EditQuizPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -61,6 +62,10 @@ export default async function EditQuizPage({ params }: { params: Promise<{ id: s
           >
             + Add question
           </Link>
+        </div>
+
+        <div className="mb-4">
+          <GenerateQuestions quizId={Number(id)} articleCount={(links || []).length} />
         </div>
 
         <div className="border border-border" style={{ borderRadius: 'var(--radius)' }}>

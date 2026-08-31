@@ -1,6 +1,7 @@
 import { Header } from '@/components/Header'
 import { MinimalFooter } from '@/components/MinimalFooter'
 import { BottomNav } from '@/components/BottomNav'
+import { ChatWidget } from '@/components/ChatWidget'
 import type { Metadata } from 'next'
 import { switzer } from '../fonts'
 import { NIGHT_END_HOUR, NIGHT_START_HOUR } from '@/lib/theme'
@@ -89,6 +90,7 @@ export default async function LocaleLayout({
         <main className="flex-1">{children}</main>
         <MinimalFooter />
         <BottomNav />
+        <ChatWidget />
       </body>
     </html>
   )

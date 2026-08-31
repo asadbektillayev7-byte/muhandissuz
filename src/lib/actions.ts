@@ -4,6 +4,12 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import { headers } from 'next/headers'
+import {
+  generateQuestions,
+  richTextToPlain,
+  QuizGenerationError,
+  type DraftQuestion,
+} from '@/lib/quizGeneration'
 
 async function getClientIp(): Promise<string> {
   const headersList = await headers()
@@ -193,4 +199,95 @@ export async function adminInsertMedia(data: {
   const { error } = await admin.from('media').insert(data)
   if (error) throw new Error(error.message)
   revalidatePath('/admin/media')
+}
+
+// ── AI-drafted quiz questions ──
+
+/**
+ * Drafts questions from the articles already linked to a quiz. Returns them
+ * to the caller without saving: the admin reviews the drafts and only what
+ * they approve is written, by adminSaveGeneratedQuestions below.
+ */
+export async function adminGenerateQuizQuestions(quizId: number, count: number) {
+  await getAdminUser()
+  const admin = createAdminClient()
+
+  const { data: links, error: linkError } = await admin
+    .from('quiz_articles')
+    .select('article_id')
+    .eq('quiz_id', quizId)
+  if (linkError) throw new Error(linkError.message)
+
+  const ids = (links ?? []).map((l) => l.article_id)
+  if (ids.length === 0) {
+    throw new Error('Link at least one article to this quiz first, then generate.')
+  }
+
+  const { data: articles, error: articleError } = await admin
+    .from('articles')
+    .select('title_uz, body_uz')
+    .in('id', ids)
+  if (articleError) throw new Error(articleError.message)
+
+  const source = (articles ?? []).map((a) => ({
+    title: a.title_uz ?? '',
+    body: richTextToPlain(a.body_uz),
+  }))
+
+  // Worth naming explicitly: the seeded articles carry only a title, an
+  // excerpt and a cover image, so this is the failure an admin will hit first.
+  if (source.every((a) => a.body.trim().length === 0)) {
+    const names = source.map((a) => a.title).filter(Boolean).join(', ')
+    throw new Error(
+      `These articles have no body text yet, so there is nothing to build questions from: ${names}. ` +
+        'Write the article content in the article editor first.'
+    )
+  }
+
+  try {
+    return await generateQuestions({ articles: source, count })
+  } catch (e) {
+    // QuizGenerationError messages are written for the admin; anything else
+    // could carry internals, so it is not passed through verbatim.
+    if (e instanceof QuizGenerationError) throw new Error(e.message)
+    throw new Error('Could not reach Gemini. Check the API key and try again.')
+  }
+}
+
+/** Appends approved drafts to a quiz, after the existing questions. */
+export async function adminSaveGeneratedQuestions(
+  quizId: number,
+  questions: DraftQuestion[]
+) {
+  await getAdminUser()
+  if (questions.length === 0) return 0
+
+  const admin = createAdminClient()
+
+  const { data: existing } = await admin
+    .from('quiz_questions')
+    .select('sort_order')
+    .eq('quiz_id', quizId)
+    .order('sort_order', { ascending: false })
+    .limit(1)
+
+  const start = (existing?.[0]?.sort_order ?? -1) + 1
+
+  const { error } = await admin.from('quiz_questions').insert(
+    questions.map((q, i) => ({
+      quiz_id: quizId,
+      question_uz: q.question_uz,
+      question_en: q.question_en || null,
+      options_uz: q.options_uz,
+      options_en: q.options_en,
+      correct_index: q.correct_index,
+      explanation_uz: q.explanation_uz || null,
+      explanation_en: q.explanation_en || null,
+      sort_order: start + i,
+    }))
+  )
+  if (error) throw new Error(error.message)
+
+  revalidatePath(`/admin/quiz/${quizId}`)
+  return questions.length
 }
