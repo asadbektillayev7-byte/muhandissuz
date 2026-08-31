@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { sendChatMessage } from '@/lib/chatActions'
 import { botName, MAX_MESSAGE_CHARS, type ChatTurn } from '@/lib/chat'
@@ -61,6 +62,42 @@ function Avatar({ size, name }: { size: number; name: string }) {
       style={{ width: size, height: size, borderRadius: '50%' }}
     />
   )
+}
+
+/**
+ * Renders the assistant's text, turning [label](/path) into a real link.
+ *
+ * Only same-site paths are honoured — a link must start with a single "/" and
+ * not "//", which would be protocol-relative and leave the site. Anything else
+ * is left as literal text rather than becoming a link to somewhere unknown,
+ * because the href here is model output, not something we control.
+ */
+const LINK = /\[([^\]\n]+)\]\((\/[^)\s]*)\)/g
+
+function renderText(text: string): React.ReactNode[] {
+  const parts: React.ReactNode[] = []
+  let cursor = 0
+  let m: RegExpExecArray | null
+  LINK.lastIndex = 0
+
+  while ((m = LINK.exec(text)) !== null) {
+    const [full, label, href] = m
+    if (m.index > cursor) parts.push(text.slice(cursor, m.index))
+
+    if (href.startsWith('//')) {
+      parts.push(full)
+    } else {
+      parts.push(
+        <Link key={m.index} href={href} className="underline underline-offset-2">
+          {label}
+        </Link>
+      )
+    }
+    cursor = m.index + full.length
+  }
+
+  if (cursor < text.length) parts.push(text.slice(cursor))
+  return parts
 }
 
 /** Telegram's little curved flick at the bottom corner of the last bubble. */
@@ -346,7 +383,7 @@ function Bubble({
         }}
       >
         <p className="whitespace-pre-wrap break-words text-sm leading-snug">
-          {children}
+          {typeof children === 'string' && !isUser ? renderText(children) : children}
           {/* Reserves room on the last line so the timestamp never overlaps
               the text, which is exactly how Telegram does it. */}
           <span className="inline-block w-[52px]" aria-hidden="true" />
