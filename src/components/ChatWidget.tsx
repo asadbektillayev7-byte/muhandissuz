@@ -2,9 +2,16 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, usePathname } from 'next/navigation'
 import { sendChatMessage } from '@/lib/chatActions'
 import { botName, MAX_MESSAGE_CHARS, type ChatTurn } from '@/lib/chat'
+import {
+  copyForPath,
+  routeKey,
+  pick,
+  pickList,
+  DEFAULT_GREETING,
+} from '@/lib/botMessages'
 
 /**
  * Murvatcha / The Fixy — the site assistant, laid out like a Telegram chat:
@@ -22,6 +29,35 @@ const AVATAR = '/images/murvatcha.jpg'
 const LAUNCHER_BOTTOM = 96
 const LAUNCHER_SIZE = 56
 const PANEL_BOTTOM = LAUNCHER_BOTTOM + LAUNCHER_SIZE + 12
+
+/** How long the typing indicator runs before a message appears. */
+const TYPING_MS = 1000
+/** Wait before speaking unprompted, so the widget does not ambush a new page. */
+const PROACTIVE_DELAY_MS = 4500
+/** ...or as soon as this much of the page has been scrolled, whichever first. */
+const PROACTIVE_SCROLL = 0.3
+
+/** sessionStorage: one greeting per route, and never re-open after a close. */
+const seenKey = (route: string) => `murvatcha:greeted:${route}`
+const CLOSED_KEY = 'murvatcha:closed'
+
+function sessionFlag(key: string): boolean {
+  try {
+    return window.sessionStorage.getItem(key) === '1'
+  } catch {
+    // Private browsing can throw on access; treat it as "already greeted" so
+    // a failure here stays quiet rather than repeating forever.
+    return true
+  }
+}
+
+function setSessionFlag(key: string) {
+  try {
+    window.sessionStorage.setItem(key, '1')
+  } catch {
+    // Nothing to do: worst case the greeting shows again next navigation.
+  }
+}
 
 type Message = ChatTurn & { at: number }
 
@@ -100,6 +136,30 @@ function renderText(text: string): React.ReactNode[] {
   return parts
 }
 
+/**
+ * The "..." shown before any assistant message, whether that message is the
+ * proactive greeting or a real reply. One component for both, so the two are
+ * indistinguishable to the visitor.
+ */
+function TypingBubble() {
+  return (
+    <div className="flex justify-start">
+      <div
+        className="flex items-center gap-1 px-3 py-2.5"
+        style={{ backgroundColor: 'var(--card)', borderRadius: 12, borderBottomLeftRadius: 3 }}
+      >
+        {[0, 1, 2].map((i) => (
+          <span
+            key={i}
+            className="chat-typing-dot block h-1.5 w-1.5 rounded-full"
+            style={{ backgroundColor: 'var(--muted-foreground)' }}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 /** Telegram's little curved flick at the bottom corner of the last bubble. */
 function Tail({ side, color }: { side: 'left' | 'right'; color: string }) {
   return (
@@ -122,6 +182,7 @@ function Tail({ side, color }: { side: 'left' | 'right'; color: string }) {
 
 export function ChatWidget() {
   const params = useParams()
+  const pathname = usePathname()
   const locale = (params?.locale as string) === 'en' ? 'en' : 'uz'
   const uz = locale === 'uz'
   const name = botName(locale)
@@ -131,7 +192,6 @@ export function ChatWidget() {
         open: `${name} bilan suhbat`,
         close: 'Yopish',
         status: 'bot · doim onlayn',
-        greeting: `Salom! Men ${name}. Sayt bo‘yicha yoki muhandislik haqida savolingiz bo‘lsa, yozing.`,
         placeholder: 'Xabar yozing…',
         send: 'Yuborish',
         typing: 'yozmoqda…',
@@ -141,15 +201,32 @@ export function ChatWidget() {
         open: `Chat with ${name}`,
         close: 'Close',
         status: 'bot · always online',
-        greeting: `Hello! I'm ${name}. Ask me about the site or about engineering.`,
         placeholder: 'Write a message…',
         send: 'Send',
         typing: 'typing…',
         today: 'Today',
       }
 
+  // All assistant copy comes from lib/botMessages.ts, keyed by route.
+  const routeCopy = copyForPath(pathname)
+  const greetingText = pick(routeCopy?.greeting ?? DEFAULT_GREETING, locale)
+  const suggestions = routeCopy ? pickList(routeCopy.suggestions, locale) : []
+
   const [open, setOpen] = useState(false)
   const [openedAt, setOpenedAt] = useState<number | null>(null)
+  /** The greeting is held back until the typing indicator has run. */
+  const [greetingReady, setGreetingReady] = useState(false)
+  /**
+   * Latched on the first send and never cleared. Keying the chips off the
+   * message count instead would bring them back whenever a send failed and
+   * its turn was rolled out.
+   */
+  const [hasSent, setHasSent] = useState(false)
+  /**
+   * The greeting text is frozen once shown. Reading it live would rewrite the
+   * bubble under an existing conversation as soon as the visitor navigated.
+   */
+  const [shownGreeting, setShownGreeting] = useState<string | null>(null)
   const [turns, setTurns] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [busy, setBusy] = useState(false)
@@ -157,6 +234,21 @@ export function ChatWidget() {
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const greetedRoute = useRef(pathname)
+
+  /**
+   * Clearing this in an effect would be too late: the panel's first render
+   * after a route change still carries the previous route's greetingReady,
+   * so the old greeting paints for a frame and the typing indicator is
+   * skipped entirely. Adjusting during render is the supported way to reset
+   * state when a prop-like value changes.
+   */
+  if (greetedRoute.current !== pathname && !hasSent) {
+    greetedRoute.current = pathname
+    setGreetingReady(false)
+    setShownGreeting(null)
+    setOpenedAt(null)
+  }
 
   useEffect(() => {
     const el = scrollRef.current
@@ -165,22 +257,88 @@ export function ChatWidget() {
 
   useEffect(() => {
     if (!open) return
-    // Set on open, not at render: a timestamp computed during render would
-    // differ between the server and the client.
-    setOpenedAt((prev) => prev ?? Date.now())
     inputRef.current?.focus()
   }, [open])
 
+  /**
+   * The greeting types itself out rather than appearing fully formed, exactly
+   * like a real reply does — same indicator, same delay.
+   *
+   * It runs again when the route changes, because each section has its own
+   * greeting, but never once the visitor has started talking: replacing the
+   * top bubble mid-conversation would be disorienting.
+   */
+  useEffect(() => {
+    if (!open || hasSent || greetingReady) return
+
+    const id = setTimeout(() => {
+      setShownGreeting(greetingText)
+      setOpenedAt(Date.now())
+      setGreetingReady(true)
+    }, TYPING_MS)
+    return () => clearTimeout(id)
+  }, [open, pathname, hasSent, greetingReady, greetingText])
+
+  /**
+   * Speak first, at most once per route per session.
+   *
+   * Held back until the visitor has had a few seconds on the page, or has
+   * scrolled far enough to be reading, so it lands as an offer rather than an
+   * interruption. Closing the widget silences it for the rest of the session.
+   */
+  useEffect(() => {
+    if (!routeCopy || hasSent) return
+
+    const route = routeKey(pathname)
+    if (sessionFlag(CLOSED_KEY) || sessionFlag(seenKey(route))) return
+
+    let done = false
+    const fire = () => {
+      if (done) return
+      // Never interrupt someone who already opened it and is mid-conversation.
+      if (sessionFlag(CLOSED_KEY)) return
+      done = true
+      setSessionFlag(seenKey(route))
+      setOpen(true)
+    }
+
+    const timer = setTimeout(fire, PROACTIVE_DELAY_MS)
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      if (max > 0 && window.scrollY / max >= PROACTIVE_SCROLL) fire()
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('scroll', onScroll)
+    }
+  }, [pathname, routeCopy, hasSent])
+
+  function close() {
+    setOpen(false)
+    // Re-opening should type the greeting out again rather than showing a
+    // stale one instantly.
+    if (!hasSent) {
+      setGreetingReady(false)
+      setShownGreeting(null)
+      setOpenedAt(null)
+    }
+    // A closed widget stays closed: no further route may re-open it.
+    setSessionFlag(CLOSED_KEY)
+  }
+
   useEffect(() => {
     if (!open) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close()
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
   }, [open])
 
-  async function send() {
-    const text = input.trim()
+  async function send(preset?: string) {
+    const text = (preset ?? input).trim()
     if (!text || busy) return
+    setHasSent(true)
 
     const outgoing: Message = { role: 'user', text, at: Date.now() }
     const next = [...turns, outgoing]
@@ -189,10 +347,15 @@ export function ChatWidget() {
     setError('')
     setBusy(true)
 
-    const result = await sendChatMessage(
-      next.map(({ role, text }) => ({ role, text })),
-      locale
-    )
+    const [result] = await Promise.all([
+      sendChatMessage(
+        next.map(({ role, text }) => ({ role, text })),
+        locale
+      ),
+      // Floor the wait so a quick reply still shows the indicator rather than
+      // flashing it for a frame.
+      new Promise((r) => setTimeout(r, TYPING_MS)),
+    ])
 
     if ('reply' in result) {
       setTurns([...next, { role: 'model', text: result.reply, at: Date.now() }])
@@ -236,7 +399,7 @@ export function ChatWidget() {
             </div>
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={close}
               aria-label={t.close}
               className="px-1 text-xl leading-none text-muted-foreground hover:text-foreground"
             >
@@ -265,9 +428,13 @@ export function ChatWidget() {
               </span>
             </div>
 
-            {openedAt !== null && (
+            {/* Not gated on openedAt: that timestamp is only set when the
+                greeting lands, which is precisely when the dots stop. */}
+            {!greetingReady && <TypingBubble />}
+
+            {openedAt !== null && greetingReady && (
               <Bubble role="model" at={openedAt} lastOfGroup={turns[0]?.role !== 'model'}>
-                {t.greeting}
+                {shownGreeting ?? greetingText}
               </Bubble>
             )}
 
@@ -283,6 +450,8 @@ export function ChatWidget() {
               </Bubble>
             ))}
 
+            {busy && <TypingBubble />}
+
             {error && (
               <div className="flex justify-center pt-1">
                 <span
@@ -295,14 +464,43 @@ export function ChatWidget() {
             )}
           </div>
 
+          {/* Suggested questions. Offered once, at the start of a chat, and
+              gone as soon as the visitor has said anything — they are a way in,
+              not a menu that reappears under every reply. */}
+          {suggestions.length > 0 && !hasSent && greetingReady && (
+            <div
+              className="flex flex-wrap gap-1.5 border-t px-3 pb-1 pt-2.5"
+              style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)' }}
+            >
+              {suggestions.map((q) => (
+                <button
+                  key={q}
+                  type="button"
+                  onClick={() => send(q)}
+                  disabled={busy}
+                  className="border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-chart-2 hover:text-chart-2 disabled:opacity-50"
+                  style={{ borderColor: 'var(--border)', borderRadius: '999px' }}
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          )}
+
           {/* Composer */}
           <form
             onSubmit={(e) => {
               e.preventDefault()
               send()
             }}
-            className="flex items-center gap-2 border-t px-3 py-2.5"
-            style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)' }}
+            className="flex items-center gap-2 px-3 py-2.5"
+            style={{
+              borderTop:
+                suggestions.length > 0 && !hasSent && greetingReady
+                  ? 'none'
+                  : '1px solid var(--border)',
+              backgroundColor: 'var(--card)',
+            }}
           >
             <input
               ref={inputRef}
@@ -331,7 +529,7 @@ export function ChatWidget() {
 
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => (open ? close() : setOpen(true))}
         aria-label={open ? t.close : t.open}
         aria-expanded={open}
         className="fixed right-4 z-[60] overflow-hidden shadow-lg transition-transform hover:scale-105"
