@@ -4,13 +4,20 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 import { sendChatMessage } from '@/lib/chatActions'
-import { botName, MAX_MESSAGE_CHARS, type ChatTurn } from '@/lib/chat'
+import {
+  botName,
+  MAX_MESSAGE_CHARS,
+  MAX_VOICE_SECONDS,
+  type Attachment,
+  type ChatTurn,
+} from '@/lib/chat'
 import {
   copyForPath,
   routeKey,
   pick,
   pickList,
   DEFAULT_GREETING,
+  UI_COPY,
 } from '@/lib/botMessages'
 
 /**
@@ -60,6 +67,33 @@ function setSessionFlag(key: string) {
 }
 
 type Message = ChatTurn & { at: number }
+
+/** A small fixed set beats shipping an emoji-picker dependency. */
+const EMOJI = ['😀','😄','🙂','😉','🤔','👍','🙏','🎉','🔥','💡','⚙️','🔧','📐','🧪','⚡','🚀','❓','❤️']
+
+/**
+ * Downscale before upload. A phone photo is several megabytes; the model
+ * gains nothing from that resolution and the visitor pays for the wait.
+ */
+async function shrinkImage(file: File): Promise<{ mimeType: string; data: string }> {
+  const bitmap = await createImageBitmap(file)
+  const scale = Math.min(1, 1280 / Math.max(bitmap.width, bitmap.height))
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.round(bitmap.width * scale)
+  canvas.height = Math.round(bitmap.height * scale)
+  canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.82)
+  return { mimeType: 'image/jpeg', data: dataUrl.split(',')[1] }
+}
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onerror = () => reject(reader.error)
+    reader.onload = () => resolve(String(reader.result).split(',')[1])
+    reader.readAsDataURL(blob)
+  })
+}
 
 function clockTime(ms: number) {
   return new Date(ms).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
@@ -227,6 +261,11 @@ export function ChatWidget() {
    * bubble under an existing conversation as soon as the visitor navigated.
    */
   const [shownGreeting, setShownGreeting] = useState<string | null>(null)
+  /** The proactive card shown beside the launcher while the panel is shut. */
+  const [teaser, setTeaser] = useState<string | null>(null)
+  const [emojiOpen, setEmojiOpen] = useState(false)
+  const [recording, setRecording] = useState(false)
+  const recorderRef = useRef<MediaRecorder | null>(null)
   const [turns, setTurns] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [busy, setBusy] = useState(false)
@@ -234,6 +273,7 @@ export function ChatWidget() {
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
   const greetedRoute = useRef(pathname)
 
   /**
@@ -299,7 +339,9 @@ export function ChatWidget() {
       if (sessionFlag(CLOSED_KEY)) return
       done = true
       setSessionFlag(seenKey(route))
-      setOpen(true)
+      // A card beside the launcher, not the whole panel: the panel covers a
+      // third of a phone screen, which is a lot to take uninvited.
+      setTeaser(pick(routeCopy.greeting, locale))
     }
 
     const timer = setTimeout(fire, PROACTIVE_DELAY_MS)
@@ -313,10 +355,23 @@ export function ChatWidget() {
       clearTimeout(timer)
       window.removeEventListener('scroll', onScroll)
     }
-  }, [pathname, routeCopy, hasSent])
+  }, [pathname, routeCopy, hasSent, locale])
+
+  function openFromTeaser() {
+    setTeaser(null)
+    setOpen(true)
+  }
+
+  function dismissTeaser() {
+    setTeaser(null)
+    // Dismissing the card is a "no thanks" for the session, same as closing
+    // the panel — otherwise the next route would raise another one.
+    setSessionFlag(CLOSED_KEY)
+  }
 
   function close() {
     setOpen(false)
+    setTeaser(null)
     // Re-opening should type the greeting out again rather than showing a
     // stale one instantly.
     if (!hasSent) {
@@ -335,12 +390,12 @@ export function ChatWidget() {
     return () => document.removeEventListener('keydown', onKey)
   }, [open])
 
-  async function send(preset?: string) {
+  async function send(preset?: string, attachment?: Attachment) {
     const text = (preset ?? input).trim()
-    if (!text || busy) return
+    if ((!text && !attachment) || busy) return
     setHasSent(true)
 
-    const outgoing: Message = { role: 'user', text, at: Date.now() }
+    const outgoing: Message = { role: 'user', text, at: Date.now(), attachment }
     const next = [...turns, outgoing]
     setTurns(next)
     setInput('')
@@ -349,7 +404,7 @@ export function ChatWidget() {
 
     const [result] = await Promise.all([
       sendChatMessage(
-        next.map(({ role, text }) => ({ role, text })),
+        next.map(({ role, text, attachment }) => ({ role, text, attachment })),
         locale
       ),
       // Floor the wait so a quick reply still shows the indicator rather than
@@ -364,11 +419,61 @@ export function ChatWidget() {
       // Leaving it in would put two user turns in a row, which the API
       // rejects — every later message would then fail too.
       setTurns(turns)
-      setInput(text)
+      // Only text is worth handing back; a rejected upload should not be
+      // silently re-armed for the next send.
+      if (!attachment) setInput(text)
       setError(result.error)
     }
     setBusy(false)
   }
+
+  async function onPhoto(file: File | undefined) {
+    if (!file || busy) return
+    setError('')
+    try {
+      const { mimeType, data } = await shrinkImage(file)
+      await send(input.trim() || pick(UI_COPY.photoSent, locale), { kind: 'photo', mimeType, data })
+    } catch {
+      setError(pick(UI_COPY.micDenied, locale))
+    }
+  }
+
+  async function toggleRecording() {
+    if (recording) {
+      recorderRef.current?.stop()
+      return
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const rec = new MediaRecorder(stream)
+      const chunks: BlobPart[] = []
+      rec.ondataavailable = (e) => chunks.push(e.data)
+      rec.onstop = async () => {
+        // Release the microphone immediately; leaving the track live keeps
+        // the browser's recording indicator on.
+        stream.getTracks().forEach((t) => t.stop())
+        setRecording(false)
+        const blob = new Blob(chunks, { type: rec.mimeType || 'audio/webm' })
+        if (blob.size === 0) return
+        const data = await blobToBase64(blob)
+        await send(input.trim() || pick(UI_COPY.voiceSent, locale), {
+          kind: 'voice',
+          mimeType: blob.type.split(';')[0] || 'audio/webm',
+          data,
+        })
+      }
+      recorderRef.current = rec
+      rec.start()
+      setRecording(true)
+      // Hard stop: an open microphone is both a cost and a privacy problem.
+      setTimeout(() => rec.state === 'recording' && rec.stop(), MAX_VOICE_SECONDS * 1000)
+    } catch {
+      setError(pick(UI_COPY.micDenied, locale))
+    }
+  }
+
+  const toolBtn =
+    'flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-chart-2 disabled:opacity-40'
 
   return (
     <>
@@ -487,6 +592,28 @@ export function ChatWidget() {
             </div>
           )}
 
+          {emojiOpen && (
+            <div
+              className="flex flex-wrap gap-1 border-t px-3 py-2"
+              style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)' }}
+            >
+              {EMOJI.map((e) => (
+                <button
+                  key={e}
+                  type="button"
+                  onClick={() => {
+                    setInput((v) => (v + e).slice(0, MAX_MESSAGE_CHARS))
+                    setEmojiOpen(false)
+                    inputRef.current?.focus()
+                  }}
+                  className="rounded px-1 text-lg leading-none transition-transform hover:scale-125"
+                >
+                  {e}
+                </button>
+              ))}
+            </div>
+          )}
+
           {/* Composer */}
           <form
             onSubmit={(e) => {
@@ -502,12 +629,71 @@ export function ChatWidget() {
               backgroundColor: 'var(--card)',
             }}
           >
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={busy || recording}
+              aria-label={pick(UI_COPY.attachPhoto, locale)}
+              title={pick(UI_COPY.attachPhoto, locale)}
+              className={toolBtn}
+            >
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+              </svg>
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                onPhoto(e.target.files?.[0])
+                // Reset so choosing the same file twice still fires onChange.
+                e.target.value = ''
+              }}
+            />
+
+            <button
+              type="button"
+              onClick={() => setEmojiOpen((o) => !o)}
+              disabled={busy || recording}
+              aria-label={pick(UI_COPY.emoji, locale)}
+              aria-expanded={emojiOpen}
+              className={toolBtn}
+            >
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M8.5 14.5a4.5 4.5 0 0 0 7 0" />
+                <circle cx="9" cy="10" r="0.6" fill="currentColor" />
+                <circle cx="15" cy="10" r="0.6" fill="currentColor" />
+              </svg>
+            </button>
+
+            <button
+              type="button"
+              onClick={toggleRecording}
+              disabled={busy}
+              aria-label={pick(recording ? UI_COPY.recordStop : UI_COPY.recordStart, locale)}
+              title={pick(recording ? UI_COPY.recordStop : UI_COPY.recordStart, locale)}
+              className={toolBtn}
+              style={recording ? { color: 'var(--destructive)' } : undefined}
+            >
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="9" y="2" width="6" height="12" rx="3" />
+                <path d="M5 11a7 7 0 0 0 14 0M12 18v4" />
+              </svg>
+            </button>
+
             <input
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value.slice(0, MAX_MESSAGE_CHARS))}
-              placeholder={t.placeholder}
+              placeholder={recording ? `${pick(UI_COPY.recording, locale)}…` : t.placeholder}
               aria-label={t.placeholder}
+              disabled={recording}
               className="min-w-0 flex-1 border bg-transparent px-3.5 py-2 text-sm focus:outline-none focus:border-chart-2"
               style={{ borderColor: 'var(--border)', borderRadius: '999px' }}
             />
@@ -524,6 +710,53 @@ export function ChatWidget() {
               </svg>
             </button>
           </form>
+
+          {/* The policy is not written yet, so this names the link without
+              pretending there is a page behind it. */}
+          <p
+            className="px-3 pb-2.5 text-center text-[11px] leading-snug text-muted-foreground"
+            style={{ backgroundColor: 'var(--card)' }}
+          >
+            {pick(UI_COPY.privacyPrefix, locale)}
+            <span className="underline underline-offset-2">{pick(UI_COPY.privacyLink, locale)}</span>
+            {pick(UI_COPY.privacySuffix, locale)}
+          </p>
+        </div>
+      )}
+
+      {/* Proactive teaser: a card beside the launcher, panel still shut. */}
+      {teaser && !open && (
+        <div
+          className="murvatcha-teaser fixed right-4 z-[60] flex w-[min(calc(100vw-2rem),17rem)] gap-2.5 border p-3 shadow-2xl"
+          style={{
+            bottom: LAUNCHER_BOTTOM + LAUNCHER_SIZE + 12,
+            borderColor: 'var(--border)',
+            backgroundColor: 'var(--card)',
+            borderRadius: '14px',
+          }}
+        >
+          <button
+            type="button"
+            onClick={openFromTeaser}
+            className="flex flex-1 gap-2.5 text-left"
+            aria-label={t.open}
+          >
+            <Avatar size={30} name={name} />
+            <span className="min-w-0">
+              <span className="block text-[12.5px] leading-snug text-foreground">{teaser}</span>
+              <span className="mt-1 block text-[11px] text-muted-foreground">
+                {name} · {pick(UI_COPY.justNow, locale)}
+              </span>
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={dismissTeaser}
+            aria-label={pick(UI_COPY.teaserDismiss, locale)}
+            className="h-4 shrink-0 self-start text-base leading-none text-muted-foreground hover:text-foreground"
+          >
+            ×
+          </button>
         </div>
       )}
 
@@ -532,7 +765,7 @@ export function ChatWidget() {
         onClick={() => (open ? close() : setOpen(true))}
         aria-label={open ? t.close : t.open}
         aria-expanded={open}
-        className="fixed right-4 z-[60] overflow-hidden shadow-lg transition-transform hover:scale-105"
+        className="murvatcha-launcher fixed right-4 z-[60] overflow-hidden shadow-lg"
         style={{
           bottom: LAUNCHER_BOTTOM,
           width: LAUNCHER_SIZE,

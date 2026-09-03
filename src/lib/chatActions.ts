@@ -10,6 +10,8 @@ import {
   type ChatErrorCode,
   MAX_HISTORY,
   MAX_MESSAGE_CHARS,
+  MAX_PHOTO_BYTES,
+  MAX_VOICE_BYTES,
   type ChatTurn,
 } from '@/lib/chat'
 
@@ -18,9 +20,16 @@ import {
  * admin surface — nothing here may reach an admin-only helper.
  */
 
-/** Messages one IP may send per window. */
-const LIMIT = 20
-const WINDOW_MINUTES = 60
+/** Text is cheap, so it gets an hourly allowance. */
+const TEXT_LIMIT = 20
+const TEXT_WINDOW_MINUTES = 60
+
+/**
+ * Photos and voice notes cost several times more per message and this is a
+ * public endpoint, so they are capped per day rather than per hour.
+ */
+const MEDIA_LIMITS: Record<'photo' | 'voice', number> = { photo: 1, voice: 2 }
+const MEDIA_WINDOW_HOURS = 24
 
 async function getClientIp(): Promise<string> {
   const h = await headers()
@@ -31,33 +40,62 @@ async function getClientIp(): Promise<string> {
  * Unlike the login limiter, this one fails CLOSED: if the counter cannot be
  * read we refuse rather than hand an unmetered endpoint to the internet.
  */
-async function checkAndRecord(): Promise<{ allowed: boolean }> {
+async function checkAndRecord(
+  kind: 'text' | 'photo' | 'voice'
+): Promise<{ allowed: boolean; reason?: 'rate' | 'media' }> {
   const ip = await getClientIp()
   try {
     const admin = createAdminClient()
-    const cutoff = new Date(Date.now() - WINDOW_MINUTES * 60_000).toISOString()
 
+    // Deliberately not filtered by kind: this query must keep working even
+    // before migration_v11 adds that column, or a pending migration would
+    // take the whole chat down rather than just the media features.
+    const textCutoff = new Date(Date.now() - TEXT_WINDOW_MINUTES * 60_000).toISOString()
     const { count, error } = await admin
       .from('chat_requests')
       .select('*', { count: 'exact', head: true })
       .eq('ip_address', ip)
-      .gte('created_at', cutoff)
+      .gte('created_at', textCutoff)
 
     // A missing table answers 204 with count null and NO error, so treating a
     // null count as zero would silently let every request through. Anything
     // other than a real number means the limiter is not working — deny.
     if (error || typeof count !== 'number') throw new Error('rate limiter unavailable')
+    if (count >= TEXT_LIMIT) return { allowed: false, reason: 'rate' }
 
-    if (count >= LIMIT) return { allowed: false }
+    if (kind !== 'text') {
+      const mediaCutoff = new Date(Date.now() - MEDIA_WINDOW_HOURS * 3_600_000).toISOString()
+      const { count: used, error: mediaError } = await admin
+        .from('chat_requests')
+        .select('*', { count: 'exact', head: true })
+        .eq('ip_address', ip)
+        .eq('kind', kind)
+        .gte('created_at', mediaCutoff)
+
+      if (mediaError || typeof used !== 'number') throw new Error('media limiter unavailable')
+      if (used >= MEDIA_LIMITS[kind]) return { allowed: false, reason: 'media' }
+    }
 
     // If the row cannot be written the request is not being counted, so it
     // must not be served either.
-    const { error: insertError } = await admin.from('chat_requests').insert({ ip_address: ip })
-    if (insertError) throw insertError
+    const { error: insertError } = await admin
+      .from('chat_requests')
+      .insert({ ip_address: ip, kind })
+
+    if (insertError) {
+      // Before migration_v11 the kind column does not exist. Text must keep
+      // working in that window — it is still counted, just untyped — while
+      // media stays denied, because its per-day check cannot run at all.
+      if (kind !== 'text') throw insertError
+      const { error: retryError } = await admin
+        .from('chat_requests')
+        .insert({ ip_address: ip })
+      if (retryError) throw retryError
+    }
 
     return { allowed: true }
   } catch {
-    return { allowed: false }
+    return { allowed: false, reason: kind === 'text' ? 'rate' : 'media' }
   }
 }
 
@@ -129,8 +167,31 @@ export async function sendChatMessage(
   const uz = locale !== 'en'
 
   const last = history[history.length - 1]
-  if (!last || last.role !== 'user' || !last.text.trim()) {
+  if (!last || last.role !== 'user') {
     return { error: uz ? 'Xabar bo‘sh.' : 'Message is empty.' }
+  }
+  // A photo or voice note is a message on its own; only a turn with neither
+  // text nor media is empty.
+  if (!last.text.trim() && !last.attachment) {
+    return { error: uz ? 'Xabar bo‘sh.' : 'Message is empty.' }
+  }
+
+  const kind = last.attachment?.kind ?? 'text'
+
+  if (last.attachment) {
+    const bytes = Math.floor((last.attachment.data.length * 3) / 4)
+    const cap = kind === 'photo' ? MAX_PHOTO_BYTES : MAX_VOICE_BYTES
+    if (bytes > cap) {
+      return {
+        error: uz
+          ? 'Fayl juda katta. Kichikroq fayl yuboring.'
+          : 'That file is too large. Please send a smaller one.',
+      }
+    }
+    const allowedTypes = kind === 'photo' ? 'image/' : 'audio/'
+    if (!last.attachment.mimeType.startsWith(allowedTypes)) {
+      return { error: uz ? 'Bu fayl turi qo‘llab-quvvatlanmaydi.' : 'That file type is not supported.' }
+    }
   }
   if (last.text.length > MAX_MESSAGE_CHARS) {
     return {
@@ -140,8 +201,19 @@ export async function sendChatMessage(
     }
   }
 
-  const { allowed } = await checkAndRecord()
+  const { allowed, reason } = await checkAndRecord(kind)
   if (!allowed) {
+    if (reason === 'media') {
+      return {
+        error: uz
+          ? kind === 'photo'
+            ? 'Kuniga bitta rasm yuborish mumkin. Ertaga yana urinib ko‘ring.'
+            : 'Kuniga ikkita ovozli xabar yuborish mumkin. Ertaga yana urinib ko‘ring.'
+          : kind === 'photo'
+            ? 'You can send one photo a day. Please try again tomorrow.'
+            : 'You can send two voice messages a day. Please try again tomorrow.',
+      }
+    }
     return {
       error: uz
         ? 'Juda ko‘p savol yubordingiz. Bir ozdan keyin urinib ko‘ring.'
@@ -153,7 +225,13 @@ export async function sendChatMessage(
   const trimmed: ChatTurn[] = history
     .slice(-MAX_HISTORY)
     .filter((t) => (t.role === 'user' || t.role === 'model') && typeof t.text === 'string')
-    .map((t) => ({ role: t.role, text: t.text.slice(0, MAX_MESSAGE_CHARS) }))
+    .map((t, i, arr) => ({
+      role: t.role,
+      text: t.text.slice(0, MAX_MESSAGE_CHARS),
+      // Only the turn being sent now keeps its attachment; replaying old
+      // media every request would multiply the cost of a conversation.
+      attachment: i === arr.length - 1 ? t.attachment : undefined,
+    }))
 
   try {
     const catalogue = await loadCatalogue(locale)

@@ -123,6 +123,29 @@ export function copyForPath(pathname: string): BotCopy | null {
   return null
 }
 
+/** Widget chrome that is still copy, so it lives here too. */
+export const UI_COPY = {
+  privacyPrefix: {
+    uz: 'Suhbatni davom ettirish orqali siz ',
+    en: 'By chatting with us, you agree to our ',
+  },
+  privacyLink: { uz: 'Maxfiylik siyosati', en: 'Privacy Policy' },
+  privacySuffix: { uz: 'ga rozilik bildirasiz.', en: '' },
+  attachPhoto: { uz: 'Rasm yuborish', en: 'Send a photo' },
+  emoji: { uz: 'Emoji', en: 'Emoji' },
+  recordStart: { uz: 'Ovozli xabar yozish', en: 'Record a voice message' },
+  recordStop: { uz: 'To\u2018xtatish', en: 'Stop recording' },
+  recording: { uz: 'Yozilmoqda', en: 'Recording' },
+  photoSent: { uz: 'Rasm', en: 'Photo' },
+  voiceSent: { uz: 'Ovozli xabar', en: 'Voice message' },
+  micDenied: {
+    uz: 'Mikrofonga ruxsat berilmadi.',
+    en: 'Microphone permission was denied.',
+  },
+  teaserDismiss: { uz: 'Yopish', en: 'Dismiss' },
+  justNow: { uz: 'Hozir', en: 'Just now' },
+} as const
+
 export function pick(value: Localised, locale: string): string {
   return locale === 'en' ? value.en : value.uz
 }

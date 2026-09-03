@@ -170,6 +170,56 @@ body {
   }
 }
 
+/* Chat launcher, option A: a calm idle loop so the closed bubble reads as
+   alive without ever looking busy. The glow sits on a pseudo-element behind
+   the button, because animating a shadow on the scaling element makes the
+   blur shimmer with the scale. */
+@keyframes murvatcha-breathe {
+  0%, 100% { transform: scale(1) rotate(-1.2deg); }
+  50%      { transform: scale(1.045) rotate(1.2deg); }
+}
+
+@keyframes murvatcha-glow {
+  0%   { box-shadow: 0 0 10px 2px rgba(59, 130, 246, 0.55); }
+  33%  { box-shadow: 0 0 16px 5px rgba(34, 211, 238, 0.55); }
+  66%  { box-shadow: 0 0 13px 3px rgba(74, 222, 128, 0.45); }
+  100% { box-shadow: 0 0 10px 2px rgba(59, 130, 246, 0.55); }
+}
+
+.murvatcha-launcher {
+  animation: murvatcha-breathe 3s ease-in-out infinite;
+}
+
+.murvatcha-launcher::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  /* Deliberately a different period from the breathing, so the two never
+     settle into one obvious beat. */
+  animation: murvatcha-glow 4.5s ease-in-out infinite;
+}
+
+/* The teaser slides up rather than appearing, so the eye follows it. */
+@keyframes murvatcha-teaser-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.murvatcha-teaser {
+  animation: murvatcha-teaser-in 0.28s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .murvatcha-launcher,
+  .murvatcha-launcher::after,
+  .murvatcha-teaser {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
 /* Typing indicator in the chat widget. The three dots lift in sequence, so
    the eye reads one wave rather than three independent blinks. */
 @keyframes chat-typing {

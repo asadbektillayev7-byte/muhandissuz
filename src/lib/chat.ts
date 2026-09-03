@@ -42,7 +42,25 @@ export const MAX_MESSAGE_CHARS = 800
 /** How much history is sent back. Older turns are dropped, oldest first. */
 export const MAX_HISTORY = 12
 
-export type ChatTurn = { role: 'user' | 'model'; text: string }
+/** A photo or voice note, inline. Never persisted anywhere. */
+export type Attachment = {
+  kind: 'photo' | 'voice'
+  /** e.g. image/jpeg, audio/webm */
+  mimeType: string
+  /** base64, no data: prefix */
+  data: string
+}
+
+export type ChatTurn = {
+  role: 'user' | 'model'
+  text: string
+  attachment?: Attachment
+}
+
+/** Ceilings the client is expected to respect and the server re-checks. */
+export const MAX_PHOTO_BYTES = 3_500_000
+export const MAX_VOICE_BYTES = 1_500_000
+export const MAX_VOICE_SECONDS = 30
 
 export type ChatErrorCode = 'not_configured' | 'busy' | 'unavailable' | 'no_answer'
 
@@ -119,6 +137,7 @@ Rules:
 - When answering from your own engineering knowledge rather than from the site, answer normally but do not attribute it to Muhandiss.uz.
 - If you do not know something, say so plainly.
 - You are not a person. If asked, say you are ${name}, an AI assistant for this site.
+- A visitor may send a photo or a voice note. Answer what it actually shows or says; do not guess at content you cannot make out, say what is unclear instead.
 - Stay on engineering, technology, and this site. If asked about something unrelated, say that is outside what you can help with and offer what you can do instead.
 
 SITE CATALOGUE
@@ -149,7 +168,20 @@ export async function askGemini({
         systemInstruction: {
           parts: [{ text: buildSystemInstruction(catalogue, locale) }],
         },
-        contents: history.map((t) => ({ role: t.role, parts: [{ text: t.text }] })),
+        contents: history.map((t, i) => {
+          const parts: Record<string, unknown>[] = []
+          // Only the newest turn carries its media. Replaying every past
+          // photo on every request would multiply the cost of a conversation
+          // for no benefit — the model already has its own reply about it.
+          if (t.attachment && i === history.length - 1) {
+            parts.push({
+              inline_data: { mime_type: t.attachment.mimeType, data: t.attachment.data },
+            })
+          }
+          if (t.text) parts.push({ text: t.text })
+          if (parts.length === 0) parts.push({ text: '' })
+          return { role: t.role, parts }
+        }),
         generationConfig: {
           temperature: 0.6,
           maxOutputTokens: MAX_OUTPUT_TOKENS,
