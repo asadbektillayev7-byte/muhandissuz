@@ -40,14 +40,22 @@ export function richTextToPlain(nodes: unknown): string {
 
   const walk = (node: RichNode) => {
     if (typeof node.text === 'string') out.push(node.text)
-    if (Array.isArray(node.children)) {
-      node.children.forEach(walk)
+    const children = Array.isArray(node.content) ? node.content : node.children
+    if (Array.isArray(children)) {
+      (children as RichNode[]).forEach(walk)
       // Block-level nodes end a line; inline nodes must not.
       if (node.type && node.type !== 'text' && node.type !== 'link') out.push('\n')
     }
   }
 
-  if (Array.isArray(nodes)) (nodes as RichNode[]).forEach(walk)
+  let list: RichNode[] | undefined
+  if (Array.isArray(nodes)) {
+    list = nodes as RichNode[]
+  } else if (nodes && typeof nodes === 'object' && Array.isArray((nodes as any).content)) {
+    list = (nodes as any).content
+  }
+
+  if (list) list.forEach(walk)
   return out
     .join('')
     .replace(/\n{3,}/g, '\n\n')

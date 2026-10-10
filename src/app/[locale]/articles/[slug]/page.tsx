@@ -5,6 +5,7 @@ import { renderRichText } from '@/utilities/richText'
 import { resolveLocalizedField } from '@/lib/locale'
 import { notFound } from 'next/navigation'
 import { TrackArticleRead } from '@/components/quiz/TrackArticleRead'
+import type { Metadata } from 'next'
 
 // Public content: served from cache and rebuilt in the background, so a
 // navigation does not wait on a server render plus a database round-trip.
@@ -25,6 +26,47 @@ export async function generateStaticParams() {
   ])
 }
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>
+}): Promise<Metadata> {
+  const { locale, slug } = await params
+  const article = await getArticleBySlug(slug, locale)
+
+  if (!article) return {}
+
+  const title = field(article, 'title', locale)
+  const description =
+    field(article, 'meta_description', locale) ||
+    field(article, 'excerpt', locale) ||
+    ''
+  const ogImageUrl = article.og_image_url || article.cover_image_url || undefined
+
+  const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://muhandiss.uz'
+  const url = `${baseUrl}/${locale}/articles/${slug}`
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: 'Muhandiss.uz',
+      locale: locale === 'uz' ? 'uz_UZ' : 'en_US',
+      type: 'article',
+      ...(ogImageUrl ? { images: [{ url: ogImageUrl }] } : {}),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      ...(ogImageUrl ? { images: [ogImageUrl] } : {}),
+    },
+  }
+}
+
 export default async function ArticlePage({
   params,
 }: {
@@ -36,11 +78,34 @@ export default async function ArticlePage({
   if (!article) notFound()
 
   const labels = {
-    uz: { author: 'Muallif', translator: 'Tarjimon', published: "Chop etilgan", category: 'Kategoriya' },
-    en: { author: 'Author', translator: 'Translator', published: 'Published', category: 'Category' },
+    uz: {
+      author: 'Muallif',
+      category: 'Kategoriya',
+      published: 'Chop etilgan',
+      leader: "Bo'lim rahbari",
+      editor: 'Muharrir',
+      translator: 'Tarjimon',
+      researcher: 'Tadqiqotchi',
+    },
+    en: {
+      author: 'Author',
+      category: 'Category',
+      published: 'Published',
+      leader: 'Leader',
+      editor: 'Editor',
+      translator: 'Translator',
+      researcher: 'Researcher',
+    },
   }
 
   const label = locale === 'uz' ? labels.uz : labels.en
+
+  const credits = [
+    { label: label.leader, value: article.department_leader?.trim() },
+    { label: label.editor, value: article.editor?.trim() },
+    { label: label.translator, value: article.translator?.trim() },
+    { label: label.researcher, value: article.researcher?.trim() },
+  ].filter((c) => Boolean(c.value))
 
   const body = localizedBody(article, 'body', locale)
 
@@ -56,12 +121,29 @@ export default async function ArticlePage({
 
       <h1 className="text-4xl font-bold mb-4">{field(article, 'title', locale)}</h1>
 
-      <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-8">
-        {article.categories && (
-          <span>{label.category}: {field(article.categories, 'name', locale)}</span>
-        )}
-        {article.published_date && (
-          <span>{label.published}: {new Date(article.published_date).toLocaleDateString()}</span>
+      <div className="space-y-1 mb-8">
+        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+          {article.authors?.name && (
+            <span>{label.author}: <span className="text-foreground">{article.authors.name}</span></span>
+          )}
+          {article.categories && (
+            <span>{label.category}: {field(article.categories, 'name', locale)}</span>
+          )}
+          {article.published_date && (
+            <span>{label.published}: {new Date(article.published_date).toLocaleDateString()}</span>
+          )}
+        </div>
+
+        {credits.length > 0 && (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+            {credits.map((c, i) => (
+              <span key={i} className="inline-flex items-center gap-1">
+                <span>{c.label}:</span>
+                <span className="text-foreground/90 font-medium">{c.value}</span>
+                {i < credits.length - 1 && <span className="text-muted-foreground/40 ml-2">·</span>}
+              </span>
+            ))}
+          </div>
         )}
       </div>
 

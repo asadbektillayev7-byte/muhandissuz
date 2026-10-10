@@ -100,3 +100,132 @@ export async function uploadToMediaBucket(
   const { data } = supabase.storage.from('media').getPublicUrl(filename)
   return { url: data.publicUrl, filename, type }
 }
+
+export const ARTICLE_IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'webp']
+export const ARTICLE_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+export const MAX_ARTICLE_IMAGE_SIZE = 5 * 1024 * 1024 // 5 MB
+
+export function validateArticleImage(file: File): string | null {
+  const ext = file.name.split('.').pop()?.toLowerCase() ?? ''
+  const type = resolveType(file)
+
+  if (!ARTICLE_IMAGE_EXTS.includes(ext) && !ARTICLE_IMAGE_TYPES.includes(type)) {
+    return 'Only JPG, PNG, and WebP images are allowed.'
+  }
+
+  if (file.size > MAX_ARTICLE_IMAGE_SIZE) {
+    const sizeMb = (file.size / (1024 * 1024)).toFixed(1)
+    return `File size is ${sizeMb} MB. Maximum allowed size is 5 MB.`
+  }
+
+  return null
+}
+
+export async function resizeAndConvertToWebp(
+  file: File,
+  variant: 'cover' | 'og' = 'cover'
+): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    const objectUrl = URL.createObjectURL(file)
+
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl)
+      try {
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        if (!ctx) {
+          reject(new Error('Canvas 2D context is not available.'))
+          return
+        }
+
+        if (variant === 'cover') {
+          let { naturalWidth: width, naturalHeight: height } = img
+          if (width > 1600) {
+            height = Math.round((height * 1600) / width)
+            width = 1600
+          }
+          canvas.width = width
+          canvas.height = height
+          ctx.drawImage(img, 0, 0, width, height)
+        } else {
+          // OG social share image: standard 1200x630
+          const targetWidth = 1200
+          const targetHeight = 630
+          const targetRatio = targetWidth / targetHeight
+          const sourceRatio = img.naturalWidth / img.naturalHeight
+
+          let sx = 0
+          let sy = 0
+          let sWidth = img.naturalWidth
+          let sHeight = img.naturalHeight
+
+          if (sourceRatio > targetRatio) {
+            // Source is wider than 1200:630 -> center crop horizontally
+            sWidth = Math.round(img.naturalHeight * targetRatio)
+            sx = Math.round((img.naturalWidth - sWidth) / 2)
+          } else {
+            // Source is taller than 1200:630 -> center crop vertically
+            sHeight = Math.round(img.naturalWidth / targetRatio)
+            sy = Math.round((img.naturalHeight - sHeight) / 2)
+          }
+
+          canvas.width = targetWidth
+          canvas.height = targetHeight
+          ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, targetWidth, targetHeight)
+        }
+
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              reject(new Error('Failed to convert image to WebP format.'))
+              return
+            }
+            resolve(blob)
+          },
+          'image/webp',
+          0.88
+        )
+      } catch (err: any) {
+        reject(new Error(err?.message || 'Error processing image.'))
+      }
+    }
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl)
+      reject(new Error('Failed to load image for processing.'))
+    }
+
+    img.src = objectUrl
+  })
+}
+
+/** Uploads a processed image to the public `article-images` bucket. */
+export async function uploadToArticleImagesBucket(
+  supabase: SupabaseClient,
+  blob: Blob,
+  originalName: string
+): Promise<{ url: string; filename: string }> {
+  const baseName = originalName
+    .replace(/\.[^/.]+$/, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .slice(0, 40)
+    .replace(/^-+|-+$/g, '') || 'article-image'
+
+  const rand = Math.random().toString(36).slice(2, 8)
+  const filename = `${Date.now()}-${rand}-${baseName}.webp`
+
+  const { error } = await supabase.storage
+    .from('article-images')
+    .upload(filename, blob, {
+      contentType: 'image/webp',
+      upsert: false,
+    })
+
+  if (error) throw new Error(error.message)
+
+  const { data } = supabase.storage.from('article-images').getPublicUrl(filename)
+  return { url: data.publicUrl, filename }
+}
+

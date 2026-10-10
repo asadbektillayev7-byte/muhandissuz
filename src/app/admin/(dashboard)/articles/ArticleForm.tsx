@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { adminSaveArticle, adminCheckSlug } from '@/lib/actions'
 import { TiptapEditor } from './TiptapEditor'
+import { ImageUploadField } from '../ImageUploadField'
 
 type Article = {
   id?: number
@@ -25,6 +26,10 @@ type Article = {
   meta_description_uz?: string
   meta_description_en?: string
   og_image_url?: string
+  department_leader?: string | null
+  editor?: string | null
+  translator?: string | null
+  researcher?: string | null
 }
 
 function slugify(text: string): string {
@@ -71,6 +76,10 @@ export function ArticleForm({
     original_language: article?.original_language || 'uz',
     author_id: article?.author_id || null,
     translator_id: article?.translator_id || null,
+    department_leader: article?.department_leader || '',
+    editor: article?.editor || '',
+    translator: article?.translator || '',
+    researcher: article?.researcher || '',
     published_date: article?.published_date?.split('T')[0] || new Date().toISOString().split('T')[0],
     published: article?.published ?? true,
   })
@@ -125,8 +134,8 @@ export function ArticleForm({
       await adminSaveArticle(
         {
           ...form,
-          body_uz: bodyUz,
-          body_en: bodyEn,
+          body_uz: JSON.parse(JSON.stringify(bodyUz)),
+          body_en: JSON.parse(JSON.stringify(bodyEn)),
           published_date: new Date(form.published_date).toISOString(),
           tags: [],
         },
@@ -228,16 +237,13 @@ export function ArticleForm({
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium mb-1">Cover Image URL</label>
-        <input
-          value={form.cover_image_url}
-          onChange={(e) => handleChange('cover_image_url', e.target.value)}
-          className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-          style={{ borderRadius: 'var(--radius)' }}
-          placeholder="https://..."
-        />
-      </div>
+      <ImageUploadField
+        label="Cover Image"
+        helperText="JPG, PNG, WebP up to 5 MB"
+        value={form.cover_image_url}
+        onChange={(url) => handleChange('cover_image_url', url)}
+        variant="cover"
+      />
 
       <hr className="border-border" />
 
@@ -255,18 +261,13 @@ export function ArticleForm({
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium mb-1">OG Image URL{" "}
-          <span className="text-muted-foreground">(social sharing)</span>
-        </label>
-        <input
-          value={form.og_image_url}
-          onChange={(e) => handleChange('og_image_url', e.target.value)}
-          className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-          style={{ borderRadius: 'var(--radius)' }}
-          placeholder="https://..."
-        />
-      </div>
+      <ImageUploadField
+        label="OG Image (Social sharing)"
+        helperText="1200x630. Optional, falls back to cover image"
+        value={form.og_image_url}
+        onChange={(url) => handleChange('og_image_url', url)}
+        variant="og"
+      />
 
       <hr className="border-border" />
 
@@ -362,6 +363,59 @@ export function ArticleForm({
             className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
             style={{ borderRadius: 'var(--radius)' }}
           />
+        </div>
+      </div>
+
+      <div className="border border-border p-4 space-y-3" style={{ borderRadius: 'var(--radius)' }}>
+        <div className="flex items-baseline justify-between">
+          <label className="block text-sm font-medium">Article Credits</label>
+          <span className="text-xs text-muted-foreground">Optional — free text full names</span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div>
+            <label className="block text-xs font-medium mb-1">Department Leader</label>
+            <input
+              type="text"
+              value={form.department_leader}
+              onChange={(e) => handleChange('department_leader', e.target.value)}
+              placeholder="Full name"
+              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
+              style={{ borderRadius: 'var(--radius)' }}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium mb-1">Editor</label>
+            <input
+              type="text"
+              value={form.editor}
+              onChange={(e) => handleChange('editor', e.target.value)}
+              placeholder="Full name"
+              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
+              style={{ borderRadius: 'var(--radius)' }}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium mb-1">Translator</label>
+            <input
+              type="text"
+              value={form.translator}
+              onChange={(e) => handleChange('translator', e.target.value)}
+              placeholder="Full name"
+              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
+              style={{ borderRadius: 'var(--radius)' }}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium mb-1">Researcher</label>
+            <input
+              type="text"
+              value={form.researcher}
+              onChange={(e) => handleChange('researcher', e.target.value)}
+              placeholder="Full name"
+              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
+              style={{ borderRadius: 'var(--radius)' }}
+            />
+          </div>
         </div>
       </div>
 
