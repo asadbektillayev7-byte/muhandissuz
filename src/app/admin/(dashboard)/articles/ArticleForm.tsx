@@ -7,12 +7,21 @@ import { TiptapEditor } from './TiptapEditor'
 import { ImageUploadField } from '../ImageUploadField'
 import { articleSlug, articleStatus, articleTags, fromTashkentInput, hasUnfinishedArticleImages, isArticleSlug, toTashkentInput, type ArticleLanguage, type ArticleStatus } from '@/lib/article-form'
 import { hasArticleBody } from '@/lib/article-content'
+import { ARTICLE_SAVE_MAX_BYTES } from '@/lib/article-save-result'
 
 type Article = Record<string, any>
 const languages = ['uz', 'en', 'ru'] as const
 const inputClass = 'w-full min-w-0 border border-border rounded-md bg-background px-3 py-2 text-sm focus:border-chart-2'
 const buttonClass = 'border border-border rounded-md px-3 py-2 text-sm hover:bg-muted transition-colors disabled:opacity-50'
-const failure = (error: unknown) => error instanceof Error ? error.message : "Saqlab bo'lmadi / Could not save."
+const failure = (error: unknown) => {
+  const message = error instanceof Error ? error.message : ''
+  // Framework and network errors can occur before the action returns its
+  // structured result. Keep the draft and give the editor a useful next step.
+  if (!message || /Server Components render|Failed to find Server Action|Failed to fetch|NetworkError|Load failed/i.test(message)) {
+    return "Server bilan bog'lanib bo'lmadi. Qayta urinib ko'ring. Sahifani yangilasangiz, mahalliy nusxani tiklang / Could not complete the save request. Retry, or reload and restore the local copy."
+  }
+  return message
+}
 
 function initialForm(article?: Article) {
   const values: Record<string, any> = {
@@ -148,9 +157,15 @@ export function ArticleForm({ article, categories, authors }: { article?: Articl
     const snapshot = { ...form }
     try {
       const data = payload(snapshot)
+      if (new TextEncoder().encode(JSON.stringify(data)).byteLength > ARTICLE_SAVE_MAX_BYTES) throw new Error('Maqola juda katta (2 MB) / Article exceeds 2 MB. Upload images instead of embedding their data.')
       if (snapshot.status === 'scheduled' && Date.parse(data.published_date) <= Date.now()) throw new Error('Rejalashtirish uchun kelajak vaqtini tanlang / Choose a future time for scheduling.')
       if (snapshot.status === 'published' && Date.parse(data.published_date) > Date.now()) throw new Error('Bu kelajak sanasi: Rejalashtirilgan holatini tanlang / Future date: choose Scheduled, or an earlier date.')
-      const result = await adminSaveArticle(data, id)
+      const outcome = await adminSaveArticle(data, id)
+      if (!outcome.ok) {
+        const reference = outcome.error.reference ? ` (${outcome.error.reference})` : ''
+        throw new Error(`${outcome.error.message}${reference}`)
+      }
+      const result = outcome.article
       setId(result.id)
       // A reload after the first save must reopen this article, rather than a
       // blank /new form. Updating history preserves edits made during the save.
@@ -159,7 +174,7 @@ export function ArticleForm({ article, categories, authors }: { article?: Articl
       setSavedArticle({ ...data, id: result.id })
       initial.current = JSON.stringify(snapshot)
       setSavedAt(new Date().toLocaleTimeString())
-      setLocalStatus('')
+      setLocalStatus(outcome.warning ?? '')
       try {
         const savedKey = `muhandiss:article-draft:${result.id}`
         if (JSON.stringify(current.current) !== initial.current) {
@@ -174,7 +189,15 @@ export function ArticleForm({ article, categories, authors }: { article?: Articl
           if (savedKey !== recoveryKey) localStorage.removeItem(savedKey)
         }
       } catch { setLocalStatus("Maqola saqlandi, lekin mahalliy nusxani yangilab bo'lmadi / Article saved; local recovery could not be updated.") }
-    } catch (problem) { setError(failure(problem)) }
+    } catch (problem) {
+      setError(failure(problem))
+      // Save the latest edits immediately on failure, including typing that
+      // happened during the request. Do not wait for the ten-second timer.
+      try {
+        localStorage.setItem(recoveryKey, JSON.stringify({ version: 1, form: current.current, at: new Date().toISOString() }))
+        setLocalStatus("Oxirgi o'zgarishlar qurilmada saqlandi / Latest edits saved in local recovery.")
+      } catch { setLocalStatus("Mahalliy nusxani saqlab bo'lmadi. Sahifani yopmang / Local recovery is unavailable; keep this page open.") }
+    }
     finally { setSaving(false) }
   }
 

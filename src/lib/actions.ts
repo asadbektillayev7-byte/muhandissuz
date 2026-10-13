@@ -8,6 +8,7 @@ import { getVideoValidationError } from '@/lib/video'
 import type { GalleryPhoto } from '@/lib/showcase'
 import { articleTags, hasUnfinishedArticleImages, isArticleSlug } from '@/lib/article-form'
 import { articleBodyToHtml, hasArticleBody } from '@/lib/article-content'
+import { ARTICLE_SAVE_MAX_BYTES, type ArticleSaveResult, type SavedArticle } from '@/lib/article-save-result'
 import {
   generateQuestions,
   richTextToPlain,
@@ -204,60 +205,123 @@ function revalidateArticles() {
   revalidatePath('/sitemap.xml')
 }
 
-export async function adminSaveArticle(data: Record<string, unknown>, id?: number) {
-  await getAdminUser()
-  if (id !== undefined && (!Number.isSafeInteger(id) || id < 1)) throw new Error('Invalid article ID')
-  const slug = typeof data.slug === 'string' ? data.slug.trim() : ''
-  if (!isArticleSlug(slug)) throw new Error("Manzil: kichik lotin harflari, raqam va tire ishlating / Use a valid lowercase URL slug.")
-  if (JSON.stringify(data).length > 2_000_000) throw new Error("Maqola juda katta (2 MB) / Article exceeds 2 MB. Upload images instead of embedding their data.")
-  const values: Record<string, unknown> = { slug, published: data.published === true }
-  for (const locale of ['uz', 'en', 'ru']) {
-    for (const name of ['title', 'excerpt', 'meta_description']) {
-      const value = data[`${name}_${locale}`]
-      values[`${name}_${locale}`] = typeof value === 'string' ? value.trim() : ''
+function articleSaveFailure(code: string, message: string, reference?: string): ArticleSaveResult {
+  return { ok: false, error: { code, message, ...(reference ? { reference } : {}) } }
+}
+
+function logArticleSaveFailure(stage: string, problem: unknown): string {
+  const reference = crypto.randomUUID()
+  const details = problem && typeof problem === 'object' ? problem as { code?: unknown; message?: unknown; name?: unknown } : {}
+  const code = typeof details.code === 'string' && /^(?:[A-Z0-9]{5}|PGRST\d+)$/.test(details.code) ? details.code : undefined
+  const name = typeof details.name === 'string' && ['Error', 'TypeError', 'RangeError', 'SyntaxError', 'AbortError'].includes(details.name) ? details.name : undefined
+  const constraint = typeof details.message === 'string' ? details.message.match(/unique constraint "(articles_pkey|articles_slug_key)"/i)?.[1] : undefined
+  // SQL messages/details may contain submitted values. Keep useful codes and
+  // stack locations, but omit raw messages, article content and credentials.
+  const frames = problem instanceof Error ? problem.stack?.split('\n').filter(line => /^\s*at /.test(line)).slice(0, 5) : undefined
+  console.error('Article save failed', { reference, stage, code, name, constraint, frames })
+  return reference
+}
+
+function articleDatabaseFailure(problem: { code?: string; message?: string; details?: string }, reference: string): ArticleSaveResult {
+  if (problem.code === '23505') {
+    const constraint = problem.message?.match(/unique constraint "([^"]+)"/i)?.[1]
+    // A primary-key/sequence problem must never tell an editor to change their
+    // article URL. Only identify a slug conflict from its actual constraint/key.
+    if (constraint === 'articles_slug_key' || /^Key \(slug\)=/.test(problem.details || '')) {
+      return articleSaveFailure('SLUG_CONFLICT', 'Bu manzil band. Boshqa manzil tanlang / This article URL is already used. Choose another URL.', reference)
     }
-    const body = data[`body_${locale}`]
-    if (hasUnfinishedArticleImages(body)) throw new Error(`Rasm yuklash tugamagan (${locale.toUpperCase()}) / Finish, retry or remove unfinished images.`)
-    values[`body_${locale}`] = articleBodyToHtml(body)
-  }
-  if (values.published && (!values.title_uz || !hasArticleBody(values.body_uz))) {
-    throw new Error("Nashr qilish uchun o'zbekcha sarlavha va matn kerak / Add the Uzbek title and body before publishing.")
-  }
-  const publishDate = typeof data.published_date === 'string' ? new Date(data.published_date) : new Date()
-  if (!Number.isFinite(publishDate.getTime())) throw new Error('Nashr sanasi noto\'g\'ri / Invalid publication date.')
-  values.published_date = publishDate.toISOString()
-  values.tags = articleTags(data.tags)
-  for (const field of ['category_id', 'author_id', 'translator_id']) {
-    const value = data[field]
-    if (value !== null && value !== undefined && (!Number.isSafeInteger(value) || Number(value) < 1)) throw new Error(`Invalid ${field}`)
-    values[field] = value ?? null
-  }
-  for (const field of ['cover_image_url', 'og_image_url']) {
-    const value = typeof data[field] === 'string' ? data[field].trim() : ''
-    if (value) {
-      try { const url = new URL(value); if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) throw new Error() }
-      catch { throw new Error('Rasm manzili noto\'g\'ri / Invalid image URL.') }
+    if (constraint === 'articles_pkey' || /^Key \(id\)=/.test(problem.details || '')) {
+      return articleSaveFailure('ARTICLE_ID_CONFLICT', 'Maqola raqami band. Ma\'lumotlar bazasidagi maqola hisoblagichini tekshirish kerak / Article ID conflict. The database article counter needs checking.', reference)
     }
-    values[field] = value || null
+    return articleSaveFailure('SAVE_CONFLICT', 'Maqola ma\'lumotlari boshqa yozuv bilan takrorlanmoqda / Article data conflicts with another record.', reference)
   }
-  for (const field of ['department_leader', 'editor', 'translator', 'researcher']) values[field] = typeof data[field] === 'string' ? data[field].trim().slice(0, 200) : null
-  values.original_language = data.original_language === 'en' ? 'en' : 'uz'
-  const admin = createAdminClient()
-  let duplicateQuery = admin.from('articles').select('id').eq('slug', slug)
-  if (id) duplicateQuery = duplicateQuery.neq('id', id)
-  const { data: duplicate, error: slugError } = await duplicateQuery.maybeSingle()
-  if (slugError) throw new Error('Manzilni tekshirib bo\'lmadi / Could not check article URL.')
-  if (duplicate) throw new Error('Bu manzil band. Boshqa manzil tanlang / This URL is used by another article.')
-  const query = id ? admin.from('articles').update(values).eq('id', id) : admin.from('articles').insert(values)
-  const { data: saved, error } = await query.select('id, slug, published, published_date').single()
-  if (error) {
-    console.error('Article save failed', { code: error.code, message: error.message })
-    if (error.code === '23505') throw new Error('Bu manzil band / This article URL is already used.')
-    if (error.code === 'PGRST204' || error.code === '42703') throw new Error('Avval supabase/migration_v13.sql faylini bajaring / Run the article editor SQL migration first.')
-    throw new Error('Maqolani saqlab bo\'lmadi. Qayta urinib ko\'ring / Could not save; please retry.')
+  if (problem.code === 'PGRST204' || problem.code === '42703') {
+    return articleSaveFailure('SCHEMA_NOT_READY', 'Avval supabase/migration_v13.sql faylini bajaring / Run the article editor SQL migration first.', reference)
   }
-  revalidateArticles()
-  return saved as { id: number; slug: string; published: boolean; published_date: string }
+  if (problem.code === '23503') return articleSaveFailure('RELATED_RECORD_MISSING', 'Tanlangan muallif yoki kategoriya endi mavjud emas. Qayta tanlang / A selected author or category no longer exists. Select it again.', reference)
+  if (problem.code === 'PGRST116') return articleSaveFailure('ARTICLE_NOT_FOUND', 'Maqola topilmadi. Maqolalar ro\'yxatini yangilang / Article not found. Refresh the article list.', reference)
+  if (problem.code === '42501') return articleSaveFailure('DATABASE_ACCESS_DENIED', 'Saqlash huquqi yo\'q. Ma\'lumotlar bazasi ruxsatlarini tekshiring / Database access denied. Check article write permissions.', reference)
+  if (problem.code === '23502') return articleSaveFailure('REQUIRED_FIELD_MISSING', 'Majburiy ma\'lumot yetishmaydi. Sarlavha va nashr sanasini tekshiring / Required information is missing. Check the title and publication date.', reference)
+  return articleSaveFailure('SAVE_FAILED', 'Maqolani saqlab bo\'lmadi. Qayta urinib ko\'ring / Could not save the article. Please retry.', reference)
+}
+
+export async function adminSaveArticle(data: Record<string, unknown>, id?: number): Promise<ArticleSaveResult> {
+  let stage = 'authentication'
+  try {
+    try { await getAdminUser() }
+    catch (problem) {
+      if (problem instanceof Error && problem.message === 'Not authenticated') return articleSaveFailure('UNAUTHENTICATED', 'Sessiya tugagan. Administrator sifatida qayta kiring / Your session expired. Sign in as the admin again.')
+      if (problem instanceof Error && problem.message === 'Not authorized') return articleSaveFailure('FORBIDDEN', 'Faqat administrator maqolani saqlay oladi / Only the admin can save articles.')
+      throw problem
+    }
+    stage = 'validation'
+    if (!data || typeof data !== 'object' || Array.isArray(data)) return articleSaveFailure('INVALID_PAYLOAD', 'Maqola ma\'lumotlari noto\'g\'ri / Invalid article data.')
+    if (id !== undefined && (!Number.isSafeInteger(id) || id < 1)) return articleSaveFailure('INVALID_ARTICLE_ID', 'Maqola raqami noto\'g\'ri / Invalid article ID.')
+    const slug = typeof data.slug === 'string' ? data.slug.trim() : ''
+    if (!isArticleSlug(slug)) return articleSaveFailure('INVALID_SLUG', 'Manzil: kichik lotin harflari, raqam va tire ishlating / Use a valid lowercase URL slug.')
+    if (new TextEncoder().encode(JSON.stringify(data)).byteLength > ARTICLE_SAVE_MAX_BYTES) return articleSaveFailure('ARTICLE_TOO_LARGE', 'Maqola juda katta (2 MB) / Article exceeds 2 MB. Upload images instead of embedding their data.')
+    const values: Record<string, unknown> = { slug, published: data.published === true }
+    stage = 'content'
+    for (const locale of ['uz', 'en', 'ru']) {
+      for (const name of ['title', 'excerpt', 'meta_description']) {
+        const value = data[`${name}_${locale}`]
+        values[`${name}_${locale}`] = typeof value === 'string' ? value.trim() : ''
+      }
+      const body = data[`body_${locale}`]
+      if (hasUnfinishedArticleImages(body)) return articleSaveFailure('UNFINISHED_IMAGES', `Rasm yuklash tugamagan (${locale.toUpperCase()}) / Finish, retry or remove unfinished images.`)
+      values[`body_${locale}`] = articleBodyToHtml(body)
+    }
+    if (values.published && (!values.title_uz || !hasArticleBody(values.body_uz))) {
+      return articleSaveFailure('MISSING_UZBEK_CONTENT', 'Nashr qilish uchun o\'zbekcha sarlavha va matn kerak / Add the Uzbek title and body before publishing.')
+    }
+    stage = 'validation'
+    const publishDate = typeof data.published_date === 'string' ? new Date(data.published_date) : new Date()
+    if (!Number.isFinite(publishDate.getTime())) return articleSaveFailure('INVALID_PUBLICATION_DATE', 'Nashr sanasi noto\'g\'ri / Invalid publication date.')
+    values.published_date = publishDate.toISOString()
+    values.tags = articleTags(data.tags)
+    for (const field of ['category_id', 'author_id', 'translator_id']) {
+      const value = data[field]
+      if (value !== null && value !== undefined && (!Number.isSafeInteger(value) || Number(value) < 1)) return articleSaveFailure('INVALID_RELATED_RECORD', 'Muallif yoki kategoriya noto\'g\'ri. Ro\'yxatdan qayta tanlang / Invalid author or category. Select it again from the list.')
+      values[field] = value ?? null
+    }
+    for (const field of ['cover_image_url', 'og_image_url']) {
+      const value = typeof data[field] === 'string' ? data[field].trim() : ''
+      if (value) {
+        try { const url = new URL(value); if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) throw new Error() }
+        catch { return articleSaveFailure('INVALID_IMAGE_URL', 'Rasm manzili noto\'g\'ri / Invalid image URL.') }
+      }
+      values[field] = value || null
+    }
+    for (const field of ['department_leader', 'editor', 'translator', 'researcher']) values[field] = typeof data[field] === 'string' ? data[field].trim().slice(0, 200) : null
+    values.original_language = data.original_language === 'en' ? 'en' : 'uz'
+    stage = 'database-client'
+    const admin = createAdminClient()
+    stage = 'slug-check'
+    let duplicateQuery = admin.from('articles').select('id').eq('slug', slug)
+    if (id) duplicateQuery = duplicateQuery.neq('id', id)
+    const { data: duplicate, error: slugError } = await duplicateQuery.maybeSingle()
+    if (slugError) {
+      const reference = logArticleSaveFailure(stage, slugError)
+      return articleSaveFailure('SLUG_CHECK_FAILED', 'Manzilni tekshirib bo\'lmadi. Qayta urinib ko\'ring / Could not check the article URL. Please retry.', reference)
+    }
+    if (duplicate) return articleSaveFailure('SLUG_CONFLICT', 'Bu manzil band. Boshqa manzil tanlang / This URL is used by another article.')
+    stage = 'database-write'
+    const query = id ? admin.from('articles').update(values).eq('id', id) : admin.from('articles').insert(values)
+    const { data: saved, error } = await query.select('id, slug, published, published_date').single()
+    if (error) return articleDatabaseFailure(error, logArticleSaveFailure(stage, error))
+    const article = saved as SavedArticle
+    // The row is already committed. A cache failure must not report a failed
+    // insert, which would invite a second create and risk duplicate articles.
+    try { revalidateArticles() }
+    catch (problem) {
+      const reference = logArticleSaveFailure('cache-revalidation', problem)
+      return { ok: true, article, warning: `Maqola saqlandi, lekin sahifalarni yangilab bo\'lmadi. Sahifani yangilang / Article saved, but page refresh failed. Reload the page. (${reference})` }
+    }
+    return { ok: true, article }
+  } catch (problem) {
+    const reference = logArticleSaveFailure(stage, problem)
+    return articleSaveFailure('UNEXPECTED_SAVE_ERROR', 'Maqolani saqlashda server xatosi yuz berdi. Nusxangiz muharrirda saqlanadi / A server error prevented saving. Your draft remains in the editor.', reference)
+  }
 }
 
 // ── Slug uniqueness check ──
