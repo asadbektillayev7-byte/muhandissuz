@@ -8,3 +8,4 @@ public/media/
 .vercel
 supabase/.temp/
 .env.local
+.DS_Store
