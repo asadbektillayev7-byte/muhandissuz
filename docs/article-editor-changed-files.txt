@@ -1,0 +1,47 @@
+Article editor changes compared with deployed origin/main (0b246277).
+Branch: codex/article-editor-reliability
+Paths are relative to the repository root.
+
+docs/article-editor-changed-files.txt
+package-lock.json
+package.json
+src/app/[locale]/article-preview/ArticlePreview.tsx
+src/app/[locale]/article-preview/page.tsx
+src/app/[locale]/articles/[slug]/page.tsx
+src/app/[locale]/articles/page.tsx
+src/app/admin/(dashboard)/ImageUploadField.tsx
+src/app/admin/(dashboard)/articles/ArticleForm.tsx
+src/app/admin/(dashboard)/articles/TiptapEditor.module.css
+src/app/admin/(dashboard)/articles/TiptapEditor.tsx
+src/app/admin/(dashboard)/articles/[id]/page.tsx
+src/app/admin/(dashboard)/articles/article-editor-extensions.tsx
+src/app/admin/(dashboard)/articles/new/page.tsx
+src/app/admin/(dashboard)/articles/page.tsx
+src/app/admin/(dashboard)/layout.tsx
+src/app/api/admin/article-images/import/route.ts
+src/app/api/admin/article-images/route.ts
+src/components/ArticleView.module.css
+src/components/ArticleView.tsx
+src/lib/actions.ts
+src/lib/article-content.ts
+src/lib/article-editor-paste.ts
+src/lib/article-editor-upload.ts
+src/lib/article-form.ts
+src/lib/article-image-import.ts
+src/lib/quizGeneration.ts
+src/lib/supabase/locale.ts
+src/lib/supabase/queries.ts
+src/lib/upload.ts
+src/middleware.ts
+src/utilities/richText.tsx
+supabase/article-credits.sql
+supabase/article-images.sql
+supabase/migration_v13.sql
+tests/article-content.test.ts
+tests/article-editor-mounted.test.ts
+tests/article-editor-paste.test.ts
+tests/article-editor-roundtrip.test.ts
+tests/article-form.test.ts
+tests/article-image-import.test.ts
+tests/fixtures/articles/google-docs.html
+tests/fixtures/articles/word.html
