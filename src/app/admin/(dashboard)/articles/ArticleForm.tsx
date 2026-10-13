@@ -156,8 +156,12 @@ export function ArticleForm({ article, categories, authors }: { article?: Articl
     setSaving(true)
     const snapshot = { ...form }
     try {
-      const data = payload(snapshot)
-      if (new TextEncoder().encode(JSON.stringify(data)).byteLength > ARTICLE_SAVE_MAX_BYTES) throw new Error('Maqola juda katta (2 MB) / Article exceeds 2 MB. Upload images instead of embedding their data.')
+      // ProseMirror retains null-prototype attribute objects in getJSON().
+      // React turns those into opaque client references across Server Actions.
+      // Normalize the full snapshot, including inactive languages, to plain JSON.
+      const serialized = JSON.stringify(payload(snapshot))
+      if (new TextEncoder().encode(serialized).byteLength > ARTICLE_SAVE_MAX_BYTES) throw new Error('Maqola juda katta (2 MB) / Article exceeds 2 MB. Upload images instead of embedding their data.')
+      const data = JSON.parse(serialized) as ReturnType<typeof payload>
       if (snapshot.status === 'scheduled' && Date.parse(data.published_date) <= Date.now()) throw new Error('Rejalashtirish uchun kelajak vaqtini tanlang / Choose a future time for scheduling.')
       if (snapshot.status === 'published' && Date.parse(data.published_date) > Date.now()) throw new Error('Bu kelajak sanasi: Rejalashtirilgan holatini tanlang / Future date: choose Scheduled, or an earlier date.')
       const outcome = await adminSaveArticle(data, id)
