@@ -1,6 +1,7 @@
 // Public content only — read through the cookie-free client so pages that
 // use these stay statically renderable and cacheable. See ./public.ts.
 import { createPublicClient } from './public'
+import type { GalleryPhoto } from '../showcase'
 
 export async function getCategories(locale: string) {
   const supabase = createPublicClient()
@@ -41,21 +42,53 @@ export async function getArticleBySlug(slug: string, locale: string) {
 
 export async function getHackathons(locale: string) {
   const supabase = createPublicClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('hackathons')
-    .select('*, media(*)')
+    // There is no hackathons -> media FK. Embedding media rejects the entire
+    // request (PGRST200), even though anonymous SELECT returns the rows.
+    .select('*')
     .order('date_range_start', { ascending: false })
+    .order('created_at', { ascending: false })
+  if (error) throw new Error(`Could not load hackathons (${error.code})`)
   return data || []
 }
 
 export async function getHackathonBySlug(slug: string, locale: string) {
   const supabase = createPublicClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('hackathons')
     .select('*')
     .eq('slug', slug)
-    .single()
+    .maybeSingle()
+  if (error) throw new Error(`Could not load hackathon (${error.code})`)
   return data
+}
+
+export async function getHackathonPhotos(ids: Array<string | number>): Promise<Record<string, GalleryPhoto[]>> {
+  if (ids.length === 0) return {}
+  const supabase = createPublicClient()
+  const { data, error } = await supabase
+    .from('hackathon_photos')
+    .select('id, hackathon_id, url, caption, position')
+    .in('hackathon_id', ids)
+    .order('position')
+    .order('created_at')
+  if (error) {
+    // The list fix can be deployed before the user runs the gallery migration.
+    // Other failures are reported as failures, never as "no hackathons".
+    if (error.code === 'PGRST205' || error.code === '42P01') {
+      console.warn('Hackathon photos need supabase/migration_v12.sql')
+      return {}
+    }
+    throw new Error(`Could not load hackathon photos (${error.code})`)
+  }
+  const grouped: Record<string, GalleryPhoto[]> = {}
+  for (const row of data || []) {
+    ;(grouped[String(row.hackathon_id)] ||= []).push({
+      id: row.id, url: row.url, caption: row.caption, position: row.position,
+    })
+  }
+  return grouped
 }
 
 export async function getTeamMembers(locale: string) {
@@ -76,19 +109,22 @@ export async function getPartners() {
 
 export async function getProjects(locale: string) {
   const supabase = createPublicClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('student_projects')
-    .select('*, categories(*)')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) throw new Error(`Could not load projects (${error.code})`)
   return data || []
 }
 
 export async function getProjectBySlug(slug: string, locale: string) {
   const supabase = createPublicClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('student_projects')
-    .select('*, categories(*), hackathons(*)')
+    .select('*, categories(*)')
     .eq('slug', slug)
-    .single()
+    .maybeSingle()
+  if (error) throw new Error(`Could not load project (${error.code})`)
   return data
 }
 

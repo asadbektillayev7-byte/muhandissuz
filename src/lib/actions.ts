@@ -4,6 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import { headers } from 'next/headers'
+import { getVideoValidationError } from '@/lib/video'
+import type { GalleryPhoto } from '@/lib/showcase'
 import {
   generateQuestions,
   richTextToPlain,
@@ -69,16 +71,37 @@ export async function clearLoginAttempts() {
 
 // ── Admin record CRUD ──
 
+function revalidateShowcase(table: string) {
+  const section = table === 'hackathons' ? 'hackathons' : table === 'student_projects' ? 'projects' : null
+  if (!section) return
+  revalidatePath(`/admin/${section}`)
+  for (const locale of ['uz', 'en']) {
+    revalidatePath(`/${locale}/${section}`)
+    revalidatePath(`/${locale}`)
+    revalidatePath(`/${locale}/about`)
+  }
+  revalidatePath(`/[locale]/${section}/[slug]`, 'page')
+  revalidatePath('/sitemap.xml')
+}
+
 export async function adminDeleteRecord(table: string, id: number | string) {
   await getAdminUser()
   const admin = createAdminClient()
   const { error } = await admin.from(table as any).delete().eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath(`/admin/${table}`)
+  revalidateShowcase(table)
 }
 
 export async function adminSaveRecord(table: string, data: Record<string, unknown>, id?: number | string) {
   await getAdminUser()
+  if (table === 'hackathons' || table === 'student_projects') {
+    const videoError = getVideoValidationError(
+      typeof data.video_url === 'string' ? data.video_url : null,
+      typeof data.cover_image_url === 'string' ? data.cover_image_url : null,
+    )
+    if (videoError) throw new Error(videoError)
+  }
   const admin = createAdminClient()
   let result
   if (id) {
@@ -91,7 +114,22 @@ export async function adminSaveRecord(table: string, data: Record<string, unknow
     result = d
   }
   revalidatePath(`/admin/${table}`)
+  revalidateShowcase(table)
   return result
+}
+
+export async function adminSaveHackathonPhotos(hackathonId: string | number, photos: GalleryPhoto[]) {
+  await getAdminUser()
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('replace_hackathon_photos', {
+    p_hackathon_id: hackathonId,
+    p_photos: photos.map((photo, position) => ({
+      id: photo.id, url: photo.url, caption: photo.caption?.trim() || null, position,
+    })),
+  })
+  if (error) throw new Error(error.message)
+  revalidatePath(`/admin/hackathons/${hackathonId}`)
+  revalidateShowcase('hackathons')
 }
 
 // ── Feedback moderation ──
