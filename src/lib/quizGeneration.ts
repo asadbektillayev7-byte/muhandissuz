@@ -6,6 +6,9 @@
  * badly worded question never reaches the site on its own.
  */
 
+import { articleBodyToHtml } from './article-content'
+import { parseDocument } from 'htmlparser2'
+
 /** Flash is plenty for this and keeps the free tier viable. Overridable in
  *  case the model line moves on again — 1.5 was retired, and so was 2.0. */
 const MODEL = process.env.GEMINI_MODEL || 'gemini-3.5-flash'
@@ -36,6 +39,19 @@ type RichNode = {
  * between blocks so paragraphs do not run together.
  */
 export function richTextToPlain(nodes: unknown): string {
+  // Article saves now normalize bodies to sanitized HTML in the JSONB column.
+  // Keep quiz generation able to read both that format and legacy JSON trees.
+  if (typeof nodes === 'string' || (nodes && typeof nodes === 'object' && !Array.isArray(nodes) && ('html' in nodes || 'root' in nodes))) {
+    const document = parseDocument(articleBodyToHtml(nodes))
+    type TextNode = typeof document.children[number]
+    const read = (node: TextNode): string => {
+      if (node.type === 'text') return node.data
+      if (!('children' in node)) return ''
+      const text = node.children.map(read).join('')
+      return text + ('name' in node && ['p', 'h2', 'h3', 'h4', 'li', 'blockquote', 'tr', 'br'].includes(node.name) ? '\n' : '')
+    }
+    return document.children.map(read).join('').replace(/\n{3,}/g, '\n\n').trim()
+  }
   const out: string[] = []
 
   const walk = (node: RichNode) => {

@@ -1,462 +1,270 @@
 'use client'
 
-import { useState, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
 import { adminSaveArticle, adminCheckSlug } from '@/lib/actions'
 import { TiptapEditor } from './TiptapEditor'
 import { ImageUploadField } from '../ImageUploadField'
+import { articleSlug, articleStatus, articleTags, fromTashkentInput, hasUnfinishedArticleImages, isArticleSlug, toTashkentInput, type ArticleLanguage, type ArticleStatus } from '@/lib/article-form'
+import { hasArticleBody } from '@/lib/article-content'
 
-type Article = {
-  id?: number
-  title_uz?: string
-  title_en?: string
-  slug?: string
-  category_id?: number | null
-  body_uz?: any
-  body_en?: any
-  excerpt_uz?: string
-  excerpt_en?: string
-  cover_image_url?: string
-  original_language?: string
-  author_id?: number | null
-  translator_id?: number | null
-  published_date?: string
-  tags?: any
-  published?: boolean
-  meta_description_uz?: string
-  meta_description_en?: string
-  og_image_url?: string
-  department_leader?: string | null
-  editor?: string | null
-  translator?: string | null
-  researcher?: string | null
+type Article = Record<string, any>
+const languages = ['uz', 'en', 'ru'] as const
+const inputClass = 'w-full min-w-0 border border-border rounded-md bg-background px-3 py-2 text-sm focus:border-chart-2'
+const buttonClass = 'border border-border rounded-md px-3 py-2 text-sm hover:bg-muted transition-colors disabled:opacity-50'
+const failure = (error: unknown) => error instanceof Error ? error.message : "Saqlab bo'lmadi / Could not save."
+
+function initialForm(article?: Article) {
+  const values: Record<string, any> = {
+    slug: article?.slug ?? '', category_id: article?.category_id ?? null, author_id: article?.author_id ?? null,
+    translator_id: article?.translator_id ?? null, original_language: article?.original_language ?? 'uz',
+    cover_image_url: article?.cover_image_url ?? '', og_image_url: article?.og_image_url ?? '',
+    department_leader: article?.department_leader ?? '', editor: article?.editor ?? '',
+    translator: article?.translator ?? '', researcher: article?.researcher ?? '',
+    published_date: toTashkentInput(article?.published_date), status: articleStatus(article ?? {}),
+    tags: articleTags(article?.tags).join(', '),
+  }
+  for (const locale of languages) {
+    for (const field of ['title', 'excerpt', 'meta_description']) values[`${field}_${locale}`] = article?.[`${field}_${locale}`] ?? ''
+    values[`body_${locale}`] = article?.[`body_${locale}`] ?? null
+  }
+  return values
 }
 
-function slugify(text: string): string {
-  const map: Record<string, string> = {
-    'o‘': 'o', "o'": 'o', 'O‘': 'o', "O'": 'o', 'g‘': 'g', "g'": 'g',
-    'G‘': 'g', "G'": 'g', 'sh': 'sh', 'Sh': 'sh', 'SH': 'sh',
-    'ch': 'ch', 'Ch': 'ch', 'CH': 'ch', '‘': '', "'": '',
-  }
-  let s = text.toLowerCase()
-  for (const [k, v] of Object.entries(map)) {
-    s = s.replaceAll(k, v)
-  }
-  return s
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-+|-+$/g, '')
-}
-
-export function ArticleForm({
-  article,
-  categories,
-  authors,
-}: {
-  article?: Article
-  categories: any[]
-  authors: any[]
-}) {
-  const router = useRouter()
+export function ArticleForm({ article, categories, authors }: { article?: Article; categories: Article[]; authors: Article[] }) {
+  const [form, setForm] = useState(() => initialForm(article))
+  const [id, setId] = useState<number | undefined>(article?.id)
+  const [language, setLanguage] = useState<ArticleLanguage>('uz')
+  const [manualSlug, setManualSlug] = useState(Boolean(article?.id))
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [slugManuallyEdited, setSlugManuallyEdited] = useState(false)
-  const [form, setForm] = useState({
-    title_uz: article?.title_uz || '',
-    title_en: article?.title_en || '',
-    slug: article?.slug || '',
-    category_id: article?.category_id || null,
-    excerpt_uz: article?.excerpt_uz || '',
-    excerpt_en: article?.excerpt_en || '',
-    cover_image_url: article?.cover_image_url || '',
-    meta_description_uz: article?.meta_description_uz || '',
-    meta_description_en: article?.meta_description_en || '',
-    og_image_url: article?.og_image_url || '',
-    original_language: article?.original_language || 'uz',
-    author_id: article?.author_id || null,
-    translator_id: article?.translator_id || null,
-    department_leader: article?.department_leader || '',
-    editor: article?.editor || '',
-    translator: article?.translator || '',
-    researcher: article?.researcher || '',
-    published_date: article?.published_date?.split('T')[0] || new Date().toISOString().split('T')[0],
-    published: article?.published ?? true,
-  })
-  const [bodyUz, setBodyUz] = useState<any>(article?.body_uz || null)
-  const [bodyEn, setBodyEn] = useState<any>(article?.body_en || null)
+  const [savedAt, setSavedAt] = useState('')
+  const [localStatus, setLocalStatus] = useState('')
+  const [recovery, setRecovery] = useState<{ form: Record<string, any>; at: string } | null>(null)
+  const [ready, setReady] = useState(false)
+  const [uploads, setUploads] = useState({ pending: 0, failed: 0 })
+  const [coverUploading, setCoverUploading] = useState(false)
+  const [ogUploading, setOgUploading] = useState(false)
+  const [slugMessage, setSlugMessage] = useState('')
+  const [savedArticle, setSavedArticle] = useState<Article | null>(article ?? null)
+  const initial = useRef(JSON.stringify(initialForm(article)))
+  const current = useRef(form)
+  const previewToken = useRef<string | null>(null)
+  const recoveryKey = `muhandiss:article-draft:${id ?? 'new'}`
+  const dirty = JSON.stringify(form) !== initial.current
+  const busy = uploads.pending > 0 || coverUploading || ogUploading
+  const unfinished = languages.some((lang) => hasUnfinishedArticleImages(form[`body_${lang}`]))
+  current.current = form
 
-  const handleChange = useCallback((field: string, value: any) => {
-    setForm(prev => {
-      const next = { ...prev, [field]: value }
-      if (field === 'title_uz' && !slugManuallyEdited && value) {
-        const slug = slugify(value)
-        if (slug) next.slug = slug
-      }
+  const change = useCallback((field: string, value: unknown) => {
+    setForm((previous) => {
+      const next = { ...previous, [field]: value }
+      if (field === 'title_uz' && !manualSlug) next.slug = articleSlug(String(value))
       return next
     })
-  }, [slugManuallyEdited])
-
-  const handleSlugChange = useCallback((value: string) => {
-    setSlugManuallyEdited(true)
-    setForm(prev => ({ ...prev, slug: value }))
+    setError('')
+  }, [manualSlug])
+  const updateBody = useCallback((value: unknown) => change(`body_${language}`, value), [change, language])
+  const updateUploads = useCallback((value: { pending: number; failed: number }) => {
+    setUploads((old) => old.pending === value.pending && old.failed === value.failed ? old : value)
   }, [])
 
-  const getEmptyBilingual = useCallback((): string[] => {
-    // Uzbek is the authoring language; English is optional and falls back to
-    // Uzbek on the public site. Only flag a missing Uzbek side.
-    const warnings: string[] = []
-    if (form.title_en?.trim() && !form.title_uz?.trim()) warnings.push('Title (UZ)')
-    if (form.excerpt_en?.trim() && !form.excerpt_uz?.trim()) warnings.push('Excerpt (UZ)')
-    const hasBodyUz = bodyUz?.content?.length > 0
-    const hasBodyEn = bodyEn?.content?.length > 0
-    if (hasBodyEn && !hasBodyUz) warnings.push('Body (UZ)')
-    return warnings
-  }, [form, bodyUz, bodyEn])
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(recoveryKey)
+      if (raw) {
+        const candidate = JSON.parse(raw)
+        if (candidate?.version === 1 && candidate.form && typeof candidate.form === 'object' && JSON.stringify(candidate.form) !== initial.current) setRecovery(candidate)
+      }
+    } catch { setLocalStatus("Mahalliy nusxani o'qib bo'lmadi / Local recovery is unavailable.") }
+    setReady(true)
+    // Read recovery only when the article editor first opens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  const handleSave = async () => {
-    setError('')
-
-    const empty = getEmptyBilingual()
-    if (empty.length > 0) {
-      if (!confirm(`Warning: missing translations for: ${empty.join(', ')}. Save anyway?`)) return
+  useEffect(() => {
+    if (!ready || recovery) return
+    const persist = () => {
+      if (JSON.stringify(current.current) === initial.current) return
+      try {
+        const at = new Date().toISOString()
+        localStorage.setItem(recoveryKey, JSON.stringify({ version: 1, form: current.current, at }))
+        setLocalStatus(`Qurilmada saqlandi / Local recovery saved · ${new Date(at).toLocaleTimeString()}`)
+      } catch { setLocalStatus("Qurilmada saqlash xatosi — maqolani saqlang / Local recovery failed; save your article.") }
     }
-
-    if (slugManuallyEdited && form.slug) {
-      const exists = await adminCheckSlug(form.slug, 'articles', article?.id)
-      if (exists) {
-        if (!confirm(`Slug "${form.slug}" already exists. Save anyway?`)) return
+    const timer = window.setInterval(persist, 10_000)
+    const onHidden = () => { if (document.visibilityState === 'hidden') persist() }
+    const beforeUnload = (event: BeforeUnloadEvent) => {
+      if (JSON.stringify(current.current) !== initial.current || busy) { persist(); event.preventDefault(); event.returnValue = '' }
+    }
+    const onLink = (event: MouseEvent) => {
+      const link = (event.target as Element)?.closest?.('a')
+      if (!link || link.target === '_blank' || link.hasAttribute('download') || link.href === location.href || event.ctrlKey || event.metaKey) return
+      if (JSON.stringify(current.current) !== initial.current && !window.confirm("Saqlanmagan o'zgarishlar bor. Sahifadan chiqasizmi? / Leave with unsaved changes?")) {
+        event.preventDefault(); event.stopPropagation()
       }
     }
-
-    setSaving(true)
-    try {
-      await adminSaveArticle(
-        {
-          ...form,
-          body_uz: JSON.parse(JSON.stringify(bodyUz)),
-          body_en: JSON.parse(JSON.stringify(bodyEn)),
-          published_date: new Date(form.published_date).toISOString(),
-          tags: [],
-        },
-        article?.id,
-      )
-      router.push('/admin/articles')
-      router.refresh()
-    } catch (e: any) {
-      setError(e?.message || 'Save failed')
-      setSaving(false)
+    window.addEventListener('beforeunload', beforeUnload)
+    // Next's history navigation may not unload the document. Preserve the
+    // newest edits synchronously when Back/Forward fires, without trapping history.
+    window.addEventListener('popstate', persist)
+    window.addEventListener('pagehide', persist)
+    document.addEventListener('visibilitychange', onHidden)
+    document.addEventListener('click', onLink, true)
+    return () => {
+      window.clearInterval(timer)
+      window.removeEventListener('beforeunload', beforeUnload)
+      window.removeEventListener('popstate', persist)
+      window.removeEventListener('pagehide', persist)
+      document.removeEventListener('visibilitychange', onHidden)
+      document.removeEventListener('click', onLink, true)
     }
+  }, [ready, recovery, recoveryKey, busy])
+
+  useEffect(() => {
+    if (!form.slug) { setSlugMessage(''); return }
+    if (!isArticleSlug(form.slug)) { setSlugMessage("Faqat kichik lotin harflari, raqam va tire / Use lowercase letters, numbers and hyphens."); return }
+    let active = true
+    const timer = window.setTimeout(async () => {
+      try {
+        const exists = await adminCheckSlug(form.slug, 'articles', id)
+        if (active) setSlugMessage(exists ? 'Bu manzil band / This URL is already used.' : "Manzil mavjud / URL is available.")
+      } catch { if (active) setSlugMessage("Manzilni tekshirib bo'lmadi; saqlashda qayta tekshiriladi / Checked again when saving.") }
+    }, 500)
+    return () => { active = false; window.clearTimeout(timer) }
+  }, [form.slug, id])
+
+  function payload(snapshot: Record<string, any>) {
+    const { status, ...fields } = snapshot
+    return { ...fields, published: status !== 'draft', published_date: fromTashkentInput(snapshot.published_date), tags: articleTags(snapshot.tags) }
   }
 
-  const emptyBilingual = getEmptyBilingual()
+  const save = async () => {
+    setError('')
+    if (busy || unfinished) { setError("Rasmlarni yuklashni tugating yoki xatoli rasmlarni olib tashlang / Finish or remove unfinished images first."); return }
+    if (!isArticleSlug(form.slug)) { setError("To'g'ri, bo'sh bo'lmagan manzil kiriting / Enter a valid article URL."); return }
+    if (form.status !== 'draft' && (!form.title_uz.trim() || !hasArticleBody(form.body_uz))) { setError("Nashr qilish uchun o'zbekcha sarlavha va matn kerak / Uzbek title and body are needed to publish."); return }
+    setSaving(true)
+    const snapshot = { ...form }
+    try {
+      const data = payload(snapshot)
+      if (snapshot.status === 'scheduled' && Date.parse(data.published_date) <= Date.now()) throw new Error('Rejalashtirish uchun kelajak vaqtini tanlang / Choose a future time for scheduling.')
+      if (snapshot.status === 'published' && Date.parse(data.published_date) > Date.now()) throw new Error('Bu kelajak sanasi: Rejalashtirilgan holatini tanlang / Future date: choose Scheduled, or an earlier date.')
+      const result = await adminSaveArticle(data, id)
+      setId(result.id)
+      // A reload after the first save must reopen this article, rather than a
+      // blank /new form. Updating history preserves edits made during the save.
+      if (!id && window.location.pathname === '/admin/articles/new') window.history.replaceState(null, '', `/admin/articles/${result.id}`)
+      setManualSlug(true)
+      setSavedArticle({ ...data, id: result.id })
+      initial.current = JSON.stringify(snapshot)
+      setSavedAt(new Date().toLocaleTimeString())
+      setLocalStatus('')
+      try {
+        const savedKey = `muhandiss:article-draft:${result.id}`
+        if (JSON.stringify(current.current) !== initial.current) {
+          // Editors can keep typing while the request is in flight. The save
+          // only acknowledged snapshot; preserve their newer edits immediately.
+          const at = new Date().toISOString()
+          localStorage.setItem(savedKey, JSON.stringify({ version: 1, form: current.current, at }))
+          if (savedKey !== recoveryKey) localStorage.removeItem(recoveryKey)
+          setLocalStatus(`Yangi o'zgarishlar qurilmada saqlandi / Newer edits saved locally · ${new Date(at).toLocaleTimeString()}`)
+        } else {
+          localStorage.removeItem(recoveryKey)
+          if (savedKey !== recoveryKey) localStorage.removeItem(savedKey)
+        }
+      } catch { setLocalStatus("Maqola saqlandi, lekin mahalliy nusxani yangilab bo'lmadi / Article saved; local recovery could not be updated.") }
+    } catch (problem) { setError(failure(problem)) }
+    finally { setSaving(false) }
+  }
 
-  return (
-    <div className="space-y-4">
-      {emptyBilingual.length > 0 && (
-        <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200 text-sm p-3 rounded">
-          ⚠ Missing translations: {emptyBilingual.join(', ')}
-        </div>
-      )}
+  const preview = () => {
+    setError('')
+    if (busy || unfinished) { setError("Ko'rishdan oldin rasmlarni yuklashni tugating / Finish the image uploads before previewing."); return }
+    try {
+      const now = Date.now()
+      const prefix = 'muhandiss:article-preview:'
+      const previousKeys = Array.from({ length: localStorage.length }, (_, index) => localStorage.key(index))
+        .filter((key): key is string => Boolean(key?.startsWith(prefix))).slice(0, 100)
+      for (const key of previousKeys) {
+        try {
+          const item = JSON.parse(localStorage.getItem(key) || 'null')
+          if (!Number.isFinite(item?.expires) || item.expires <= now) localStorage.removeItem(key)
+        } catch { localStorage.removeItem(key) }
+      }
+      // Reuse this form's slot, so repeated previews cannot consume one full
+      // article's worth of browser storage on every click.
+      const token = previewToken.current ?? crypto.randomUUID()
+      previewToken.current = token
+      localStorage.setItem(`${prefix}${token}`, JSON.stringify({ article: { ...payload({ ...form, published_date: form.published_date || toTashkentInput() }), id: id ?? 0, authors: authors.find((a) => a.id === form.author_id), categories: categories.find((c) => c.id === form.category_id) }, expires: now + 60 * 60 * 1000 }))
+      window.open(`/${language}/article-preview?draft=${token}`, '_blank', 'noopener,noreferrer')
+    } catch (problem) { setError(failure(problem)) }
+  }
 
-      {error && (
-        <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm p-3 rounded">
-          {error}
-        </div>
-      )}
+  const missingUz = !form.title_uz.trim() || !hasArticleBody(form.body_uz)
+  const visibility = form.status === 'draft' ? 'Qoralama — saytda ochiq emas / Draft — not public.'
+    : missingUz ? "O'zbekcha sarlavha yoki matn yetishmaydi / Missing Uzbek content."
+      : form.status === 'scheduled' ? `Rejalashtirilgan / Scheduled for ${form.published_date.replace('T', ' ')} (Toshkent, UTC+5).`
+        : !dirty && savedArticle ? 'Nashr etilgan — saytda ochiq / Published — visible on the site.' : 'Nashr etishga tayyor / Ready to publish.'
+  const visibleSaved = savedArticle && articleStatus(savedArticle) === 'published'
 
-      <div>
-        <label className="block text-sm font-medium mb-1">Title</label>
-        <input
-          value={form.title_uz}
-          onChange={(e) => handleChange('title_uz', e.target.value)}
-          className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-          style={{ borderRadius: 'var(--radius)' }}
-          required
-        />
+  return <div className="space-y-5 min-w-0">
+    {recovery && <div className="border border-amber-500/50 rounded-lg bg-amber-500/10 p-4 space-y-3" role="status">
+      <p className="text-sm">Saqlanmagan nusxa topildi / A recovery copy was found ({new Date(recovery.at).toLocaleString()}). Yuklanmagan rasmlarni qayta tanlash kerak bo'lishi mumkin.</p>
+      <div className="flex flex-wrap gap-2">
+        <button type="button" className={buttonClass} onClick={() => { setForm({ ...initialForm(article), ...recovery.form }); setManualSlug(true); setRecovery(null) }}>Tiklash / Restore</button>
+        <button type="button" className={buttonClass} onClick={() => { localStorage.removeItem(recoveryKey); setRecovery(null) }}>Nusxani o'chirish / Discard recovery</button>
       </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Slug</label>
-          <div className="flex gap-2">
-            <input
-              value={form.slug}
-              onChange={(e) => handleSlugChange(e.target.value)}
-              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-              style={{ borderRadius: 'var(--radius)' }}
-              required
-            />
-            {!slugManuallyEdited && form.title_uz && (
-              <button
-                type="button"
-                onClick={() => setSlugManuallyEdited(true)}
-                className="text-xs text-chart-2 hover:underline shrink-0 self-center"
-              >
-                Edit
-              </button>
-            )}
-            {slugManuallyEdited && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSlugManuallyEdited(false)
-                  handleChange('title_uz', form.title_uz)
-                }}
-                className="text-xs text-chart-2 hover:underline shrink-0 self-center"
-              >
-                Auto
-              </button>
-            )}
-          </div>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Category</label>
-          <select
-            value={form.category_id || ''}
-            onChange={(e) => handleChange('category_id', e.target.value ? Number(e.target.value) : null)}
-            className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-            style={{ borderRadius: 'var(--radius)' }}
-          >
-            <option value="">None</option>
-            {categories.map((cat: any) => (
-              <option key={cat.id} value={cat.id}>{cat.name_uz} / {cat.name_en}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium mb-1">Excerpt</label>
-        <textarea
-          value={form.excerpt_uz}
-          onChange={(e) => handleChange('excerpt_uz', e.target.value)}
-          rows={3}
-          className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 resize-none"
-          style={{ borderRadius: 'var(--radius)' }}
-        />
-      </div>
-
-      <ImageUploadField
-        label="Cover Image"
-        helperText="JPG, PNG, WebP up to 5 MB"
-        value={form.cover_image_url}
-        onChange={(url) => handleChange('cover_image_url', url)}
-        variant="cover"
-      />
-
-      <hr className="border-border" />
-
-      <div>
-        <label className="block text-sm font-medium mb-1">Meta Description{" "}
-          <span className="text-muted-foreground">(SEO)</span>
-        </label>
-        <textarea
-          value={form.meta_description_uz}
-          onChange={(e) => handleChange('meta_description_uz', e.target.value)}
-          rows={2}
-          maxLength={160}
-          className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 resize-none"
-          style={{ borderRadius: 'var(--radius)' }}
-        />
-      </div>
-
-      <ImageUploadField
-        label="OG Image (Social sharing)"
-        helperText="1200x630. Optional, falls back to cover image"
-        value={form.og_image_url}
-        onChange={(url) => handleChange('og_image_url', url)}
-        variant="og"
-      />
-
-      <hr className="border-border" />
-
-      <div>
-        <label className="block text-sm font-medium mb-1">Body</label>
-        <TiptapEditor content={bodyUz} onChange={setBodyUz} />
-      </div>
-
-      <details className="border border-border p-4" style={{ borderRadius: 'var(--radius)' }}>
-        <summary className="text-sm font-medium cursor-pointer select-none">
-          English override{" "}
-          <span className="font-normal text-muted-foreground">
-            (optional — leave empty and English is translated automatically)
-          </span>
-        </summary>
-
-        <div className="space-y-4 mt-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Title (EN)</label>
-            <input
-              value={form.title_en}
-              onChange={(e) => handleChange('title_en', e.target.value)}
-              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-              style={{ borderRadius: 'var(--radius)' }}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Excerpt (EN)</label>
-            <textarea
-              value={form.excerpt_en}
-              onChange={(e) => handleChange('excerpt_en', e.target.value)}
-              rows={3}
-              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 resize-none"
-              style={{ borderRadius: 'var(--radius)' }}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Meta Description (EN){" "}
-              <span className="text-muted-foreground">(SEO)</span>
-            </label>
-            <textarea
-              value={form.meta_description_en}
-              onChange={(e) => handleChange('meta_description_en', e.target.value)}
-              rows={2}
-              maxLength={160}
-              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2 resize-none"
-              style={{ borderRadius: 'var(--radius)' }}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Body (EN)</label>
-            <TiptapEditor content={bodyEn} onChange={setBodyEn} />
-          </div>
-        </div>
-      </details>
-
-      <div className="grid grid-cols-3 gap-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Original Language</label>
-          <select
-            value={form.original_language}
-            onChange={(e) => handleChange('original_language', e.target.value)}
-            className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-            style={{ borderRadius: 'var(--radius)' }}
-          >
-            <option value="uz">O'zbek</option>
-            <option value="en">English</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Author</label>
-          <select
-            value={form.author_id || ''}
-            onChange={(e) => handleChange('author_id', e.target.value ? Number(e.target.value) : null)}
-            className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-            style={{ borderRadius: 'var(--radius)' }}
-          >
-            <option value="">None</option>
-            {authors.map((a: any) => (
-              <option key={a.id} value={a.id}>{a.name}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Published Date</label>
-          <input
-            type="date"
-            value={form.published_date}
-            onChange={(e) => handleChange('published_date', e.target.value)}
-            className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-            style={{ borderRadius: 'var(--radius)' }}
-          />
-        </div>
-      </div>
-
-      <div className="border border-border p-4 space-y-3" style={{ borderRadius: 'var(--radius)' }}>
-        <div className="flex items-baseline justify-between">
-          <label className="block text-sm font-medium">Article Credits</label>
-          <span className="text-xs text-muted-foreground">Optional — free text full names</span>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div>
-            <label className="block text-xs font-medium mb-1">Department Leader</label>
-            <input
-              type="text"
-              value={form.department_leader}
-              onChange={(e) => handleChange('department_leader', e.target.value)}
-              placeholder="Full name"
-              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-              style={{ borderRadius: 'var(--radius)' }}
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium mb-1">Editor</label>
-            <input
-              type="text"
-              value={form.editor}
-              onChange={(e) => handleChange('editor', e.target.value)}
-              placeholder="Full name"
-              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-              style={{ borderRadius: 'var(--radius)' }}
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium mb-1">Translator</label>
-            <input
-              type="text"
-              value={form.translator}
-              onChange={(e) => handleChange('translator', e.target.value)}
-              placeholder="Full name"
-              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-              style={{ borderRadius: 'var(--radius)' }}
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium mb-1">Researcher</label>
-            <input
-              type="text"
-              value={form.researcher}
-              onChange={(e) => handleChange('researcher', e.target.value)}
-              placeholder="Full name"
-              className="w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2"
-              style={{ borderRadius: 'var(--radius)' }}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3">
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={form.published}
-            onChange={(e) => handleChange('published', e.target.checked)}
-          />
-          Published
-        </label>
-        {!form.published && article?.id && (
-          <a
-            href={`/${form.original_language}/articles/${form.slug}?preview=true`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-chart-2 hover:underline"
-          >
-            Preview draft
-          </a>
-        )}
-      </div>
-
-      <div className="flex gap-3 pt-2">
-        <button
-          onClick={() => router.push('/admin/articles')}
-          className="border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"
-          style={{ borderRadius: 'var(--radius)' }}
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="bg-foreground text-background px-6 py-2 text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
-          style={{ borderRadius: 'var(--radius)' }}
-        >
-          {saving ? 'Saving...' : article?.id ? 'Update Article' : 'Create Article'}
-        </button>
-      </div>
+    </div>}
+    <div className="border border-border rounded-lg p-3 space-y-2 text-sm bg-muted/30" aria-live="polite">
+      <p>{visibility}</p>
+      <p className="text-muted-foreground">{saving ? 'Saqlanmoqda / Saving…' : error ? 'Saqlash xatosi / Save failed' : dirty ? "Saqlanmagan o'zgarishlar / Unsaved changes" : savedAt ? `Saqlandi / Saved · ${savedAt}` : id ? 'Saqlangan maqola / Saved article' : 'Yangi qoralama / New draft'}</p>
+      {localStatus && <p className="text-xs">{localStatus}</p>}
+      {savedArticle && <a target="_blank" rel="noopener noreferrer" className="inline-block text-chart-2 hover:underline" href={`/uz/articles/${encodeURIComponent(savedArticle.slug)}`}>Saytda ko'rish / View on site{!visibleSaved ? ' (hali ochiq emas / not public yet)' : ''}</a>}
     </div>
-  )
+    {error && <p role="alert" className="rounded-md border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-700 dark:text-red-300">{error}</p>}
+
+    <div className="flex flex-wrap gap-2" role="tablist" aria-label="Maqola tili / Article language">
+      {languages.map((lang) => <button key={lang} type="button" role="tab" aria-selected={language === lang} disabled={busy} className={`${buttonClass} ${language === lang ? 'bg-foreground text-background hover:opacity-80' : ''}`} onClick={() => setLanguage(lang)}>{lang.toUpperCase()}{lang === 'uz' ? ' · Asosiy' : ' · Ixtiyoriy'}</button>)}
+    </div>
+    {language !== 'uz' && <p className="text-sm text-muted-foreground">Ixtiyoriy tarjima. Bo'sh qolsa, o'zbekcha matn ko'rsatiladi. / Optional translation; visitors see Uzbek when empty.</p>}
+    <div className="space-y-4" lang={language} role="tabpanel">
+      <label className="block text-sm font-medium">Sarlavha / Title ({language.toUpperCase()})<input className={`${inputClass} mt-1`} value={form[`title_${language}`]} onChange={(e) => change(`title_${language}`, e.target.value)} required={language === 'uz'} maxLength={300} /></label>
+      <label className="block text-sm font-medium">Qisqa tavsif / Excerpt<textarea className={`${inputClass} mt-1 resize-y`} rows={3} value={form[`excerpt_${language}`]} maxLength={500} onChange={(e) => change(`excerpt_${language}`, e.target.value)} /><span className="text-xs text-muted-foreground">{form[`excerpt_${language}`].length}/500</span></label>
+      <label className="block text-sm font-medium">Meta tavsif / Meta description<textarea className={`${inputClass} mt-1 resize-y`} rows={2} value={form[`meta_description_${language}`]} maxLength={160} onChange={(e) => change(`meta_description_${language}`, e.target.value)} /><span className="text-xs text-muted-foreground">{form[`meta_description_${language}`].length}/160</span></label>
+      <div><p className="text-sm font-medium mb-2">Matn / Body</p><TiptapEditor key={language} language={language} content={form[`body_${language}`]} onChange={updateBody} onUploadStateChange={updateUploads} /></div>
+    </div>
+
+    <div className="grid sm:grid-cols-2 gap-4">
+      <label className="block text-sm font-medium">Manzil / Slug<input className={`${inputClass} mt-1`} value={form.slug} onChange={(e) => { setManualSlug(true); change('slug', e.target.value) }} maxLength={180} /><span className="block mt-1 text-xs text-muted-foreground break-words">/uz/articles/{form.slug || '…'}</span><span className="block mt-1 text-xs" aria-live="polite">{slugMessage}</span><button type="button" className="mt-1 text-xs text-chart-2 hover:underline" onClick={() => { setManualSlug(false); change('slug', articleSlug(form.title_uz)) }}>Sarlavhadan yaratish / Generate from title</button></label>
+      <label className="block text-sm font-medium">Kategoriya / Category<select className={`${inputClass} mt-1`} value={form.category_id ?? ''} onChange={(e) => change('category_id', e.target.value ? Number(e.target.value) : null)}><option value="">Tanlanmagan / None</option>{categories.map((item) => <option key={item.id} value={item.id}>{item.name_uz || item.name_en}</option>)}</select></label>
+      <label className="block text-sm font-medium">Teglar / Tags<input className={`${inputClass} mt-1`} value={form.tags} onChange={(e) => change('tags', e.target.value)} placeholder="muhandislik, texnologiya" /><span className="text-xs text-muted-foreground">Vergul bilan ajrating / Separate with commas.</span></label>
+      <label className="block text-sm font-medium">Muallif / Author<select className={`${inputClass} mt-1`} value={form.author_id ?? ''} onChange={(e) => change('author_id', e.target.value ? Number(e.target.value) : null)}><option value="">Tanlanmagan / None</option>{authors.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+    </div>
+    <ImageUploadField label="Muqova rasmi / Cover image" value={form.cover_image_url} onChange={(url) => change('cover_image_url', url)} onUploadStateChange={setCoverUploading} variant="cover" />
+    <ImageUploadField label="Ulashish rasmi / OG image" helperText="Ixtiyoriy / Optional · 1200 × 630" value={form.og_image_url} onChange={(url) => change('og_image_url', url)} onUploadStateChange={setOgUploading} variant="og" />
+    <details className="rounded-lg border border-border p-3"><summary className="cursor-pointer hover:text-chart-2 text-sm">Maqola ijodkorlari / Article credits · ixtiyoriy</summary><div className="grid sm:grid-cols-2 gap-3 mt-3">{[['department_leader', "Bo'lim rahbari / Department leader"], ['editor', 'Muharrir / Editor'], ['translator', 'Tarjimon / Translator'], ['researcher', 'Tadqiqotchi / Researcher']].map(([field, label]) => <label key={field} className="text-sm">{label}<input className={`${inputClass} mt-1`} value={form[field]} onChange={(e) => change(field, e.target.value)} maxLength={200} /></label>)}</div></details>
+    <div className="grid sm:grid-cols-2 gap-4">
+      <label className="block text-sm font-medium">Holat / Status<select className={`${inputClass} mt-1`} value={form.status} onChange={(e) => {
+        const status = e.target.value as ArticleStatus
+        change('status', status)
+        if (status === 'published') {
+          let date = NaN
+          try { date = Date.parse(fromTashkentInput(form.published_date)) } catch { /* An empty or partial date is replaced with now. */ }
+          if (!Number.isFinite(date) || date > Date.now()) change('published_date', toTashkentInput())
+        }
+      }}><option value="draft">Qoralama / Draft</option><option value="scheduled">Rejalashtirilgan / Scheduled</option><option value="published">Nashr etilgan / Published</option></select></label>
+      <label className="block text-sm font-medium">Nashr sanasi / Publish date<input type="datetime-local" className={`${inputClass} mt-1`} value={form.published_date} onChange={(e) => change('published_date', e.target.value)} /><span className="text-xs text-muted-foreground">Toshkent (UTC+5)</span></label>
+    </div>
+    <div className="border border-border rounded-lg p-4 space-y-4">
+      <p className="text-sm font-medium">Qidiruv va Telegram ko'rinishi / SEO preview</p>
+      <div className="min-w-0"><p className="text-xs text-muted-foreground break-all">muhandiss.uz › {language} › articles › {form.slug}</p><p className="text-xl text-chart-2 break-words">{form[`title_${language}`] || form.title_uz || 'Sarlavha / Title'}</p><p className="text-sm text-muted-foreground break-words">{form[`meta_description_${language}`] || form[`excerpt_${language}`] || form.meta_description_uz || form.excerpt_uz}</p></div>
+      <div className="border-l-4 border-chart-2 pl-3"><p className="text-xs text-muted-foreground">Muhandiss.uz · Telegram</p><p className="font-medium break-words">{form[`title_${language}`] || form.title_uz}</p>{(form.og_image_url || form.cover_image_url) && <img src={form.og_image_url || form.cover_image_url} alt="Ulashish rasmi / Sharing image" width={1200} height={630} className="mt-2 w-full max-w-sm rounded object-cover aspect-[1200/630]" loading="lazy" />}</div>
+    </div>
+    <div className="flex flex-wrap gap-3 sticky bottom-0 bg-background/95 backdrop-blur p-3 -mx-3 border-t border-border z-10">
+      <Link href="/admin/articles" className={buttonClass}>Orqaga / Back</Link>
+      <button type="button" className={buttonClass} onClick={preview} disabled={busy || unfinished}>Tashrifchi sifatida ko'rish / Preview as visitor</button>
+      <button type="button" onClick={save} disabled={saving || busy || unfinished || Boolean(recovery)} className="rounded-md bg-foreground text-background px-5 py-2 text-sm hover:opacity-80 transition-opacity disabled:opacity-50">{saving ? 'Saqlanmoqda / Saving…' : 'Saqlash / Save'}</button>
+    </div>
+  </div>
 }

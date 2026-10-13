@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import {
   validateArticleImage,
@@ -14,6 +14,7 @@ interface ImageUploadFieldProps {
   value: string
   onChange: (url: string) => void
   variant?: 'cover' | 'og'
+  onUploadStateChange?: (uploading: boolean) => void
 }
 
 export function ImageUploadField({
@@ -22,12 +23,14 @@ export function ImageUploadField({
   value,
   onChange,
   variant = 'cover',
+  onUploadStateChange,
 }: ImageUploadFieldProps) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const [isDragging, setIsDragging] = useState(false)
   const [previewError, setPreviewError] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => { onUploadStateChange?.(uploading) }, [uploading, onUploadStateChange])
 
   const handleFile = async (file?: File) => {
     if (!file) return

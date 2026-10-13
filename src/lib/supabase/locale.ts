@@ -1,8 +1,6 @@
 export function field(item: any, name: string, locale: string) {
-  const uz = item[`${name}_uz`]
-  const en = item[`${name}_en`]
-  if (locale === 'uz') return uz || en || ''
-  return en || uz || ''
+  const requested = item?.[`${name}_${locale}`]
+  return requested || item?.[`${name}_uz`] || item?.[`${name}_en`] || ''
 }
 
 /** Rich text (jsonb) counterpart to `field()`: falls back to the other

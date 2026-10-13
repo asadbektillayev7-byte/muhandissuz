@@ -1,6 +1,8 @@
 // Public content only — read through the cookie-free client so pages that
 // use these stay statically renderable and cacheable. See ./public.ts.
 import { createPublicClient } from './public'
+import type { GalleryPhoto } from '../showcase'
+import { cache } from 'react'
 
 export async function getCategories(locale: string) {
   const supabase = createPublicClient()
@@ -15,47 +17,88 @@ export async function getArticles(locale: string, categorySlug?: string) {
   const supabase = createPublicClient()
   let query = supabase
     .from('articles')
-    .select('*, categories!inner(*)')
+    // Category is optional. An inner join silently hides uncategorized posts.
+    .select(categorySlug ? '*, categories!inner(*)' : '*, categories(*)')
+    .eq('published', true)
+    .lte('published_date', new Date().toISOString())
     .order('published_date', { ascending: false })
-
-  if (categorySlug) {
-    query = query.eq('categories.slug', categorySlug)
+  if (categorySlug) query = query.eq('categories.slug', categorySlug)
+  const { data, error } = await query
+  if (error) {
+    console.error('Public article list query failed', { code:error.code, message:error.message })
+    throw new Error(`Could not load articles (${error.code})`)
   }
-
-  const { data } = await query
   return data || []
 }
 
-export async function getArticleBySlug(slug: string, locale: string) {
+// Request-local deduplication lets metadata and the page share one query;
+// it does not cache articles between requests or keep a new slug at 404.
+export const getArticleBySlug = cache(async (slug: string, locale: string) => {
   const supabase = createPublicClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('articles')
-    // `authors` must name the FK: articles links to authors twice
-    // (author_id and translator_id), so a bare authors(*) is ambiguous
-    // and PostgREST rejects the whole query with PGRST201.
+    // There are separate author and translator FKs: name the author relation.
     .select('*, categories(*), authors!articles_author_id_fkey(*)')
     .eq('slug', slug)
-    .single()
+    .eq('published', true)
+    .lte('published_date', new Date().toISOString())
+    .maybeSingle()
+  if (error) {
+    console.error('Public article query failed', { slug, locale, code:error.code, message:error.message })
+    throw new Error(`Could not load article (${error.code})`)
+  }
   return data
-}
+})
 
 export async function getHackathons(locale: string) {
   const supabase = createPublicClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('hackathons')
-    .select('*, media(*)')
+    // There is no hackathons -> media FK. Embedding media rejects the entire
+    // request (PGRST200), even though anonymous SELECT returns the rows.
+    .select('*')
     .order('date_range_start', { ascending: false })
+    .order('created_at', { ascending: false })
+  if (error) throw new Error(`Could not load hackathons (${error.code})`)
   return data || []
 }
 
 export async function getHackathonBySlug(slug: string, locale: string) {
   const supabase = createPublicClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('hackathons')
     .select('*')
     .eq('slug', slug)
-    .single()
+    .maybeSingle()
+  if (error) throw new Error(`Could not load hackathon (${error.code})`)
   return data
+}
+
+export async function getHackathonPhotos(ids: Array<string | number>): Promise<Record<string, GalleryPhoto[]>> {
+  if (ids.length === 0) return {}
+  const supabase = createPublicClient()
+  const { data, error } = await supabase
+    .from('hackathon_photos')
+    .select('id, hackathon_id, url, caption, position')
+    .in('hackathon_id', ids)
+    .order('position')
+    .order('created_at')
+  if (error) {
+    // The list fix can be deployed before the user runs the gallery migration.
+    // Other failures are reported as failures, never as "no hackathons".
+    if (error.code === 'PGRST205' || error.code === '42P01') {
+      console.warn('Hackathon photos need supabase/migration_v12.sql')
+      return {}
+    }
+    throw new Error(`Could not load hackathon photos (${error.code})`)
+  }
+  const grouped: Record<string, GalleryPhoto[]> = {}
+  for (const row of data || []) {
+    ;(grouped[String(row.hackathon_id)] ||= []).push({
+      id: row.id, url: row.url, caption: row.caption, position: row.position,
+    })
+  }
+  return grouped
 }
 
 export async function getTeamMembers(locale: string) {
@@ -76,19 +119,22 @@ export async function getPartners() {
 
 export async function getProjects(locale: string) {
   const supabase = createPublicClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('student_projects')
-    .select('*, categories(*)')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) throw new Error(`Could not load projects (${error.code})`)
   return data || []
 }
 
 export async function getProjectBySlug(slug: string, locale: string) {
   const supabase = createPublicClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('student_projects')
-    .select('*, categories(*), hackathons(*)')
+    .select('*, categories(*)')
     .eq('slug', slug)
-    .single()
+    .maybeSingle()
+  if (error) throw new Error(`Could not load project (${error.code})`)
   return data
 }
 

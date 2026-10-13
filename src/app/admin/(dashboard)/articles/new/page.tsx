@@ -9,7 +9,7 @@ export default async function NewArticlePage() {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">New Article</h1>
-      <div className="max-w-3xl border border-border p-6" style={{ borderRadius: 'var(--radius)' }}>
+      <div className="max-w-5xl border border-border p-3 sm:p-6" style={{ borderRadius: 'var(--radius)' }}>
         <ArticleForm categories={categories || []} authors={authors || []} />
       </div>
     </div>

@@ -4,6 +4,10 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import { headers } from 'next/headers'
+import { getVideoValidationError } from '@/lib/video'
+import type { GalleryPhoto } from '@/lib/showcase'
+import { articleTags, hasUnfinishedArticleImages, isArticleSlug } from '@/lib/article-form'
+import { articleBodyToHtml, hasArticleBody } from '@/lib/article-content'
 import {
   generateQuestions,
   richTextToPlain,
@@ -69,16 +73,38 @@ export async function clearLoginAttempts() {
 
 // ── Admin record CRUD ──
 
+function revalidateShowcase(table: string) {
+  const section = table === 'hackathons' ? 'hackathons' : table === 'student_projects' ? 'projects' : null
+  if (!section) return
+  revalidatePath(`/admin/${section}`)
+  for (const locale of ['uz', 'en']) {
+    revalidatePath(`/${locale}/${section}`)
+    revalidatePath(`/${locale}`)
+    revalidatePath(`/${locale}/about`)
+  }
+  revalidatePath(`/[locale]/${section}/[slug]`, 'page')
+  revalidatePath('/sitemap.xml')
+}
+
 export async function adminDeleteRecord(table: string, id: number | string) {
   await getAdminUser()
   const admin = createAdminClient()
   const { error } = await admin.from(table as any).delete().eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath(`/admin/${table}`)
+  revalidateShowcase(table)
+  if (table === 'articles') revalidateArticles()
 }
 
 export async function adminSaveRecord(table: string, data: Record<string, unknown>, id?: number | string) {
   await getAdminUser()
+  if (table === 'hackathons' || table === 'student_projects') {
+    const videoError = getVideoValidationError(
+      typeof data.video_url === 'string' ? data.video_url : null,
+      typeof data.cover_image_url === 'string' ? data.cover_image_url : null,
+    )
+    if (videoError) throw new Error(videoError)
+  }
   const admin = createAdminClient()
   let result
   if (id) {
@@ -91,7 +117,22 @@ export async function adminSaveRecord(table: string, data: Record<string, unknow
     result = d
   }
   revalidatePath(`/admin/${table}`)
+  revalidateShowcase(table)
   return result
+}
+
+export async function adminSaveHackathonPhotos(hackathonId: string | number, photos: GalleryPhoto[]) {
+  await getAdminUser()
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('replace_hackathon_photos', {
+    p_hackathon_id: hackathonId,
+    p_photos: photos.map((photo, position) => ({
+      id: photo.id, url: photo.url, caption: photo.caption?.trim() || null, position,
+    })),
+  })
+  if (error) throw new Error(error.message)
+  revalidatePath(`/admin/hackathons/${hackathonId}`)
+  revalidateShowcase('hackathons')
 }
 
 // ── Feedback moderation ──
@@ -151,26 +192,83 @@ export async function adminSetQuizArticles(quizId: number, articleIds: number[])
 
 // ── Article-specific ──
 
+function revalidateArticles() {
+  revalidatePath('/admin/articles')
+  revalidatePath('/admin/articles/[id]', 'page')
+  revalidatePath('/[locale]/articles/[slug]', 'page')
+  for (const locale of ['uz', 'en', 'ru']) {
+    revalidatePath(`/${locale}/articles`)
+    revalidatePath(`/${locale}`)
+    revalidatePath(`/${locale}/about`)
+  }
+  revalidatePath('/sitemap.xml')
+}
+
 export async function adminSaveArticle(data: Record<string, unknown>, id?: number) {
   await getAdminUser()
-  const admin = createAdminClient()
-  if (id) {
-    const { error } = await admin.from('articles').update(data).eq('id', id)
-    if (error) throw new Error(error.message)
-  } else {
-    const { error } = await admin.from('articles').insert(data)
-    if (error) throw new Error(error.message)
+  if (id !== undefined && (!Number.isSafeInteger(id) || id < 1)) throw new Error('Invalid article ID')
+  const slug = typeof data.slug === 'string' ? data.slug.trim() : ''
+  if (!isArticleSlug(slug)) throw new Error("Manzil: kichik lotin harflari, raqam va tire ishlating / Use a valid lowercase URL slug.")
+  if (JSON.stringify(data).length > 2_000_000) throw new Error("Maqola juda katta (2 MB) / Article exceeds 2 MB. Upload images instead of embedding their data.")
+  const values: Record<string, unknown> = { slug, published: data.published === true }
+  for (const locale of ['uz', 'en', 'ru']) {
+    for (const name of ['title', 'excerpt', 'meta_description']) {
+      const value = data[`${name}_${locale}`]
+      values[`${name}_${locale}`] = typeof value === 'string' ? value.trim() : ''
+    }
+    const body = data[`body_${locale}`]
+    if (hasUnfinishedArticleImages(body)) throw new Error(`Rasm yuklash tugamagan (${locale.toUpperCase()}) / Finish, retry or remove unfinished images.`)
+    values[`body_${locale}`] = articleBodyToHtml(body)
   }
-  revalidatePath('/admin/articles')
+  if (values.published && (!values.title_uz || !hasArticleBody(values.body_uz))) {
+    throw new Error("Nashr qilish uchun o'zbekcha sarlavha va matn kerak / Add the Uzbek title and body before publishing.")
+  }
+  const publishDate = typeof data.published_date === 'string' ? new Date(data.published_date) : new Date()
+  if (!Number.isFinite(publishDate.getTime())) throw new Error('Nashr sanasi noto\'g\'ri / Invalid publication date.')
+  values.published_date = publishDate.toISOString()
+  values.tags = articleTags(data.tags)
+  for (const field of ['category_id', 'author_id', 'translator_id']) {
+    const value = data[field]
+    if (value !== null && value !== undefined && (!Number.isSafeInteger(value) || Number(value) < 1)) throw new Error(`Invalid ${field}`)
+    values[field] = value ?? null
+  }
+  for (const field of ['cover_image_url', 'og_image_url']) {
+    const value = typeof data[field] === 'string' ? data[field].trim() : ''
+    if (value) {
+      try { const url = new URL(value); if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) throw new Error() }
+      catch { throw new Error('Rasm manzili noto\'g\'ri / Invalid image URL.') }
+    }
+    values[field] = value || null
+  }
+  for (const field of ['department_leader', 'editor', 'translator', 'researcher']) values[field] = typeof data[field] === 'string' ? data[field].trim().slice(0, 200) : null
+  values.original_language = data.original_language === 'en' ? 'en' : 'uz'
+  const admin = createAdminClient()
+  let duplicateQuery = admin.from('articles').select('id').eq('slug', slug)
+  if (id) duplicateQuery = duplicateQuery.neq('id', id)
+  const { data: duplicate, error: slugError } = await duplicateQuery.maybeSingle()
+  if (slugError) throw new Error('Manzilni tekshirib bo\'lmadi / Could not check article URL.')
+  if (duplicate) throw new Error('Bu manzil band. Boshqa manzil tanlang / This URL is used by another article.')
+  const query = id ? admin.from('articles').update(values).eq('id', id) : admin.from('articles').insert(values)
+  const { data: saved, error } = await query.select('id, slug, published, published_date').single()
+  if (error) {
+    console.error('Article save failed', { code: error.code, message: error.message })
+    if (error.code === '23505') throw new Error('Bu manzil band / This article URL is already used.')
+    if (error.code === 'PGRST204' || error.code === '42703') throw new Error('Avval supabase/migration_v13.sql faylini bajaring / Run the article editor SQL migration first.')
+    throw new Error('Maqolani saqlab bo\'lmadi. Qayta urinib ko\'ring / Could not save; please retry.')
+  }
+  revalidateArticles()
+  return saved as { id: number; slug: string; published: boolean; published_date: string }
 }
 
 // ── Slug uniqueness check ──
 
 export async function adminCheckSlug(slug: string, table: string, excludeId?: number): Promise<boolean> {
+  await getAdminUser()
   const admin = createAdminClient()
   let query = admin.from(table as any).select('id').eq('slug', slug)
   if (excludeId) query = query.neq('id', excludeId)
-  const { data } = await query.maybeSingle()
+  const { data, error } = await query.maybeSingle()
+  if (error) throw new Error('Could not check URL availability')
   return !!data
 }
 

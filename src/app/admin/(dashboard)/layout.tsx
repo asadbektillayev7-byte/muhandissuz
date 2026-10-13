@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { AdminLogoutButton } from './AdminLogoutButton'
+import { switzer } from '@/app/fonts'
+import { NIGHT_END_HOUR, NIGHT_START_HOUR } from '@/lib/theme'
 
 const navItems = [
   { href: '/admin/articles', label: 'Articles' },
@@ -21,8 +23,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!user) redirect('/admin/login')
 
   return (
-    <div className="min-h-screen flex bg-background">
-      <aside className="w-56 border-r border-border p-4 flex flex-col gap-1 shrink-0">
+    <html lang="uz" className={switzer.variable} suppressHydrationWarning>
+      <head><script dangerouslySetInnerHTML={{ __html: `(function(){try{var s=localStorage.getItem('theme');var h=new Date().getHours();var d=s==='dark'||s==='light'?s==='dark':(h>=${NIGHT_START_HOUR}||h<${NIGHT_END_HOUR});document.documentElement.classList.toggle('dark',d)}catch(e){}})()` }} /></head>
+      <body>
+    <div className="min-h-screen flex flex-col md:flex-row bg-background">
+      <aside className="w-full md:w-56 border-b md:border-b-0 md:border-r border-border p-4 flex flex-wrap md:flex-col gap-1 shrink-0">
         <Link href="/admin" className="text-lg font-bold mb-4 block">Muhandiss.uz</Link>
         {navItems.map((item) => (
           <Link
@@ -33,14 +38,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             {item.label}
           </Link>
         ))}
-        <div className="mt-auto pt-4 border-t border-border">
+        <div className="w-full mt-auto pt-4 border-t border-border">
           <p className="text-xs text-muted-foreground mb-2 truncate">{user.email}</p>
           <AdminLogoutButton />
         </div>
       </aside>
-      <main className="flex-1 p-6 overflow-auto">
+      <main className="flex-1 min-w-0 p-3 sm:p-6 overflow-auto">
         {children}
       </main>
     </div>
+      </body>
+    </html>
   )
 }
