@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-export type MurvachchaState = 'idle' | 'listening' | 'thinking' | 'dragging'
+export type MurvachchaState = 'idle' | 'greeting' | 'listening' | 'thinking' | 'dragging'
 
 /** One transparent sprite sheet; pose changes never request another image. */
 export function MurvachchaMascot({ state = 'idle' }: { state?: MurvachchaState }) {

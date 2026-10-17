@@ -267,6 +267,11 @@ body {
   0%, 74%, 100% { background-position: 66.666667% 100%; }
   75%, 92% { background-position: 100% 100%; }
 }
+/* A brief wave accompanies the section greeting, then holds a friendly pose. */
+.murvachcha-mascot[data-state="greeting"] .murvachcha-sprite {
+  animation: murvachcha-wave .65s steps(1, end) 3;
+  background-position: 66.666667% 0;
+}
 .murvachcha-mascot[data-state="listening"] .murvachcha-sprite {
   animation: none;
   background-position: 0 100%;

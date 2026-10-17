@@ -5,9 +5,8 @@
  * edited in this file and nowhere else.
  *
  * Keys are the pathname with the locale prefix removed: '/' is the homepage,
- * '/quiz' the quiz section, and so on. A route not listed here gets no
- * proactive message at all — Media and Hamkorlar are deliberately absent
- * rather than present-but-empty.
+ * '/quiz' the quiz section, and so on. Public sections welcome visitors once
+ * per section and language in a browser session. Preview/admin routes stay quiet.
  *
  * Tone: the audience is school-age students, so warm and plain. The single
  * wrench in the homepage greeting is the only emoji anywhere in bot copy.
@@ -16,7 +15,7 @@
 export type Localised = { uz: string; en: string }
 
 export type BotCopy = {
-  /** Shown once per session when a visitor lands on the route. */
+  /** Shown once per section and language in a browser session. */
   greeting: Localised
   /** Chips offered at the start of a chat. Three per route, four at most. */
   suggestions: { uz: string[]; en: string[] }
@@ -97,11 +96,62 @@ export const BOT_MESSAGES: Record<string, BotCopy> = {
       en: ['How do I join the team?', 'Who takes part?', 'How can I help?'],
     },
   },
+
+  '/media': {
+    greeting: {
+      uz: 'Tadbirlarimizdan foto va videolar shu yerda. Qaysi voqea haqida ko‘proq bilmoqchisiz?',
+      en: 'Explore photos and videos from our events. Which event would you like to know more about?',
+    },
+    suggestions: { uz: ['Media bo‘limida nimalar bor?', 'Hakaton videolarini qayerdan topaman?', 'Tadbirda qanday qatnashaman?'], en: ['What is in the media section?', 'Where can I find hackathon videos?', 'How can I attend an event?'] },
+  },
+  '/partners': {
+    greeting: {
+      uz: 'Hamkorlarimiz bilan tanishing! Hamkorlik haqida savolingiz bo‘lsa, yordam beraman.',
+      en: 'Meet our partners! I can help with questions about working together.',
+    },
+    suggestions: { uz: ['Hamkorlarimiz kimlar?', 'Qanday hamkorlik qilish mumkin?', 'Jamoa bilan qanday bog‘lanaman?'], en: ['Who are our partners?', 'How can we collaborate?', 'How do I contact the team?'] },
+  },
+  '/mentors': {
+    greeting: {
+      uz: 'Loyihangizga yo‘l-yo‘riq kerakmi? Mentorlar bo‘limini birga ko‘rib chiqamiz.',
+      en: 'Need guidance for your project? Let’s explore the mentors section together.',
+    },
+    suggestions: { uz: ['Mentor nima bilan yordam beradi?', 'Qaysi yo‘nalishni tanlay?', 'Mentorga qanday savol bersam bo‘ladi?'], en: ['How can a mentor help?', 'Which field should I choose?', 'What should I ask a mentor?'] },
+  },
+  '/glossary': {
+    greeting: {
+      uz: 'Biror muhandislik atamasi tushunarsizmi? Yozing, sodda misol bilan tushuntiraman.',
+      en: 'Found an unfamiliar engineering term? Ask me and I’ll explain it with a simple example.',
+    },
+    suggestions: { uz: ['Kuchlanish nima?', 'Sensor qanday ishlaydi?', 'Algoritm nima?'], en: ['What is voltage?', 'How does a sensor work?', 'What is an algorithm?'] },
+  },
+  '/about': {
+    greeting: {
+      uz: 'MUHANDISS.UZ haqida bilmoqchimisiz? Maqsadimiz va imkoniyatlarimiz bilan tanishtiraman.',
+      en: 'Curious about MUHANDISS.UZ? Let me introduce our purpose and what you can do here.',
+    },
+    suggestions: { uz: ['MUHANDISS.UZ nima?', 'Saytdan qanday foydalanaman?', 'Qanday qo‘shilishim mumkin?'], en: ['What is MUHANDISS.UZ?', 'How do I use the site?', 'How can I get involved?'] },
+  },
+  '/contact': {
+    greeting: {
+      uz: 'Jamoamiz bilan bog‘lanmoqchimisiz? Qaysi masala bo‘yicha yozmoqchi ekaningizni ayting.',
+      en: 'Want to contact our team? Tell me what you’d like to discuss.',
+    },
+    suggestions: { uz: ['Jamoa bilan qanday bog‘lanaman?', 'Hamkorlik taklifim bor', 'Loyihamni ulashmoqchiman'], en: ['How do I contact the team?', 'I have a collaboration proposal', 'I’d like to share my project'] },
+  },
+  '/feedback': {
+    greeting: {
+      uz: 'Fikringiz biz uchun muhim. Taklif yoki muammoni qanday yozishni birga o‘ylab ko‘ramizmi?',
+      en: 'Your feedback matters. Would you like help describing a suggestion or a problem?',
+    },
+    suggestions: { uz: ['Taklifimni qanday yuboraman?', 'Saytda muammo topdim', 'Qanday fikr bildirsam foydali bo‘ladi?'], en: ['How do I submit a suggestion?', 'I found a problem on the site', 'What makes feedback helpful?'] },
+  },
+
 }
 
 /** Strips the locale prefix. '/uz/quiz' becomes '/quiz'; '/uz' becomes '/'. */
 export function routeKey(pathname: string): string {
-  const stripped = pathname.replace(/^\/(uz|en)(?=\/|$)/, '')
+  const stripped = pathname.replace(/^\/(uz|en|ru)(?=\/|$)/, '')
   return stripped === '' ? '/' : stripped
 }
 
@@ -112,15 +162,15 @@ export function routeKey(pathname: string): string {
  * /uz/articles/gears-and-gearboxes inherits the Maqolalar copy. The homepage
  * is matched exactly, otherwise '/' would swallow every route.
  */
-export function copyForPath(pathname: string): BotCopy | null {
-  const key = routeKey(pathname)
-  if (key === '/') return BOT_MESSAGES['/']
+export function greetingSection(pathname: string): string | null {
+  const key = routeKey(pathname).replace(/\/+$/, '') || '/'
+  if (key === '/') return '/'
+  return Object.keys(BOT_MESSAGES).find(section => section !== '/' && (key === section || key.startsWith(section + '/'))) ?? null
+}
 
-  for (const section of Object.keys(BOT_MESSAGES)) {
-    if (section === '/') continue
-    if (key === section || key.startsWith(section + '/')) return BOT_MESSAGES[section]
-  }
-  return null
+export function copyForPath(pathname: string): BotCopy | null {
+  const section = greetingSection(pathname)
+  return section ? BOT_MESSAGES[section] : null
 }
 
 /** Widget chrome that is still copy, so it lives here too. */

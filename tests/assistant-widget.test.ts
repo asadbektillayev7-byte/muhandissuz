@@ -36,7 +36,7 @@ test('assistant supports mouse/touch dragging, safe placement, persistence and n
   let chatCalls = 0
   globals.__assistantChatMock = async () => { chatCalls++; return { reply: 'Local test reply' } }
   // Keep unrelated timed greetings quiet while testing deliberate movement.
-  window.sessionStorage.setItem('murvatcha:closed', '1')
+  window.sessionStorage.setItem('murvachcha:greeted:v2:uz:/', '1')
   const viewport = Object.assign(new window.EventTarget(), { width: 1280, height: 900, offsetLeft: 0, offsetTop: 0, scale: 1 })
   Object.defineProperty(window, 'visualViewport', { configurable: true, value: viewport })
   const resize = (width: number, height: number) => {

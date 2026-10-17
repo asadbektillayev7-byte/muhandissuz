@@ -6,6 +6,7 @@ import { useParams, usePathname } from 'next/navigation'
 import { sendChatMessage } from '@/lib/chatActions'
 import { MurvachchaMascot } from './MurvachchaMascot'
 import { useAssistantPosition } from './useAssistantPosition'
+import { useAssistantGreeting } from './useAssistantGreeting'
 import {
   botName,
   MAX_MESSAGE_CHARS,
@@ -15,7 +16,6 @@ import {
 } from '@/lib/chat'
 import {
   copyForPath,
-  routeKey,
   pick,
   pickList,
   DEFAULT_GREETING,
@@ -36,33 +36,6 @@ const AVATAR = '/images/murvatcha.jpg'
 
 /** How long the typing indicator runs before a message appears. */
 const TYPING_MS = 1000
-/** Wait before speaking unprompted, so the widget does not ambush a new page. */
-const PROACTIVE_DELAY_MS = 4500
-/** ...or as soon as this much of the page has been scrolled, whichever first. */
-const PROACTIVE_SCROLL = 0.3
-
-/** sessionStorage: one greeting per route, and never re-open after a close. */
-const seenKey = (route: string) => `murvatcha:greeted:${route}`
-const CLOSED_KEY = 'murvatcha:closed'
-
-function sessionFlag(key: string): boolean {
-  try {
-    return window.sessionStorage.getItem(key) === '1'
-  } catch {
-    // Private browsing can throw on access; treat it as "already greeted" so
-    // a failure here stays quiet rather than repeating forever.
-    return true
-  }
-}
-
-function setSessionFlag(key: string) {
-  try {
-    window.sessionStorage.setItem(key, '1')
-  } catch {
-    // Nothing to do: worst case the greeting shows again next navigation.
-  }
-}
-
 type Message = ChatTurn & { at: number }
 
 /** A small fixed set beats shipping an emoji-picker dependency. */
@@ -260,8 +233,6 @@ export function ChatWidget() {
    * bubble under an existing conversation as soon as the visitor navigated.
    */
   const [shownGreeting, setShownGreeting] = useState<string | null>(null)
-  /** The proactive card shown beside the launcher while the panel is shut. */
-  const [teaser, setTeaser] = useState<string | null>(null)
   const [emojiOpen, setEmojiOpen] = useState(false)
   const [recording, setRecording] = useState(false)
   const recorderRef = useRef<MediaRecorder | null>(null)
@@ -275,6 +246,7 @@ export function ChatWidget() {
   const fileRef = useRef<HTMLInputElement>(null)
   const greetedRoute = useRef(pathname)
   const assistantPosition = useAssistantPosition()
+  const { teaser, dismiss: dismissTeaser } = useAssistantGreeting({ pathname, locale, open, dragging: assistantPosition.dragging })
 
   /**
    * Clearing this in an effect would be too late: the panel's first render
@@ -319,59 +291,14 @@ export function ChatWidget() {
     return () => clearTimeout(id)
   }, [open, pathname, hasSent, greetingReady, greetingText])
 
-  /**
-   * Speak first, at most once per route per session.
-   *
-   * Held back until the visitor has had a few seconds on the page, or has
-   * scrolled far enough to be reading, so it lands as an offer rather than an
-   * interruption. Closing the widget silences it for the rest of the session.
-   */
-  useEffect(() => {
-    if (!routeCopy || hasSent) return
-
-    const route = routeKey(pathname)
-    if (sessionFlag(CLOSED_KEY) || sessionFlag(seenKey(route))) return
-
-    let done = false
-    const fire = () => {
-      if (done) return
-      // Never interrupt someone who already opened it and is mid-conversation.
-      if (sessionFlag(CLOSED_KEY)) return
-      done = true
-      setSessionFlag(seenKey(route))
-      // A card beside the launcher, not the whole panel: the panel covers a
-      // third of a phone screen, which is a lot to take uninvited.
-      setTeaser(pick(routeCopy.greeting, locale))
-    }
-
-    const timer = setTimeout(fire, PROACTIVE_DELAY_MS)
-    const onScroll = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight
-      if (max > 0 && window.scrollY / max >= PROACTIVE_SCROLL) fire()
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-
-    return () => {
-      clearTimeout(timer)
-      window.removeEventListener('scroll', onScroll)
-    }
-  }, [pathname, routeCopy, hasSent, locale])
-
   function openFromTeaser() {
-    setTeaser(null)
+    dismissTeaser()
     setOpen(true)
-  }
-
-  function dismissTeaser() {
-    setTeaser(null)
-    // Dismissing the card is a "no thanks" for the session, same as closing
-    // the panel — otherwise the next route would raise another one.
-    setSessionFlag(CLOSED_KEY)
   }
 
   function close() {
     setOpen(false)
-    setTeaser(null)
+    dismissTeaser()
     assistantPosition.launcherRef.current?.focus({ preventScroll: true })
     // Re-opening should type the greeting out again rather than showing a
     // stale one instantly.
@@ -380,8 +307,6 @@ export function ChatWidget() {
       setShownGreeting(null)
       setOpenedAt(null)
     }
-    // A closed widget stays closed: no further route may re-open it.
-    setSessionFlag(CLOSED_KEY)
   }
 
   useEffect(() => {
@@ -745,7 +670,7 @@ export function ChatWidget() {
           >
             <Avatar size={30} name={name} />
             <span className="min-w-0">
-              <span className="block text-[12.5px] leading-snug text-foreground">{teaser}</span>
+              <span role="status" className="block text-[12.5px] leading-snug text-foreground">{teaser}</span>
               <span className="mt-1 block text-[11px] text-muted-foreground">
                 {name} · {pick(UI_COPY.justNow, locale)}
               </span>
@@ -787,7 +712,7 @@ export function ChatWidget() {
         data-dragging={assistantPosition.dragging || undefined}
         data-side={assistantPosition.side}
       >
-        <MurvachchaMascot state={assistantPosition.dragging ? 'dragging' : busy ? 'thinking' : open ? 'listening' : 'idle'} />
+        <MurvachchaMascot state={assistantPosition.dragging ? 'dragging' : busy ? 'thinking' : open ? 'listening' : teaser ? 'greeting' : 'idle'} />
       </button>
       <span id="murvachcha-move-instructions" className="sr-only">{t.move}</span>
     </>

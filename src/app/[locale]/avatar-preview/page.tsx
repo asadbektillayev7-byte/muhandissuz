@@ -4,15 +4,15 @@ import { useState } from 'react'
 import { useParams } from 'next/navigation'
 import { MurvachchaMascot, type MurvachchaState } from '@/components/MurvachchaMascot'
 
-const states: MurvachchaState[] = ['idle', 'listening', 'thinking', 'dragging']
+const states: MurvachchaState[] = ['idle', 'greeting', 'listening', 'thinking', 'dragging']
 
 export default function AvatarPreviewPage() {
   const params = useParams()
   const uz = params?.locale !== 'en'
   const [state, setState] = useState<MurvachchaState>('idle')
   const labels = uz
-    ? { idle: 'Tayyor', listening: 'Tinglamoqda', thinking: 'O‘ylamoqda', dragging: 'Ko‘chirilmoqda' }
-    : { idle: 'Ready', listening: 'Listening', thinking: 'Thinking', dragging: 'Being moved' }
+    ? { idle: 'Tayyor', greeting: 'Salomlashmoqda', listening: 'Tinglamoqda', thinking: 'O‘ylamoqda', dragging: 'Ko‘chirilmoqda' }
+    : { idle: 'Ready', greeting: 'Greeting', listening: 'Listening', thinking: 'Thinking', dragging: 'Being moved' }
 
   return (
     <div className="mx-auto max-w-3xl px-5 pb-36 pt-16">
