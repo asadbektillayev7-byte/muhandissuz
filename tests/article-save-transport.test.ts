@@ -63,7 +63,7 @@ test('real ProseMirror images survive the production Server Action transport onl
     cwd: fileURLToPath(new URL('..', import.meta.url)),
     input: JSON.stringify({ raw: rawWire, normalized: normalizedWire }), encoding: 'utf8', timeout: 20_000,
   })
-  assert.equal(decoded.status, 0, decoded.stderr || decoded.error?.message)
+  assert.equal(decoded.status, 0, decoded.stderr || decoded.error?.message || 'React transport decoder failed')
   const result = JSON.parse(decoded.stdout)
   assert.match(result.rawError, /Cannot access src on the server.*temporary client reference/)
   assert.deepEqual(result.unfinished, [false, false, false])

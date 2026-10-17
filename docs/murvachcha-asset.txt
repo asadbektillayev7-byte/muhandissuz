@@ -1,0 +1,20 @@
+Generated with the built-in image generation tool, using the three character references supplied by the site owner.
+Production asset: public/images/murvachcha-sprites.webp (1536 × 1024 RGBA, 4 columns × 2 rows).
+PNG output was encoded to WebP at quality 90 with its original alpha channel and dimensions preserved.
+Frame order: idle, blink, wave A, wave B, listening, held/dragging, thinking A, thinking B.
+Final refinement prompt: Preserve the eight poses, design, order, camera, shading and canvas. Shrink only the held-in-air pose by approximately 10% and recenter it inside its own 384-by-512 cell with at least 20px transparent side padding. Remove its stray glove fragment from the neighboring cell. Keep the other seven poses and real alpha transparency unchanged.
+
+Generation prompt:
+Use case: stylized-concept.
+Asset type: production character sprite sheet for an animated website assistant, transparent RGBA.
+Create a single precise 4-column by 2-row sprite sheet (8 equal rectangular cells) of Murvachcha, the tiny blue Fixies engineering character shown in the references. Reference image 1 supplies the character identity: huge luminous faceted cyan-blue spiky hair, pale blue face, blue expressive eyes, small friendly mouth, very small blue mechanic suit/body, gloves, chunky blue boots, round chest badge. Images 2 and 3 show the full-body proportions and 3D cartoon rendering. Preserve that recognizable character, no glasses, no circuit-board hat.
+Sheet layout: wide canvas, exactly 4 columns x 2 rows; all eight characters full body facing the viewer with a slight three-quarter turn, identical camera, lighting, scale, feet baseline and head position. Each cell has generous transparent padding around hair and hands, no overlap into neighbors. Character height occupies about 85% of its cell; keep feet at exactly the same relative baseline. The eight poses in reading order:
+0 relaxed friendly neutral, both arms down and eyes open;
+1 identical to 0 but eyes gently closed for one blink;
+2 friendly small wave: right hand up beside face, palm facing visitor;
+3 identical to 2 but hand angled slightly outward, same arm and body for a wave loop;
+4 pleased smile with hands relaxed near belt, listening attentively;
+5 playful held-in-air pose, arms a little out and feet dangling, same overall scale;
+6 thoughtful: one gloved hand resting below chin, eyes looking slightly up;
+7 same thoughtful pose but gaze toward viewer, slight smile.
+Polished original-show-like 3D cartoon shading, clean readable silhouette and bright cyan hair edge highlights, sharp enough for a small 100px website mascot. No ground, no stage, no background, no checkerboard, no shadows outside the character, no scenery, no tools, no text, no labels, no grid lines, no panel borders, no watermark. Actual transparent alpha background throughout all gutters and behind every character.

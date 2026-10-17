@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 import { sendChatMessage } from '@/lib/chatActions'
+import { MurvachchaMascot } from './MurvachchaMascot'
+import { useAssistantPosition } from './useAssistantPosition'
 import {
   botName,
   MAX_MESSAGE_CHARS,
@@ -31,11 +33,6 @@ import {
  */
 
 const AVATAR = '/images/murvatcha.jpg'
-
-/** Above the pill nav, which sits 20px from the bottom and is 56px tall. */
-const LAUNCHER_BOTTOM = 96
-const LAUNCHER_SIZE = 56
-const PANEL_BOTTOM = LAUNCHER_BOTTOM + LAUNCHER_SIZE + 12
 
 /** How long the typing indicator runs before a message appears. */
 const TYPING_MS = 1000
@@ -230,6 +227,7 @@ export function ChatWidget() {
         send: 'Yuborish',
         typing: 'yozmoqda…',
         today: 'Bugun',
+        move: "Joyini o'zgartirish uchun sudrang yoki Alt va yo'nalish tugmalarini bosing. Home tugmasi boshlang'ich joyiga qaytaradi.",
       }
     : {
         open: `Chat with ${name}`,
@@ -239,6 +237,7 @@ export function ChatWidget() {
         send: 'Send',
         typing: 'typing…',
         today: 'Today',
+        move: 'Drag to move, or use Alt and the arrow keys. Press Home to return to the starting position.',
       }
 
   // All assistant copy comes from lib/botMessages.ts, keyed by route.
@@ -275,6 +274,7 @@ export function ChatWidget() {
   const inputRef = useRef<HTMLInputElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const greetedRoute = useRef(pathname)
+  const assistantPosition = useAssistantPosition()
 
   /**
    * Clearing this in an effect would be too late: the panel's first render
@@ -372,6 +372,7 @@ export function ChatWidget() {
   function close() {
     setOpen(false)
     setTeaser(null)
+    assistantPosition.launcherRef.current?.focus({ preventScroll: true })
     // Re-opening should type the greeting out again rather than showing a
     // stale one instantly.
     if (!hasSent) {
@@ -479,12 +480,12 @@ export function ChatWidget() {
     <>
       {open && (
         <div
+          id="murvachcha-chat-panel"
           role="dialog"
-          aria-label={name}
-          className="fixed right-4 z-[60] flex w-[min(calc(100vw-2rem),23rem)] flex-col overflow-hidden border shadow-2xl"
+          aria-labelledby="murvachcha-chat-title"
+          className="fixed z-[61] flex flex-col overflow-y-auto border shadow-2xl"
           style={{
-            bottom: PANEL_BOTTOM,
-            height: 'min(30rem, calc(100vh - 14rem))',
+            ...assistantPosition.panelStyle,
             borderColor: 'var(--border)',
             borderRadius: '12px',
             backgroundColor: 'var(--card)',
@@ -497,7 +498,7 @@ export function ChatWidget() {
           >
             <Avatar size={38} name={name} />
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold leading-tight">{name}</p>
+              <p id="murvachcha-chat-title" className="truncate text-sm font-semibold leading-tight">{name}</p>
               <p className="truncate text-xs leading-tight text-muted-foreground">
                 {busy ? t.typing : t.status}
               </p>
@@ -517,7 +518,7 @@ export function ChatWidget() {
               both the light and the dark surface. */}
           <div
             ref={scrollRef}
-            className="flex-1 space-y-1.5 overflow-y-auto px-3 py-3"
+            className="min-h-16 flex-1 space-y-1.5 overflow-y-auto px-3 py-3"
             style={{
               backgroundColor: 'var(--secondary)',
               backgroundImage: 'radial-gradient(rgba(128,128,128,0.18) 1px, transparent 1px)',
@@ -727,9 +728,10 @@ export function ChatWidget() {
       {/* Proactive teaser: a card beside the launcher, panel still shut. */}
       {teaser && !open && (
         <div
-          className="murvatcha-teaser fixed right-4 z-[60] flex w-[min(calc(100vw-2rem),17rem)] gap-2.5 border p-3 shadow-2xl"
+          ref={assistantPosition.teaserRef}
+          className="murvatcha-teaser fixed z-[61] flex gap-2.5 border p-3 shadow-2xl"
           style={{
-            bottom: LAUNCHER_BOTTOM + LAUNCHER_SIZE + 12,
+            ...assistantPosition.teaserStyle,
             borderColor: 'var(--border)',
             backgroundColor: 'var(--card)',
             borderRadius: '14px',
@@ -761,22 +763,33 @@ export function ChatWidget() {
       )}
 
       <button
+        ref={assistantPosition.launcherRef}
         type="button"
-        onClick={() => (open ? close() : setOpen(true))}
+        onClick={(event) => {
+          if (!assistantPosition.shouldHandleClick(event)) return
+          if (open) close()
+          else setOpen(true)
+        }}
+        onPointerDown={assistantPosition.onPointerDown}
+        onPointerMove={assistantPosition.onPointerMove}
+        onPointerUp={assistantPosition.onPointerUp}
+        onPointerCancel={assistantPosition.onPointerCancel}
+        onLostPointerCapture={assistantPosition.onLostPointerCapture}
+        onKeyDown={assistantPosition.onKeyDown}
+        onDragStart={(event) => event.preventDefault()}
         aria-label={open ? t.close : t.open}
         aria-expanded={open}
-        className="murvatcha-launcher fixed right-4 z-[60] overflow-hidden shadow-lg"
-        style={{
-          bottom: LAUNCHER_BOTTOM,
-          width: LAUNCHER_SIZE,
-          height: LAUNCHER_SIZE,
-          borderRadius: '50%',
-          border: '2px solid var(--accent)',
-          backgroundColor: 'var(--card)',
-        }}
+        aria-controls="murvachcha-chat-panel"
+        aria-describedby="murvachcha-move-instructions"
+        aria-keyshortcuts="Alt+ArrowLeft Alt+ArrowRight Alt+ArrowUp Alt+ArrowDown Home"
+        className="murvachcha-control fixed z-[60]"
+        style={assistantPosition.launcherStyle}
+        data-dragging={assistantPosition.dragging || undefined}
+        data-side={assistantPosition.side}
       >
-        <Avatar size={LAUNCHER_SIZE - 4} name={name} />
+        <MurvachchaMascot state={assistantPosition.dragging ? 'dragging' : busy ? 'thinking' : open ? 'listening' : 'idle'} />
       </button>
+      <span id="murvachcha-move-instructions" className="sr-only">{t.move}</span>
     </>
   )
 }

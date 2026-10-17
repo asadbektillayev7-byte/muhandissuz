@@ -170,51 +170,139 @@ body {
   }
 }
 
-/* Chat launcher, option A: a calm idle loop so the closed bubble reads as
-   alive without ever looking busy. The glow sits on a pseudo-element behind
-   the button, because animating a shadow on the scaling element makes the
-   blur shimmer with the scale. */
-@keyframes murvatcha-breathe {
-  0%, 100% { transform: scale(1) rotate(-1.2deg); }
-  50%      { transform: scale(1.045) rotate(1.2deg); }
+/* Murvachcha is a small character, with a stable hit target around its motion.
+   Only the inner sprite moves; dragging the control never fights a transform. */
+.murvachcha-control {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  background: transparent;
+  color: var(--foreground);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
-
-@keyframes murvatcha-glow {
-  0%   { box-shadow: 0 0 10px 2px rgba(59, 130, 246, 0.55); }
-  33%  { box-shadow: 0 0 16px 5px rgba(34, 211, 238, 0.55); }
-  66%  { box-shadow: 0 0 13px 3px rgba(74, 222, 128, 0.45); }
-  100% { box-shadow: 0 0 10px 2px rgba(59, 130, 246, 0.55); }
+.murvachcha-control:active { cursor: grabbing; }
+.murvachcha-control:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  background: color-mix(in srgb, var(--card) 65%, transparent);
 }
-
-.murvatcha-launcher {
-  animation: murvatcha-breathe 3s ease-in-out infinite;
+.murvachcha-mascot {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  isolation: isolate;
 }
-
-.murvatcha-launcher::after {
-  content: '';
+.murvachcha-source {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.murvachcha-shadow {
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  bottom: 3%;
+  height: 7%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgb(15 80 110 / 22%), transparent 70%);
+  animation: murvachcha-shadow 4.8s ease-in-out infinite;
+}
+.dark .murvachcha-shadow { background: radial-gradient(ellipse, rgb(67 201 255 / 28%), transparent 70%); }
+.murvachcha-body {
   position: absolute;
   inset: 0;
+  display: block;
+  transform-origin: 50% 88%;
+  filter: drop-shadow(0 3px 3px rgb(4 66 100 / 18%));
+  animation: murvachcha-idle 4.8s ease-in-out infinite;
+}
+.dark .murvachcha-body { filter: drop-shadow(0 0 5px rgb(60 199 255 / 24%)); }
+.murvachcha-sprite {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: url('/images/murvachcha-sprites.webp') 0 0 / 400% 200% no-repeat;
+  animation: murvachcha-blink 6.6s steps(1, end) infinite;
+}
+.murvachcha-fallback {
+  position: absolute;
+  width: 72%;
+  height: auto;
+  aspect-ratio: 1;
+  left: 14%;
+  top: 14%;
   border-radius: 50%;
-  pointer-events: none;
-  /* Deliberately a different period from the breathing, so the two never
-     settle into one obvious beat. */
-  animation: murvatcha-glow 4.5s ease-in-out infinite;
+  border: 2px solid var(--accent);
 }
-
-/* The teaser slides up rather than appearing, so the eye follows it. */
+@keyframes murvachcha-idle {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-3px) rotate(1deg); }
+}
+@keyframes murvachcha-shadow {
+  0%, 100% { transform: scaleX(1); opacity: .8; }
+  50% { transform: scaleX(.88); opacity: .55; }
+}
+@keyframes murvachcha-blink {
+  0%, 42%, 46%, 100% { background-position: 0 0; }
+  43%, 45% { background-position: 33.333333% 0; }
+}
+@keyframes murvachcha-wave {
+  0%, 100% { background-position: 66.666667% 0; }
+  50% { background-position: 100% 0; }
+}
+@keyframes murvachcha-greet {
+  0%, 100% { transform: translateY(-3px) rotate(-2deg); }
+  50% { transform: translateY(-5px) rotate(2deg); }
+}
+@keyframes murvachcha-think {
+  0%, 74%, 100% { background-position: 66.666667% 100%; }
+  75%, 92% { background-position: 100% 100%; }
+}
+.murvachcha-mascot[data-state="listening"] .murvachcha-sprite {
+  animation: none;
+  background-position: 0 100%;
+}
+.murvachcha-mascot[data-state="thinking"] .murvachcha-sprite {
+  animation: murvachcha-think 4.2s steps(1, end) infinite;
+  background-position: 66.666667% 100%;
+}
+@media (hover: hover) {
+  .murvachcha-control:hover .murvachcha-mascot:is([data-state="idle"], [data-state="listening"]) .murvachcha-sprite {
+    animation: murvachcha-wave .65s steps(1, end) 3;
+    background-position: 66.666667% 0;
+  }
+  .murvachcha-control:hover .murvachcha-body { animation: murvachcha-greet 1.3s ease-in-out 2; }
+}
+.murvachcha-control:focus-visible .murvachcha-mascot[data-state="idle"] .murvachcha-sprite {
+  animation: murvachcha-wave .65s steps(1, end) 3;
+  background-position: 66.666667% 0;
+}
+.murvachcha-mascot[data-state="dragging"] .murvachcha-body {
+  animation: none;
+  transform: translateY(-5px) rotate(-6deg) scale(1.04);
+}
+.murvachcha-mascot[data-state="dragging"] .murvachcha-sprite {
+  animation: none;
+  background-position: 33.333333% 100%;
+}
+.murvachcha-mascot[data-state="dragging"] .murvachcha-shadow { opacity: 0; animation: none; }
+.murvachcha-mascot[data-paused="true"] * { animation-play-state: paused !important; }
 @keyframes murvatcha-teaser-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-.murvatcha-teaser {
-  animation: murvatcha-teaser-in 0.28s ease-out both;
-}
-
+.murvatcha-teaser { animation: murvatcha-teaser-in .25s ease-out both; }
 @media (prefers-reduced-motion: reduce) {
-  .murvatcha-launcher,
-  .murvatcha-launcher::after,
-  .murvatcha-teaser {
+  .murvachcha-mascot *, .murvatcha-teaser {
     animation: none !important;
     transform: none !important;
   }
