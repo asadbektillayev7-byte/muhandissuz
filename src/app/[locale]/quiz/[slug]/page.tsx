@@ -5,6 +5,8 @@ import { effectiveDuration } from '@/lib/quiz'
 import { getQuizBySlug, getQuizQuestions, getQuizArticles } from '@/lib/supabase/quiz-queries'
 import { DifficultyBadge } from '@/components/quiz/DifficultyBadge'
 import { CategoryChip } from '@/components/quiz/CategoryChip'
+import { QuizThumbnail } from '@/components/quiz/QuizThumbnail'
+import styles from '@/components/quiz/quiz-player.module.css'
 import { QuizRunner } from '../QuizRunner'
 
 // Public content: served from cache and rebuilt in the background, so a
@@ -37,25 +39,30 @@ export default async function QuizDetailPage({
   const description = field(quiz, 'description', locale)
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
-      <Link href={`/${locale}/quiz`} className="text-sm text-muted-foreground hover:text-chart-2">
+    <div className={styles.page}>
+      <Link href={`/${locale}/quiz`} className={styles.backLink}>
         {t.back}
       </Link>
 
-      <header className="mb-8 mt-4">
-        <div className="mb-3 flex flex-wrap items-center gap-2">
-          {quiz.categories && (
-            <CategoryChip as="span" label={field(quiz.categories, 'name', locale)} />
-          )}
-          <DifficultyBadge difficulty={quiz.difficulty} locale={locale} />
+      <header className={styles.detailHeader}>
+        <div>
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            {quiz.categories && (
+              <CategoryChip as="span" label={field(quiz.categories, 'name', locale)} />
+            )}
+            <DifficultyBadge difficulty={quiz.difficulty} locale={locale} />
+          </div>
+
+          <h1 className={styles.detailTitle}>{title}</h1>
+          {description && <p className={styles.detailDescription}>{description}</p>}
+
+          <p className={styles.detailMeta}>
+            {questions.length} {t.q} · {effectiveDuration(quiz, questions.length)} {t.min}
+          </p>
         </div>
-
-        <h1 className="text-3xl font-bold leading-tight">{title}</h1>
-        {description && <p className="mt-3 text-muted-foreground">{description}</p>}
-
-        <p className="mt-3 text-sm text-muted-foreground">
-          {questions.length} {t.q} · {effectiveDuration(quiz, questions.length)} {t.min}
-        </p>
+        <div className={styles.detailArt} aria-hidden="true">
+          <QuizThumbnail src={quiz.thumbnail_url} alt="" category={quiz.categories?.slug} className="aspect-square" />
+        </div>
       </header>
 
       {questions.length > 0 ? (
@@ -67,8 +74,8 @@ export default async function QuizDetailPage({
       )}
 
       {articles.length > 0 && (
-        <section className="mt-10">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+        <section className={styles.reading}>
+          <h2 className={styles.readingTitle}>
             {t.based}
           </h2>
           <ul className="space-y-2">
@@ -76,9 +83,9 @@ export default async function QuizDetailPage({
               <li key={a.id}>
                 <Link
                   href={`/${locale}/articles/${a.slug}`}
-                  className="text-sm text-chart-2 hover:underline"
+                  className={styles.articleLink}
                 >
-                  {field(a, 'title', locale)}
+                  <span>{field(a, 'title', locale)}</span><span aria-hidden="true">↗</span>
                 </Link>
               </li>
             ))}
