@@ -6,20 +6,20 @@ import { effectiveDuration, type QuizWithMeta } from '@/lib/quiz'
 import { DifficultyBadge } from './DifficultyBadge'
 import { CategoryChip } from './CategoryChip'
 import { QuizThumbnail } from './QuizThumbnail'
-import { surface } from './surface'
+import styles from './quiz-art.module.css'
 
 export function FeaturedQuiz({ quiz, locale }: { quiz: QuizWithMeta; locale: string }) {
   const t =
     locale === 'uz'
       ? {
-          eyebrow: 'TANLANGAN QUIZ',
+          eyebrow: 'MURVACHCHA TAVSIYASI',
           q: 'savol',
           min: 'daqiqa',
           based: (n: number) => `${n} ta Muhandiss maqolasi asosida`,
           start: 'Boshlash',
         }
       : {
-          eyebrow: 'FEATURED QUIZ',
+          eyebrow: 'MURVACHCHA’S PICK',
           q: 'questions',
           min: 'minutes',
           based: (n: number) => `Based on ${n} Muhandiss article${n === 1 ? '' : 's'}`,
@@ -33,11 +33,10 @@ export function FeaturedQuiz({ quiz, locale }: { quiz: QuizWithMeta; locale: str
   return (
     <Link
       href={`/${locale}/quiz/${quiz.slug}`}
-      className="group grid gap-0 overflow-hidden border border-border bg-card transition-colors duration-150 hover:border-chart-2 md:grid-cols-[1.15fr_1fr]"
-      style={{ borderRadius: 20, ...surface }}
+      className={`group ${styles.featured}`}
     >
       <div className="flex flex-col justify-center p-6 md:p-8">
-        <p className="text-xs font-medium tracking-widest text-muted-foreground">{t.eyebrow}</p>
+        <p className={`${styles.eyebrow} text-[11px] font-bold tracking-widest`}>{t.eyebrow}</p>
 
         <h2 className="mt-3 text-2xl font-bold leading-tight md:text-3xl">{title}</h2>
 
@@ -58,16 +57,15 @@ export function FeaturedQuiz({ quiz, locale }: { quiz: QuizWithMeta; locale: str
         </div>
 
         <span
-          className="mt-6 inline-flex w-max items-center gap-2 bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-opacity duration-150 group-hover:opacity-90"
-          style={{ borderRadius: 999 }}
+          className={`${styles.start} mt-6 text-sm font-semibold`}
         >
           {t.start}
           <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-0.5">→</span>
         </span>
       </div>
 
-      <div className="min-h-[220px] md:min-h-full">
-        <QuizThumbnail src={quiz.thumbnail_url} alt={title} category={quiz.categories?.slug} className="h-full min-h-[220px]" />
+      <div className={styles.featuredVisual}>
+        <QuizThumbnail src={quiz.thumbnail_url} alt={title} category={quiz.categories?.slug} className="h-full" featured locale={locale} />
       </div>
     </Link>
   )
