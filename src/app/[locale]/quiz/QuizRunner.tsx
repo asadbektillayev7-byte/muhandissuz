@@ -19,6 +19,15 @@ type Question = {
   explanation_en: string | null
 }
 
+// Deterministic trajectories keep the burst light and hydration-safe.
+const confettiPieces = Array.from({ length: 20 }, (_, i) => ({
+  '--confetti-x': `${(i * 47) % 260 - 65}px`,
+  '--confetti-rise': `${-70 - (i * 31) % 100}px`,
+  '--confetti-spin': `${(i % 2 ? 1 : -1) * (180 + i * 29)}deg`,
+  '--confetti-delay': `${(i % 5) * 35}ms`,
+  '--confetti-colour': ['#a77bf3', '#e9b638', '#3bbda9', '#f58c83', '#64bde8'][i % 5],
+}) as CSSProperties)
+
 // Fall back to Uzbek when an English option list is missing or incomplete.
 function optionsFor(q: Question, locale: string): string[] {
   const uz = Array.isArray(q.options_uz) ? q.options_uz : []
@@ -84,12 +93,18 @@ export function QuizRunner({ questions, locale }: { questions: Question[]; local
 
   if (done) {
     const percent = Math.round((score / questions.length) * 100)
-    const encouragement = score === questions.length ? t.perfect : percent >= 50 ? t.good : t.learning
+    const perfect = score === questions.length
+    const encouragement = perfect ? t.perfect : percent >= 50 ? t.good : t.learning
     return (
       <section ref={player} className={`${styles.player} ${styles.result}`} aria-labelledby={titleId}>
         <div className={styles.resultTop}>
           <p className={styles.eyebrow}><span aria-hidden="true">✦</span> {t.result}</p>
           <div className={styles.scoreScene}>
+            {perfect && (
+              <span className={styles.confetti} aria-hidden="true">
+                {confettiPieces.map((style, i) => <span key={i} style={style} />)}
+              </span>
+            )}
             <span className={styles.resultSpark} aria-hidden="true">✦</span>
             <div className={styles.scoreRing} style={{ '--score-angle': `${percent * 3.6}deg` } as CSSProperties}>
               <div className={styles.scoreCentre}>
@@ -97,7 +112,7 @@ export function QuizRunner({ questions, locale }: { questions: Question[]; local
                 <p className={styles.scoreLabel}>{t.correctTotal}</p>
               </div>
             </div>
-            <span className={styles.resultMascot}><MurvachchaMascot state="greeting" /></span>
+            <span className={`${styles.resultMascot} ${perfect ? styles.celebrating : ''}`}><MurvachchaMascot state="greeting" /></span>
             <span className={styles.resultSparkSmall} aria-hidden="true">✦</span>
           </div>
           <h2 ref={heading} id={titleId} tabIndex={-1} className={styles.resultTitle}>{encouragement}</h2>
