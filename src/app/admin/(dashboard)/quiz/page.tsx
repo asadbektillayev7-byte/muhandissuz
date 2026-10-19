@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { DeleteButton } from '../DeleteButton'
-import { DIFFICULTY_LABELS, type Difficulty } from '@/lib/quiz'
 
 export default async function AdminQuizzesPage() {
   const supabase = await createClient()
@@ -25,7 +24,6 @@ export default async function AdminQuizzesPage() {
             <tr className="border-b border-border bg-muted/50">
               <th className="text-left p-3">Title</th>
               <th className="text-left p-3">Category</th>
-              <th className="text-left p-3">Difficulty</th>
               <th className="text-left p-3">Questions</th>
               <th className="text-left p-3">Articles</th>
               <th className="text-left p-3">Status</th>
@@ -44,14 +42,12 @@ export default async function AdminQuizzesPage() {
                   )}
                 </td>
                 <td className="p-3 text-muted-foreground">{q.categories?.name_uz || '—'}</td>
-                <td className="p-3 text-muted-foreground">
-                  {DIFFICULTY_LABELS[q.difficulty as Difficulty]?.en ?? q.difficulty}
-                </td>
                 <td className="p-3 text-muted-foreground">{count(q.quiz_questions)}</td>
                 <td className="p-3 text-muted-foreground">{count(q.quiz_articles)}</td>
                 <td className="p-3 text-muted-foreground">{q.published ? 'Published' : 'Draft'}</td>
                 <td className="p-3 text-right">
                   <div className="flex items-center justify-end gap-2">
+                    <Link href={`/admin/quiz/${q.id}/preview`} target="_blank" rel="noopener noreferrer" className="text-chart-2 hover:underline text-xs">Ko‘rish / Preview</Link>
                     <Link href={`/admin/quiz/${q.id}`} className="text-chart-2 hover:underline text-xs">Edit</Link>
                     <DeleteButton table="quizzes" id={q.id} redirect="/admin/quiz" />
                   </div>
@@ -60,7 +56,7 @@ export default async function AdminQuizzesPage() {
             ))}
             {!quizzes?.length && (
               <tr>
-                <td colSpan={7} className="p-6 text-center text-muted-foreground text-sm">
+                <td colSpan={6} className="p-6 text-center text-muted-foreground text-sm">
                   No quizzes yet. Click <span className="font-medium">+ New</span> to create one.
                 </td>
               </tr>

@@ -1,0 +1,751 @@
+[
+  {
+    "article_id": 35,
+    "article_slug": "atrof-muhit-muhandisligi",
+    "source_title": "Atrof-muhit muhandisligi nima?",
+    "source_sha256": "177b9481c923c55105b6a37e67d93d2ec51eab973028e23cc52f3ff3e9f5a45d",
+    "slug": "maqola-atrof-muhit-muhandisligi",
+    "category_slug": "environmental-engineering",
+    "title_uz": "Atrof-muhit muhandisi qanday muammolarni hal qiladi?",
+    "title_en": "What problems do environmental engineers solve?",
+    "description_uz": "Havo, suv va tuproqni asrash uchun muhandislar qanday yechimlar yaratishini 4 savolda tekshiring.",
+    "description_en": "Explore how engineers protect air, water and soil with 4 questions.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Atrof-muhit muhandisligining asosiy maqsadi nima?",
+        "question_en": "What is the main aim of environmental engineering?",
+        "options_uz": [
+          "Transport vositalarining tezligini oshirish",
+          "Binolarning ko‘rinishini yangilash",
+          "Atrof-muhit va aholi salomatligini muhofaza qilish",
+          "Ishlab chiqarish hajmini rejalashtirish"
+        ],
+        "options_en": [
+          "Increasing vehicle speeds",
+          "Updating the appearance of buildings",
+          "Protecting the environment and public health",
+          "Planning production volumes"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Bu soha ifloslanish va chiqindilar bilan bog‘liq muammolarga yechim yaratadi. Maqsad — atrof-muhit sifatini va inson salomatligini yaxshilash.",
+        "explanation_en": "The field develops solutions to pollution and waste problems. Its aim is to improve environmental quality and human health.",
+        "evidence": {
+          "quote": "Atrof-muhit muhandisligi aholi salomatligini muhofaza qilish va atrof-muhit sifatini yaxshilashda",
+          "learning_objective": "Identify the purpose of environmental engineering."
+        }
+      },
+      {
+        "question_uz": "Zavod oqova suvini xavfsiz chiqarishni rejalashtirmoqda. Qaysi loyiha shu muammoga bevosita mos keladi?",
+        "question_en": "A factory plans to discharge its wastewater safely. Which project directly addresses this problem?",
+        "options_uz": [
+          "Oqova suvni tozalash tizimini loyihalash",
+          "Tutun tarkibini o‘lchash tizimini loyihalash",
+          "Qattiq chiqindilarni saralash joyini loyihalash",
+          "Ifloslangan tuproqni tozalash rejasini tuzish"
+        ],
+        "options_en": [
+          "Designing a wastewater treatment system",
+          "Designing a system to measure smoke composition",
+          "Designing a solid waste sorting area",
+          "Planning the cleanup of contaminated soil"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Oqova suvlarni tozalash va ularning xavfsiz chiqarilishini nazorat qilish atrof-muhit muhandisligining vazifalaridan biridir.",
+        "explanation_en": "Treating wastewater and controlling its safe disposal are responsibilities of environmental engineering.",
+        "evidence": {
+          "quote": "Oqova suvlar – oqova suvlarni tozalash va xavfsiz utilizatsiya nazorati.",
+          "learning_objective": "Match wastewater treatment to an environmental problem."
+        }
+      },
+      {
+        "question_uz": "Yangi tozalash tizimini qurishdan oldin uning ishini baholashda maqolada qaysi vositalar tavsiya etilgan?",
+        "question_en": "Which tools does the article describe for assessing a treatment system before it is built?",
+        "options_uz": [
+          "Qurilish muddati va ishchilar jadvali",
+          "Uskuna narxlari va yetkazib berish sanalari",
+          "Mahsulot reklamasi va xaridorlar so‘rovlari",
+          "Matematik modellashtirish va kompyuter tahlili"
+        ],
+        "options_en": [
+          "Construction timelines and staffing schedules",
+          "Equipment prices and delivery dates",
+          "Product advertisements and customer surveys",
+          "Mathematical modelling and computer analysis"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Matematik modellar va kompyuter tahlili zarur tizimlarni baholash hamda loyihalashga yordam beradi.",
+        "explanation_en": "Mathematical models and computer analysis help engineers assess and design the required systems.",
+        "evidence": {
+          "quote": "Bunday vazifalar uchun zarur bo'lgan tizimlarni baholash va loyihalash uchun matematik modellashtirish va kompyuter tahlili keng qo'llaniladi.",
+          "learning_objective": "Recognise modelling as a design and assessment tool."
+        }
+      },
+      {
+        "question_uz": "Maqolaga ko‘ra, allaqachon tarqalgan ifloslanishni o‘rganishda qaysi ish muhim?",
+        "question_en": "According to the article, which task matters when investigating pollution that has already been released?",
+        "options_uz": [
+          "Kelgusi yillardagi ichimlik suviga talabni hisoblash",
+          "Ifloslanishni aniqlab, manbasini topish",
+          "Yangi suv tarmog‘i uchun quvur diametrlarini tanlash",
+          "Yomg‘ir suvi zaxirasi uchun idish sig‘imini rejalash"
+        ],
+        "options_en": [
+          "Forecasting demand for drinking water in future years",
+          "Detecting the pollution and tracing its source",
+          "Selecting pipe diameters for a new water network",
+          "Planning tank capacity for a rainwater reserve"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Muhandislar mavjud ifloslanishni ham aniqlaydi va uning manbasini izlaydi. Keyin korxonalar bilan uning tarqalishini kamaytirish ustida ishlaydi.",
+        "explanation_en": "Engineers also detect existing pollution and trace its source. They then work with businesses to reduce its release.",
+        "evidence": {
+          "quote": "allaqachon chiqarilgan ifloslantiruvchi moddalarni aniqlaydi va ularni manbaga qaytaradi.",
+          "learning_objective": "Recognise that environmental work also addresses existing pollution."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 36,
+    "article_slug": "yashil-inshootlar-kelajagi-atrof-muhit-muhandisligi-arxitekturani-qanday-ozgartirmoqda",
+    "source_title": "Yashil inshootlar kelajagi: Atrof-muhit muhandisligi arxitekturani qanday o'zgartirmoqda?",
+    "source_sha256": "53e5bc4fa1ed45a2d7c8d2cddaa1b193962f0f4c01bde9d04e5b46a308f8e57c",
+    "slug": "maqola-yashil-inshootlar-kelajagi-atrof-muhit-muhandisligi-arxitekturani-qanday-ozgartirmoqda",
+    "category_slug": "environmental-engineering",
+    "title_uz": "Yashil binoning aqlli yechimlari",
+    "title_en": "Smart solutions for green buildings",
+    "description_uz": "Barqaror bino, hamkorlik, passiv dizayn va suvni tejash haqida 4 savol.",
+    "description_en": "Answer 4 questions on sustainable buildings, collaboration, passive design and saving water.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Barqaror arxitektura binoning atrof-muhitga ta’sirini qaysi davrda kamaytirishga intiladi?",
+        "question_en": "Over what period does sustainable architecture aim to reduce a building’s environmental impact?",
+        "options_uz": [
+          "Qurilish maydoni tayyorlanayotgan davrda",
+          "Binoning butun hayotiy davri davomida",
+          "Bino foydalanishga topshiriladigan kunda",
+          "Binoning tashqi ko‘rinishi tanlanayotganda"
+        ],
+        "options_en": [
+          "While the construction site is being prepared",
+          "Throughout the building’s entire life cycle",
+          "On the day the building opens",
+          "While the building’s appearance is being chosen"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Barqaror arxitektura loyihalash, qurilish va foydalanishni birgalikda hisobga oladi. Maqsad binoning butun hayoti davomida ta’sirni kamaytirishdir.",
+        "explanation_en": "Sustainable architecture considers design, construction and use together. It aims to reduce impacts throughout the building’s life.",
+        "evidence": {
+          "quote": "U binoning butun hayotiy davri davomida atrof-muhitga ta’sirini kamaytiradigan dizayni, qurilish usullari va materiallarini o‘z ichiga oladi.",
+          "learning_objective": "Understand the life-cycle approach to sustainable buildings."
+        }
+      },
+      {
+        "question_uz": "Arxitektor va muhandis loyihaning boshidan birga ishlasa, qanday foyda bor?",
+        "question_en": "What is a benefit of architects and engineers working together from the start?",
+        "options_uz": [
+          "Bino tayyor bo‘lgach, uning vazifasi tanlanadi",
+          "Energiya hisobi qurilish tugagunga qadar qoldiriladi",
+          "Materiallar faqat tashqi ko‘rinishiga qarab tanlanadi",
+          "Barqaror yechimlar dizayn va ishlashga boshidan kiritiladi"
+        ],
+        "options_en": [
+          "The building’s purpose is chosen after completion",
+          "Energy assessment is postponed until construction ends",
+          "Materials are selected only for their appearance",
+          "Sustainable solutions are built into design and operation from the start"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Erta hamkorlik barqaror yechimlarni binoning dizayni, qurilishi va ishlashiga uyg‘unlashtirishga yordam beradi.",
+        "explanation_en": "Early collaboration helps integrate sustainable solutions into the building’s design, construction and operation.",
+        "evidence": {
+          "quote": "Barqaror arxitektura arxitektor va muhandislarning loyihaning boshlanishidanoq birgalikda ishlashini talab qiladi.",
+          "learning_objective": "Explain why integrated design begins early."
+        }
+      },
+      {
+        "question_uz": "Maktab binosida mexanik sovitishga ehtiyojni kamaytirish uchun qaysi passiv yechim mos keladi?",
+        "question_en": "Which passive solution could help a school building rely less on mechanical cooling?",
+        "options_uz": [
+          "Tabiiy shamollatish va soya beruvchi elementlar",
+          "Kuchliroq konditsioner va qo‘shimcha ventilyatorlar",
+          "Kattaroq elektr generatori va zaxira batareyalar",
+          "Qo‘shimcha isitkich va avtomatik termostatlar"
+        ],
+        "options_en": [
+          "Natural ventilation and shading elements",
+          "A more powerful air conditioner and extra fans",
+          "A larger generator and backup batteries",
+          "Extra heaters and automatic thermostats"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Passiv dizayn tabiiy shamollatish va soyalash kabi yechimlardan foydalanadi. Ular mexanik tizimlarga bo‘lgan ehtiyojni kamaytirishga yordam beradi.",
+        "explanation_en": "Passive design uses features such as natural ventilation and shading. These can reduce reliance on mechanical systems.",
+        "evidence": {
+          "quote": "Bunga tabiiy ventilyatsiya, issiqlik massasi va soyali hududlar kiradi",
+          "learning_objective": "Apply passive design principles to a school building."
+        }
+      },
+      {
+        "question_uz": "Bino loyihasida suv isrofini kamaytirishga qaysi yechim yordam beradi?",
+        "question_en": "Which building design solution helps reduce water waste?",
+        "options_uz": [
+          "Suv bosimini oshirish va quvurlarni kengaytirish",
+          "Oynalarni kattalashtirish va yoritishni kuchaytirish",
+          "Yomg‘ir suvini yig‘ish va suvni qayta ishlatish",
+          "Shiftni balandlatish va tomni qayta bo‘yash"
+        ],
+        "options_en": [
+          "Increasing water pressure and widening pipes",
+          "Enlarging windows and adding brighter lighting",
+          "Collecting rainwater and reusing water",
+          "Raising ceilings and repainting the roof"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Maqolada yomg‘ir suvini yig‘ish va ishlatilgan suvni qayta ishlash suvni tejovchi yechimlar sifatida keltirilgan.",
+        "explanation_en": "The article identifies rainwater collection and water recycling as water-saving solutions.",
+        "evidence": {
+          "quote": "Yomg‘ir suvini yig‘ish, loyqa suvni qayta ishlash va samarali sanitariya tizimlari kabi innovatsion muhandislik yechimlari suv isrofini kamaytiradi",
+          "learning_objective": "Identify water-saving systems in buildings."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 37,
+    "article_slug": "suv-muammolari-va-atrof-muhit-muhandisligi-barqaror-kelajak-uchun-yangi-goyalar",
+    "source_title": "Suv muammolari va atrof-muhit muhandisligi: barqaror kelajak uchun yangi g'oyalar",
+    "source_sha256": "da6fb1bd9973f139b8445548f811073ceff5a5497d7b9ce551ca2cc66282ec31",
+    "slug": "maqola-suv-muammolari-va-atrof-muhit-muhandisligi-barqaror-kelajak-uchun-yangi-goyalar",
+    "category_slug": "environmental-engineering",
+    "title_uz": "Suvni asrash uchun qanday yechim tanlaysiz?",
+    "title_en": "Which solution would you choose to save water?",
+    "description_uz": "Suv tanqisligi, aqlli kuzatuv, sug‘orish va qayta foydalanish haqida 4 savol.",
+    "description_en": "Explore water scarcity, smart monitoring, irrigation and reuse in 4 questions.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Maqolaga ko‘ra, suv tanqisligini kuchaytiruvchi omillar qaysilar?",
+        "question_en": "According to the article, which factors make water scarcity worse?",
+        "options_uz": [
+          "Suvni tejash, qayta ishlash va nazorat qilish",
+          "Yomg‘ir suvini yig‘ish, saqlash va filtrlash",
+          "Tomchilatib sug‘orish, o‘lchash va rejalashtirish",
+          "Ifloslanish, ortiqcha iste’mol va iqlim o‘zgarishi"
+        ],
+        "options_en": [
+          "Saving, recycling and monitoring water",
+          "Collecting, storing and filtering rainwater",
+          "Drip irrigation, measurement and planning",
+          "Pollution, excessive use and climate change"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Ifloslanish, ortiqcha iste’mol va iqlim o‘zgarishi foydalanish mumkin bo‘lgan toza suv manbalariga bosimni oshiradi.",
+        "explanation_en": "Pollution, excessive use and climate change put pressure on accessible clean water resources.",
+        "evidence": {
+          "quote": "Bu holat ifloslanish, ortiqcha iste’mol va iqlim o‘zgarishi kabi omillar natijasida yuzaga keladi.",
+          "learning_objective": "Identify drivers of water scarcity."
+        }
+      },
+      {
+        "question_uz": "Suv oqimini doimiy kuzatib, isrofni kamaytirishga qaysi tizim mos?",
+        "question_en": "Which system is suited to monitoring water flow continuously and reducing waste?",
+        "options_uz": [
+          "Suvni kattaroq idishlarda saqlash tizimi",
+          "Sun’iy intellekt va ulangan qurilmalarga asoslangan tizim",
+          "Hisoblagichni oyda bir marta tekshirish tizimi",
+          "Suvni qo‘shimcha filtrlarda tozalash tizimi"
+        ],
+        "options_en": [
+          "A system that stores water in larger tanks",
+          "A system using AI and connected devices",
+          "A system that checks the meter once a month",
+          "A system that treats water with extra filters"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Sun’iy intellekt va IoT qurilmalari suv oqimini kuzatishga yordam beradi. Shu ma’lumotlar asosida isrofgarchilikning oldini olish mumkin.",
+        "explanation_en": "AI and connected IoT devices help monitor water flow. That information can be used to prevent waste.",
+        "evidence": {
+          "quote": "Sun’iy intellekt (AI) va internetga ulangan qurilmalar (IoT) yordamida suv oqimini kuzatish va isrofgarchilikning oldi olinadi.",
+          "learning_objective": "Connect smart monitoring with water conservation."
+        }
+      },
+      {
+        "question_uz": "Fermer ekinlarni sug‘orishda suvni tejamoqchi. Maqolada tilga olingan qaysi usul mos keladi?",
+        "question_en": "A farmer wants to save water while irrigating crops. Which method mentioned in the article fits this goal?",
+        "options_uz": [
+          "Ariqdagi suv oqimini oshirish",
+          "Sug‘orish vaqtini uzaytirish",
+          "Tomchilatib sug‘orishni qo‘llash",
+          "Dalaning hamma joyini suvga to‘ldirish"
+        ],
+        "options_en": [
+          "Increasing the flow in irrigation channels",
+          "Extending irrigation times",
+          "Using drip irrigation",
+          "Flooding the entire field"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Tomchilatib sug‘orish maqolada dehqonchilikda suvni tejashga yordam beruvchi usullardan biri sifatida berilgan.",
+        "explanation_en": "The article presents drip irrigation as a method that helps save water in farming.",
+        "evidence": {
+          "quote": "Dehqonchilikda suvni tejash uchun tomchilatib sug‘orish va gidroponika kabi zamonaviy usullar qo‘llaniladi.",
+          "learning_objective": "Select a water-saving irrigation method."
+        }
+      },
+      {
+        "question_uz": "Ishlatilgan suvdan yana foydalanish uchun qaysi ketma-ketlik to‘g‘ri?",
+        "question_en": "Which sequence is appropriate for reusing wastewater?",
+        "options_uz": [
+          "Suvni yig‘ish, tozalash, keyin mos maqsadda qayta ishlatish",
+          "Suvni yig‘ish, uzoq saqlash, keyin tozalamasdan tarqatish",
+          "Suvni yig‘ish, toza suvga aralashtirish, keyin tarqatish",
+          "Suvni yig‘ish, yopiq idishga ko‘chirish, keyin tarqatish"
+        ],
+        "options_en": [
+          "Collect it, treat it, then reuse it for a suitable purpose",
+          "Collect it, store it for a long time, then distribute it untreated",
+          "Collect it, mix it with clean water, then distribute it",
+          "Collect it, move it to a sealed container, then distribute it"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Maqolada ishlatilgan suvlarni tozalab, yana foydalanish imkonini beruvchi tizimlar tasvirlangan. Idishni almashtirish yoki aralashtirish tozalashning o‘rnini bosmaydi.",
+        "explanation_en": "The article describes systems that treat used water so it can be reused. Changing containers or diluting water does not replace treatment.",
+        "evidence": {
+          "quote": "Qishloq xo‘jaligi, sanoat va uy xo‘jaliklaridan chiqqan suvlarni tozalab, yana ishlatish imkonini beruvchi tizimlar yaratiladi.",
+          "learning_objective": "Understand treatment as a step in water reuse."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 38,
+    "article_slug": "chanqoq-dunyo-uchun-zamonaviy-muhandislik",
+    "source_title": "Chanqoq dunyo uchun zamonaviy muhandislik",
+    "source_sha256": "d6b41bf02ab08e1f1375bd714c2b17f400cf26156447ca8ff59a295b6c222afa",
+    "slug": "maqola-chanqoq-dunyo-uchun-zamonaviy-muhandislik",
+    "category_slug": "environmental-engineering",
+    "title_uz": "Aqlli suv tizimi qanday ishlaydi?",
+    "title_en": "How does a smart water system work?",
+    "description_uz": "Sensorlar, suv zaxiralari va tabiatga asoslangan yechimlar bo‘yicha 4 savol.",
+    "description_en": "Answer 4 questions about sensors, water storage and nature-based solutions.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Shahar suv quvurlaridagi sizib chiqishlarni erta aniqlamoqchi. Qaysi vosita eng mos?",
+        "question_en": "A city wants to detect water pipe leaks early. Which tool is the best fit?",
+        "options_uz": [
+          "IoT kuzatuv qurilmalari va aqlli hisoblagichlar",
+          "Kattaroq zaxira idishlari va suv omborlari",
+          "Yangi tozalash filtrlari va tindirish hovuzlari",
+          "Yomg‘ir yig‘uvchi tomlar va saqlash idishlari"
+        ],
+        "options_en": [
+          "IoT monitoring devices and smart meters",
+          "Larger reserve tanks and reservoirs",
+          "New treatment filters and settling ponds",
+          "Rain-collecting roofs and storage tanks"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Aqlli suv tizimlari oqimni kuzatish va sizib chiqishlarni aniqlash imkonini beradi. Sensor va hisoblagichlardan kelgan ma’lumotlar bu ishga yordam beradi.",
+        "explanation_en": "Smart water systems can monitor flow and detect leaks. Data from sensors and meters supports this work.",
+        "evidence": {
+          "quote": "Bu tizimlar suv oqimlarini kuzatib borish, qochqinlarni aniqlash va suv sifatini nazorat qilish imkonini beradi.",
+          "learning_objective": "Choose monitoring technology to detect leaks."
+        }
+      },
+      {
+        "question_uz": "Suv yig‘ish va saqlash tizimlarining asosiy foydasi nima?",
+        "question_en": "What is a main benefit of water collection and storage systems?",
+        "options_uz": [
+          "Suv tarkibidagi tuzni ajratib olish",
+          "Oqova suvdagi mikroblarni zararsizlantirish",
+          "Ortiqcha suvni keyin foydalanish uchun saqlash",
+          "Quvurdagi sizib chiqish joyini aniqlash"
+        ],
+        "options_en": [
+          "Removing salt dissolved in water",
+          "Disinfecting wastewater",
+          "Saving surplus water for later use",
+          "Locating a leak in a water pipe"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Yomg‘ir suvini yig‘ish va yer ostida saqlash kabi usullar ortiqcha suvni keyingi ehtiyojlar uchun zaxiralashga xizmat qiladi.",
+        "explanation_en": "Methods such as rainwater collection and underground storage preserve surplus water for later needs.",
+        "evidence": {
+          "quote": "Bu texnologiyalar ortiqcha suvni kelajakda foydalanish uchun saqlash imkonini beradi.",
+          "learning_objective": "Explain the purpose of water storage."
+        }
+      },
+      {
+        "question_uz": "Kuchli yomg‘irdan keyingi suv oqimini boshqarish uchun qaysi tabiatga asoslangan yechim mos?",
+        "question_en": "Which nature-based solution is suitable for managing runoff after heavy rain?",
+        "options_uz": [
+          "Maydonni suv o‘tkazmaydigan qoplama bilan yopish",
+          "Yomg‘ir suvini yig‘ish joylarini kichraytirish",
+          "Ko‘kalamzor hududlarni beton bilan almashtirish",
+          "Yashil tomlar va suv o‘tkazuvchan qoplamalar yaratish"
+        ],
+        "options_en": [
+          "Covering the area with an impermeable surface",
+          "Reducing the size of rainwater collection areas",
+          "Replacing planted areas with concrete",
+          "Creating green roofs and permeable surfaces"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Maqola yashil tomlar va suv o‘tkazuvchan qoplamalarni yomg‘ir oqimini boshqarishga yordam beruvchi yechimlar qatorida sanaydi.",
+        "explanation_en": "The article lists green roofs and permeable surfaces among solutions that help manage stormwater.",
+        "evidence": {
+          "quote": "suv o'tkazuvchan qoplamalar, yashil tomlar va bioswales kabi infratuzilmalar bo‘ron suvini boshqarish",
+          "learning_objective": "Apply nature-based approaches to stormwater management."
+        }
+      },
+      {
+        "question_uz": "Maqoladagi aqlli kanalizatsiya misolida sun’iy intellekt sensor ma’lumotlaridan nima uchun foydalanadi?",
+        "question_en": "In the article’s smart sewer example, what does AI use sensor data for?",
+        "options_uz": [
+          "Suv tarkibidagi tuzlarni bevosita ajratish uchun",
+          "Turli ob-havoda tizim ishlashini bashorat qilish uchun",
+          "Suv oqimini sensor o‘rniga bevosita o‘lchash uchun",
+          "Oqova suvni quvurlardan jismonan haydash uchun"
+        ],
+        "options_en": [
+          "To separate dissolved salts directly from the water",
+          "To predict system performance in different weather",
+          "To directly measure flow instead of a sensor",
+          "To physically pump wastewater through the pipes"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Sensorlar suv oqimi va chuqurligini o‘lchaydi. Sun’iy intellekt shu ma’lumotlarni tahlil qilib, turli ob-havoda kanalizatsiya qanday ishlashini bashorat qiladi.",
+        "explanation_en": "Sensors measure water flow and depth. AI analyses those measurements to predict how the sewer system will perform in different weather.",
+        "evidence": {
+          "quote": "Sun’iy intellekt (AI) esa turli ob-havo sharoitlarida kanalizatsiya tizimining ishlashini oldindan bashorat qilish uchun sensorlardan olingan ma’lumotlarni tahlil qiladi.",
+          "learning_objective": "Distinguish sensor measurement from AI prediction."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 39,
+    "article_slug": "chiqindidan-xazinaga-muhandislik-aylana-chiqindilari-tizimlari",
+    "source_title": "Chiqindidan xazinaga: muhandislik aylana chiqindilari tizimlari",
+    "source_sha256": "1cbd6f4a3550c75c5a7a13bc72d2cd909917f7ae39edd0ff85deda6fcb0a5d50",
+    "slug": "maqola-chiqindidan-xazinaga-muhandislik-aylana-chiqindilari-tizimlari",
+    "category_slug": "environmental-engineering",
+    "title_uz": "Chiqindidan yangi imkoniyatga",
+    "title_en": "Turning waste into new possibilities",
+    "description_uz": "Buyumlarni uzoqroq ishlatish, aqlli kuzatuv va chiqindidan energiya olish haqida 4 savol.",
+    "description_en": "Explore longer-lasting products, smart monitoring and energy from waste in 4 questions.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Qaysi qaror aylana iqtisodiyot g‘oyasiga mos keladi?",
+        "question_en": "Which decision fits the idea of a circular economy?",
+        "options_uz": [
+          "Buyumni ta’mirlash, qayta ishlatish yoki qayta ishlash",
+          "Buyumning qadoqlarini qalinroq qilish",
+          "Ishlaydigan jihozni har yili yangisiga almashtirish",
+          "Mahsulotni tezroq tashlash uchun arzonlashtirish"
+        ],
+        "options_en": [
+          "Repairing, reusing or recycling a product",
+          "Making product packaging thicker",
+          "Replacing working equipment every year",
+          "Making a product cheaper so it can be discarded sooner"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Aylana iqtisodiyot buyumlarning uzoqroq xizmat qilishi va resurslarning qayta ishlatilishiga intiladi. Ta’mirlash va qayta foydalanish shu yondashuvga mos.",
+        "explanation_en": "A circular economy aims to keep products useful for longer and reuse resources. Repair and reuse support that approach.",
+        "evidence": {
+          "quote": "har bir mahsulot uzoqroq xizmat qilishi, yana foydalanilishi yoki qayta ishlanishini ta’minlaydi.",
+          "learning_objective": "Apply circular economy principles to a product decision."
+        }
+      },
+      {
+        "question_uz": "Maqolada IoT qurilmalarining aylana iqtisodiyotdagi asosiy vazifasi qanday tushuntirilgan?",
+        "question_en": "How does the article describe the main role of IoT devices in a circular economy?",
+        "options_uz": [
+          "Mahsulotga oid yozuvlarni o‘zgarmas zanjirda saqlaydi",
+          "Tayyor ma’lumotlardan nosozlik vaqtini bashorat qiladi",
+          "Eskirgan qismlarni ajratib, yangilarini o‘rnatadi",
+          "Sensorlar orqali ma’lumot yig‘adi va ulashadi"
+        ],
+        "options_en": [
+          "They store product records in an unalterable chain",
+          "They predict failure timing from existing data",
+          "They remove worn components and install replacements",
+          "They collect and share data through sensors"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "IoT qurilmalari sensorlar va aloqa vositalari orqali ma’lumot yig‘adi, saqlaydi va ulashadi. Bu ma’lumot keyingi tahlilga asos bo‘ladi.",
+        "explanation_en": "IoT devices collect, store and share data using sensors and communication systems. The data provides a basis for further analysis.",
+        "evidence": {
+          "quote": "sensorlar, aloqa protokollari va ma’lumotlar bazalari orqali ma’lumot yig‘ish, saqlash va ulashishiga imkon beradi.",
+          "learning_objective": "Identify the information-gathering role of IoT."
+        }
+      },
+      {
+        "question_uz": "Kir yuvish mashinasi sensori detal eskirayotganini ko‘rsatdi. Chiqindini kamaytirish uchun qaysi harakat ma’qul?",
+        "question_en": "A washing machine sensor shows that a component is wearing out. Which action best supports reducing waste?",
+        "options_uz": [
+          "Mashina ishlayotgan bo‘lsa ham uni tashlash",
+          "Buzilishdan oldin kerakli detalni ta’mirlash",
+          "Mashinaning faqat tashqi qoplamasini yangilash",
+          "O‘lchovlarni o‘chirib, nosozlikni kutish"
+        ],
+        "options_en": [
+          "Discarding the machine while it still works",
+          "Repairing the affected component before failure",
+          "Replacing only the machine’s outer casing",
+          "Deleting the readings and waiting for failure"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Ma’lumotlar tahlili muammolarni oldindan ko‘rishga yordam beradi. Shunda mahsulotni buzilishidan oldin ta’mirlab, foydalanishda davom etish mumkin.",
+        "explanation_en": "Data analysis can help identify problems in advance. This makes it possible to repair a product before it fails and keep using it.",
+        "evidence": {
+          "quote": "mahsulotlar hali buzilmasdan avval ta’mirlab bo‘lishi mumkin.",
+          "learning_objective": "Apply predictive maintenance to extend product life."
+        }
+      },
+      {
+        "question_uz": "Blue Plains misolida biogazdan nima ishlab chiqariladi?",
+        "question_en": "In the Blue Plains example, what is produced using biogas?",
+        "options_uz": [
+          "Ichimlik suvi",
+          "Metall qotishmasi",
+          "Elektr energiyasi",
+          "Shisha mahsuloti"
+        ],
+        "options_en": [
+          "Drinking water",
+          "A metal alloy",
+          "Electrical energy",
+          "Glass products"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Maqoladagi inshoot biogazdan elektr energiyasi oladi. Bu chiqindini foydali resursga aylantirishga misol.",
+        "explanation_en": "The facility described in the article generates electricity from biogas. This is an example of turning waste into a useful resource.",
+        "evidence": {
+          "quote": "jarayonda hosil bo‘ladigan biogaz elektr energiyasiga aylantirilib",
+          "learning_objective": "Recognise energy recovery from waste-derived biogas."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 40,
+    "article_slug": "uglerodni-tutib-olish-va-saqlash-muhandislar-iqlim-ozgarishini-jilovlay-oladimi",
+    "source_title": "Uglerodni tutib olish va saqlash: Muhandislar iqlim o‘zgarishini jilovlay oladimi?",
+    "source_sha256": "f07789d7475e19d453b25454b529131c4bca1d895038e2ec4d1c9e496362e587",
+    "slug": "maqola-uglerodni-tutib-olish-va-saqlash-muhandislar-iqlim-ozgarishini-jilovlay-oladimi",
+    "category_slug": "environmental-engineering",
+    "title_uz": "CO₂ ni tutib olishdan saqlashgacha",
+    "title_en": "From capturing CO₂ to storing it",
+    "description_uz": "Uglerodni tutib olish bosqichlari, usullari va xavfsiz saqlash haqida 4 savol.",
+    "description_en": "Answer 4 questions about carbon capture stages, methods and safe storage.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "CCS jarayonining bosqichlari qaysi tartibda bajariladi?",
+        "question_en": "In which order do the stages of CCS take place?",
+        "options_uz": [
+          "CO₂ ni tashish, saqlash, keyin tutib olish",
+          "CO₂ ni tashish, tutib olish, keyin saqlash",
+          "CO₂ ni saqlash, tutib olish, keyin tashish",
+          "CO₂ ni tutib olish, tashish, keyin saqlash"
+        ],
+        "options_en": [
+          "Transport CO₂, store it, then capture it",
+          "Transport CO₂, capture it, then store it",
+          "Store CO₂, capture it, then transport it",
+          "Capture CO₂, transport it, then store it"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Avval CO₂ boshqa gazlardan ajratib olinadi, keyin saqlash joyiga tashiladi. Oxirida u chuqur yer osti qatlamlariga yuboriladi.",
+        "explanation_en": "First, CO₂ is separated from other gases and then transported to a storage site. Finally, it is injected into deep underground formations.",
+        "evidence": {
+          "quote": "CO₂ ni tutib olish, uni tashish va yer ostida chuqur qatlamlarda uzoq muddatga saqlash.",
+          "learning_objective": "Order the three stages of carbon capture and storage."
+        }
+      },
+      {
+        "question_uz": "Yonishdan keyingi tutib olish usulida CO₂ qayerdan ajratib olinadi?",
+        "question_en": "In post-combustion capture, where is CO₂ separated from?",
+        "options_uz": [
+          "Sovutish tizimidagi toza suvdan",
+          "Yoqilmagan yoqilg‘ining qattiq qismidan",
+          "Yoqilg‘i yongandan keyingi chiqindi gazlardan",
+          "Yer ostidagi mineral qatlamlardan"
+        ],
+        "options_en": [
+          "Clean water in the cooling system",
+          "The solid part of unburned fuel",
+          "Exhaust gases produced after fuel burns",
+          "Underground mineral formations"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Yonishdan keyingi usulda CO₂ yoqilg‘i yonishi natijasida hosil bo‘lgan chiqindi gazlar tarkibidan ajratiladi.",
+        "explanation_en": "Post-combustion capture separates CO₂ from the exhaust gases produced by burning fuel.",
+        "evidence": {
+          "quote": "Bunda CO₂ yoqilg‘i yonishi natijasida hosil bo‘lgan chiqindi gazlardan ajratib olinadi.",
+          "learning_objective": "Identify the gas stream used in post-combustion capture."
+        }
+      },
+      {
+        "question_uz": "Kislorod muhitida yoqish usulida oddiy havo o‘rniga nima ishlatiladi?",
+        "question_en": "What is used instead of ordinary air in oxy-fuel combustion?",
+        "options_uz": [
+          "Sovutilgan suv bug‘i",
+          "Deyarli sof kislorod",
+          "Siqilgan azot",
+          "Tozalangan biogaz"
+        ],
+        "options_en": [
+          "Cooled water vapour",
+          "Nearly pure oxygen",
+          "Compressed nitrogen",
+          "Purified biogas"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Bu usulda yoqilg‘i deyarli sof kislorodda yoqiladi. Hosil bo‘lgan gazda CO₂ ulushi yuqori bo‘lib, uni ajratish osonlashadi.",
+        "explanation_en": "The fuel is burned in nearly pure oxygen. The resulting gas has a higher concentration of CO₂, making separation easier.",
+        "evidence": {
+          "quote": "yoqilg‘i oddiy havo o‘rniga deyarli sof kislorod muhitida yoqiladi.",
+          "learning_objective": "Understand the distinguishing feature of oxy-fuel combustion."
+        }
+      },
+      {
+        "question_uz": "CO₂ yer ostiga yuborilgandan keyin nega uzoq muddat kuzatuv kerak?",
+        "question_en": "Why is long-term monitoring needed after CO₂ is stored underground?",
+        "options_uz": [
+          "CO₂ sizib chiqmayotganini nazorat qilish uchun",
+          "Gazni tashigan kemalarning yo‘nalishini tanlash uchun",
+          "Saqlash uchun sarflangan qurilish materiallarini hisoblash uchun",
+          "Gazni ajratishdan oldingi yoqilg‘i turini tanlash uchun"
+        ],
+        "options_en": [
+          "To check that the CO₂ is not leaking",
+          "To select routes for ships that transported the gas",
+          "To count the construction materials used at the storage site",
+          "To select the fuel type before the gas was captured"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Sizib chiqish saqlashning foydasini kamaytirishi va atrof-muhitga zarar yetkazishi mumkin. Shuning uchun saqlash joyining xavfsizligi uzoq muddat nazorat qilinadi.",
+        "explanation_en": "Leakage could reduce the benefits of storage and harm the environment. Storage safety therefore needs long-term monitoring.",
+        "evidence": {
+          "quote": "saqlangan CO₂ sizib chiqmasligini ta’minlash uchun uzoq muddatli monitoringni talab etadi.",
+          "learning_objective": "Explain why geological CO₂ storage needs monitoring."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 41,
+    "article_slug": "suv-tanqisligiga-qarshi-texnologik-yondashuv-yomgir-suvini-qayta-ishlatish",
+    "source_title": "Suv Tanqisligiga Qarshi Texnologik Yondashuv: Yomg‘ir Suvini Qayta Ishlatish",
+    "source_sha256": "a3aa714f981281d332f54c4cf03e216c16f72890d660577448f5aa278254e17b",
+    "slug": "maqola-suv-tanqisligiga-qarshi-texnologik-yondashuv-yomgir-suvini-qayta-ishlatish",
+    "category_slug": "environmental-engineering",
+    "title_uz": "Yomg‘ir suviga ikkinchi imkoniyat",
+    "title_en": "Giving rainwater a second use",
+    "description_uz": "Yomg‘ir suvini yig‘ish, ishlatish va xavfsiz tizim loyihalash haqida 4 savol.",
+    "description_en": "Explore rainwater collection, reuse and safe system design in 4 questions.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Shahar sharoitida yomg‘ir suvini yig‘ish tizimi suvni odatda qayerdan oladi?",
+        "question_en": "Where does an urban rainwater collection system usually gather water from?",
+        "options_uz": [
+          "Faqat yer ostidagi chuqur quduqlardan",
+          "Ichimlik suvi tarmog‘idagi asosiy quvurlardan",
+          "Tomlar, ayvonlar va hovlilardan oqib tushgan yomg‘irdan",
+          "Zavodlarning texnologik chiqindi oqimlaridan"
+        ],
+        "options_en": [
+          "Only from deep underground wells",
+          "From the main pipes of the drinking water network",
+          "From rain running off roofs, terraces and courtyards",
+          "From industrial wastewater streams"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Maqolada shahar tizimlari tomlar, ayvonlar, hovlilar va boshqa suv o‘tkazmaydigan yuzalardan oqib tushgan suvni yig‘ishi tushuntiriladi.",
+        "explanation_en": "The article explains that urban systems collect runoff from roofs, terraces, courtyards and other impermeable surfaces.",
+        "evidence": {
+          "quote": "tomlar, ayvonlar, hovlilar va boshqa suv o‘tkazmaydigan yuzalardan oqib tushadigan suvlarni",
+          "learning_objective": "Identify urban rainwater collection surfaces."
+        }
+      },
+      {
+        "question_uz": "Maqolada yig‘ilgan yomg‘ir suvidan foydalanishning qaysi yo‘li ko‘rsatilgan?",
+        "question_en": "Which use of collected rainwater is described in the article?",
+        "options_uz": [
+          "Filtrlashsiz ichimlik tayyorlash",
+          "Bog‘ni sug‘orish va uy tozalash",
+          "To‘g‘ridan to‘g‘ri oziq-ovqat ishlab chiqarish",
+          "Tozalamasdan umumiy ichimlik tarmog‘iga qo‘shish"
+        ],
+        "options_en": [
+          "Preparing drinks without filtration",
+          "Watering gardens and household cleaning",
+          "Using it directly in food production",
+          "Adding it untreated to the public drinking water supply"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Yig‘ilgan yomg‘ir suvi bog‘dorchilik va tozalash kabi ehtiyojlarga sarflanishi mumkin. Tizimni foydalanish maqsadiga mos va xavfsiz qilish muhim.",
+        "explanation_en": "Collected rainwater can serve needs such as gardening and cleaning. The system should be designed to be safe and suitable for its intended use.",
+        "evidence": {
+          "quote": "Zaxiralangan suv asosan hojatxona, kir yuvish, bog’dorchilik maqsadlarida va tozalash kabi uy ho’jalik maqsadlarida foydalaniladi.",
+          "learning_objective": "Identify suitable non-drinking uses described in the article."
+        }
+      },
+      {
+        "question_uz": "Maktab tomiga qancha yomg‘ir suvi tushishini dastlab hisoblash uchun qaysi ikki ma’lumot kerak?",
+        "question_en": "Which two inputs are needed for an initial estimate of how much rain falls onto a school roof?",
+        "options_uz": [
+          "Yog‘ingarchilik miqdori va suv yig‘uvchi tom maydoni",
+          "Binoning qavatlari va xonalarning joylashuvi",
+          "Nasos quvvati va filtrning o‘tkazish tezligi",
+          "Quvurlarning narxi va yetkazib berish muddati"
+        ],
+        "options_en": [
+          "Rainfall amounts and the roof collection area",
+          "The building’s floors and the layout of its rooms",
+          "Pump power and the filter’s flow capacity",
+          "Pipe prices and delivery times"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Yog‘ingarchilik miqdori va tom maydoni tomga tushishi mumkin bo‘lgan suv hajmini baholashga yordam beradi. Muhandislar bu ma’lumotlardan yig‘ish va zaxiralash tizimini rejalashda foydalanadi.",
+        "explanation_en": "Rainfall amounts and roof area help estimate the volume of rain falling on the roof. Engineers use these inputs when planning collection and storage systems.",
+        "evidence": {
+          "quote": "Yog’ingarchilik miqdori siklini va tomdagi suv yig‘ish maydonlarini tahlil qilishdan",
+          "learning_objective": "Select rainfall and collection area as inputs for an initial roof-water estimate."
+        }
+      },
+      {
+        "question_uz": "Yig‘ilgan suv bilan bog‘ni sug‘orishdan oldin tozalash qurilmasining vazifasi nima?",
+        "question_en": "What is the role of treatment equipment before collected water is used to irrigate a garden?",
+        "options_uz": [
+          "Bog‘dagi sug‘orish vaqtini belgilash",
+          "Suvni keyingi yomg‘irgacha saqlab turish",
+          "Tomdan oqayotgan suvni idishga yo‘naltirish",
+          "Suvdagi ifloslantiruvchi moddalarni kamaytirish"
+        ],
+        "options_en": [
+          "Setting the garden’s irrigation schedule",
+          "Storing water until the next rainfall",
+          "Directing roof runoff into the tank",
+          "Reducing contaminants in the water"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Tozalash qurilmalari yig‘ilgan suvdagi ifloslantiruvchi moddalarni tozalash uchun loyihalanadi. Bu suvdan xavfsiz foydalanishga yordam beradi.",
+        "explanation_en": "Treatment equipment is designed to remove contaminants from collected water. This supports safer use of the water.",
+        "evidence": {
+          "quote": "yig’ilgan suvdan ifloslantiruvchi moddalarni tozalashga mo’ljallangan tozalash qurilmalarini",
+          "learning_objective": "Explain the purpose of treating collected rainwater."
+        }
+      }
+    ]
+  }
+]

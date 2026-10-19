@@ -42,6 +42,7 @@ export async function getQuizBySlug(slug: string): Promise<QuizWithMeta | null> 
     .from('quizzes')
     .select(SELECT_WITH_META)
     .eq('slug', slug)
+    .eq('published', true)
     .maybeSingle()
   return data ? shape(data) : null
 }
@@ -50,8 +51,9 @@ export async function getQuizQuestions(quizId: number): Promise<QuizQuestion[]> 
   const supabase = createPublicClient()
   const { data } = await supabase
     .from('quiz_questions')
-    .select('*')
+    .select('*, quizzes!inner(published)')
     .eq('quiz_id', quizId)
+    .eq('quizzes.published', true)
     .order('sort_order')
   return (data ?? []) as QuizQuestion[]
 }
@@ -61,8 +63,9 @@ export async function getQuizArticles(quizId: number) {
   const supabase = createPublicClient()
   const { data } = await supabase
     .from('quiz_articles')
-    .select('articles(id, slug, title_uz, title_en, cover_image_url)')
+    .select('articles(id, slug, title_uz, title_en, cover_image_url), quizzes!inner(published)')
     .eq('quiz_id', quizId)
+    .eq('quizzes.published', true)
   return (data ?? []).map((r: any) => r.articles).filter(Boolean)
 }
 
@@ -71,8 +74,8 @@ export async function getQuizStats() {
   const supabase = createPublicClient()
   const [quizzes, questions, links, fields] = await Promise.all([
     supabase.from('quizzes').select('id', { count: 'exact', head: true }).eq('published', true),
-    supabase.from('quiz_questions').select('id', { count: 'exact', head: true }),
-    supabase.from('quiz_articles').select('article_id', { count: 'exact', head: true }),
+    supabase.from('quiz_questions').select('id, quizzes!inner(published)', { count: 'exact', head: true }).eq('quizzes.published', true),
+    supabase.from('quiz_articles').select('article_id, quizzes!inner(published)', { count: 'exact', head: true }).eq('quizzes.published', true),
     supabase.from('categories').select('id', { count: 'exact', head: true }),
   ])
   return {
@@ -89,8 +92,9 @@ export async function getQuizzesForArticles(articleIds: number[]): Promise<QuizW
   const supabase = createPublicClient()
   const { data: links } = await supabase
     .from('quiz_articles')
-    .select('quiz_id')
+    .select('quiz_id, quizzes!inner(published)')
     .in('article_id', articleIds)
+    .eq('quizzes.published', true)
   const ids = [...new Set((links ?? []).map((l: any) => l.quiz_id))]
   if (ids.length === 0) return []
 

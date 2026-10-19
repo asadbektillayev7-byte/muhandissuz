@@ -39,7 +39,17 @@ export default async function EditQuizPage({ params }: { params: Promise<{ id: s
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold mb-6">Edit Quiz</h1>
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6 max-w-2xl">
+          <h1 className="text-2xl font-bold">Edit Quiz</h1>
+          <Link href={`/admin/quiz/${id}/preview`} target="_blank" rel="noopener noreferrer" className="border border-border px-3 py-2 text-sm hover:bg-muted transition-colors" style={{ borderRadius: 'var(--radius)' }}>
+            Ko‘rib chiqish / Preview
+          </Link>
+        </div>
+        <p className="text-sm text-muted-foreground mb-4 max-w-2xl">
+          {quiz.published
+            ? 'Saytda ko‘rinadi / Published on the site.'
+            : 'Qoralama: faqat administrator ko‘radi. Savollarni tekshirgach nashr qiling. / Draft: only the administrator can review it. Publish after checking the questions.'}
+        </p>
         <div className="max-w-2xl border border-border p-6" style={{ borderRadius: 'var(--radius)' }}>
           <QuizMetaForm
             categories={categories || []}

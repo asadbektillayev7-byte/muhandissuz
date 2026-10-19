@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { field } from '@/lib/supabase/locale'
 import { effectiveDuration, type QuizWithMeta } from '@/lib/quiz'
-import { DifficultyBadge } from './DifficultyBadge'
 import { CategoryChip } from './CategoryChip'
 import { QuizThumbnail } from './QuizThumbnail'
 import styles from './quiz-art.module.css'
@@ -30,7 +29,6 @@ export function QuizCard({ quiz, locale }: { quiz: QuizWithMeta; locale: string 
           {quiz.categories && (
             <CategoryChip as="span" label={field(quiz.categories, 'name', locale)} />
           )}
-          <DifficultyBadge difficulty={quiz.difficulty} locale={locale} />
         </div>
 
         <h3 className="text-base font-semibold leading-snug">{title}</h3>

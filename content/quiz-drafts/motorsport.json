@@ -1,0 +1,644 @@
+[
+  {
+    "article_id": 30,
+    "article_slug": "nega-motorsport-muhandisligi-muhim",
+    "source_title": "Nega Motorsport Muhandisligi Muhim?",
+    "source_sha256": "0e52f0c1a81785d6392b33bc76b6b31cd5621f6a4cc0eeefddc3281280625adb",
+    "slug": "maqola-nega-motorsport-muhandisligi-muhim",
+    "category_slug": "motorsports-engineering",
+    "title_uz": "Motorsport texnologiyalari qanday yordam beradi?",
+    "title_en": "How do motorsport technologies help?",
+    "description_uz": "ABS, gibrid motor va energiyani qayta ishlatish haqida maqola asosidagi 4 savol.",
+    "description_en": "Four article-based questions about ABS, hybrid power and recovering energy.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Haydovchi keskin tormoz berganda ABS tizimining asosiy vazifasi nima?",
+        "question_en": "What is the main job of ABS when a driver brakes hard?",
+        "options_uz": [
+          "G‘ildiraklarning qulflanib qolishiga yo‘l qo‘ymaslik",
+          "Tezlanishda dvigatel quvvatini oshirish",
+          "Shinalardagi havo bosimini oshirish",
+          "Burilishda avtomobilni yerga kuchliroq bosish"
+        ],
+        "options_en": [
+          "Preventing the wheels from locking",
+          "Increasing engine power during acceleration",
+          "Increasing the air pressure in the tyres",
+          "Pushing the car harder against the road in a corner"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "ABS tormozlash paytida g‘ildiraklarning qulflanishini cheklaydi. Bu haydovchiga boshqaruvni saqlashga yordam beradi.",
+        "explanation_en": "ABS limits wheel locking during braking. This helps the driver retain steering control.",
+        "evidence": {
+          "quote": "ABS — bu tormoz berilganda g‘ildiraklarning to‘liq qulflanib sirpanib ketishini oldini oladigan tizim.",
+          "learning_objective": "Identify the safety purpose of anti-lock braking."
+        }
+      },
+      {
+        "question_uz": "Maqolada tasvirlangan gibrid quvvat tizimi qaysi ikki turdagi motorni birlashtiradi?",
+        "question_en": "Which two types of motor does the hybrid power system described in the article combine?",
+        "options_uz": [
+          "Benzinli motor va dizel motorini",
+          "Ikki xil hajmdagi benzinli motorni",
+          "Yonilg‘ida ishlaydigan motor va elektr motorini",
+          "Ikki xil quvvatdagi elektr motorini"
+        ],
+        "options_en": [
+          "A petrol engine and a diesel engine",
+          "Two petrol engines of different sizes",
+          "A fuel-burning engine and an electric motor",
+          "Two electric motors of different power ratings"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Gibrid tizimda benzinli yoki dizelli dvigatel elektr motori bilan birga ishlaydi. Maqolada bu uyg‘unlik yoqilg‘ini tejashga yordam berishi tushuntirilgan.",
+        "explanation_en": "In this hybrid system, a petrol or diesel engine works alongside an electric motor. The article explains how this combination can help save fuel.",
+        "evidence": {
+          "quote": "biri benzinli yoki dizelli, ikkinchisi esa elektr bilan ishlaydigan motor.",
+          "learning_objective": "Recognise the two power sources in the described hybrid system."
+        }
+      },
+      {
+        "question_uz": "Jamoa tormozlashda yo‘qoladigan energiyaning bir qismini keyinroq ishlatmoqchi. Maqoladagi qaysi tizim shu maqsadga xizmat qiladi?",
+        "question_en": "A team wants to use some of the energy lost during braking later on. Which system in the article serves this purpose?",
+        "options_uz": [
+          "Qulflanmaydigan tormoz tizimi (ABS)",
+          "Energiyani qayta ishlash tizimi (ERS)",
+          "Sirpanishni boshqarish tizimi (TCS)",
+          "Zarba yutuvchi zona"
+        ],
+        "options_en": [
+          "Anti-lock braking system (ABS)",
+          "Energy recovery system (ERS)",
+          "Traction control system (TCS)",
+          "A crumple zone"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "ERS harakat paytida yo‘qolishi mumkin bo‘lgan energiyani yig‘ib, qayta ishlatishga yordam beradi. ABS esa tormozlashdagi g‘ildirak qulflanishini boshqaradi.",
+        "explanation_en": "ERS helps collect energy that could otherwise be lost and makes it available for reuse. ABS instead manages wheel locking during braking.",
+        "evidence": {
+          "quote": "Energiya qayta ishlash tizmi (ERS) - avtomobil harakati paytida issiqlik va tormozdagi energiyani yo‘qotmasdan, uni qayta to‘plab, qayta foydalanish imkoniyatini taqdim etadi.",
+          "learning_objective": "Choose energy recovery for a simple reuse scenario."
+        }
+      },
+      {
+        "question_uz": "Turbokompressor motor hajmini kattalashtirmasdan quvvatni oshirishga qanday yordam beradi?",
+        "question_en": "How does a turbocharger help increase power without increasing engine size?",
+        "options_uz": [
+          "Yonilg‘ini yuqori bosimda purkaydi",
+          "Dvigatel klapanlarining ochilish vaqtini boshqaradi",
+          "Chiqindi gazlardagi zararli moddalarni kamaytiradi",
+          "Motorga beriladigan havoni siqadi"
+        ],
+        "options_en": [
+          "It injects fuel at high pressure",
+          "It controls when the engine valves open",
+          "It reduces harmful substances in the exhaust gases",
+          "It compresses the air supplied to the engine"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Turbokompressor havo bosimini oshirib, motorga ko‘proq havo kirishiga yordam beradi. Maqola buni motorni hajman kattalashtirmasdan kuchaytirish usuli sifatida tushuntiradi.",
+        "explanation_en": "A turbocharger increases air pressure to help supply more air to the engine. The article presents this as a way to increase power without enlarging the engine.",
+        "evidence": {
+          "quote": "Ular havo bosimi orqali motorni hajmini kattalashtiirb yubormagan holda yana kuchliroq qilish uchun foydalaniladi.",
+          "learning_objective": "Explain the basic purpose of a turbocharger."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 31,
+    "article_slug": "motosport-yonalishlari",
+    "source_title": "Motosport Yo'nalishlari",
+    "source_sha256": "96814e89fe4ba86470e85fd130d3ea02242173021fd24760ae6b1b89e2fdb9b3",
+    "slug": "maqola-motosport-yonalishlari",
+    "category_slug": "motorsports-engineering",
+    "title_uz": "Poyga turlarini ajrata olasizmi?",
+    "title_en": "Can you tell race formats apart?",
+    "description_uz": "Formula E, ralli va karting haqidagi asosiy g‘oyalarni 4 savolda eslang.",
+    "description_en": "Recall the key ideas about Formula E, rallying and karting in four questions.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Maqolaga ko‘ra, qaysi formula poygasidagi avtomobillar faqat elektr bilan harakatlanadi?",
+        "question_en": "According to the article, which formula racing series uses fully electric cars?",
+        "options_uz": [
+          "Formula 1",
+          "Formula E",
+          "Formula 2",
+          "Formula 3"
+        ],
+        "options_en": [
+          "Formula 1",
+          "Formula E",
+          "Formula 2",
+          "Formula 3"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Formula E elektr quvvati bilan harakatlanadigan avtomobillar poygasidir. Bu uni maqoladagi boshqa formula yo‘nalishlaridan ajratib turadi.",
+        "explanation_en": "Formula E is a racing series for electrically powered cars. This distinguishes it from the other formula categories in the article.",
+        "evidence": {
+          "quote": "Formula E – faqat elektr orqali harakatlanadigan poyga turi.",
+          "learning_objective": "Identify electric-powered formula racing."
+        }
+      },
+      {
+        "question_uz": "Maqolada tasvirlangan ralli bosqichida avtomobillar birma-bir yo‘lga chiqadi. Natijani belgilashda asosiy mezon nima?",
+        "question_en": "In the rally stage described in the article, cars set off one at a time. What is the main measure used to compare their results?",
+        "options_uz": [
+          "Bir vaqtda nechta mashinani quvib o‘tgani",
+          "Burilishdagi sirpanish uslubiga berilgan baho",
+          "Startdagi avtomobillar tartibi",
+          "Yo‘lni bosib o‘tishga sarflangan vaqt"
+        ],
+        "options_en": [
+          "How many cars they overtake at the same time",
+          "The style score awarded for sliding through corners",
+          "The order of cars at the start",
+          "The time taken to complete the route"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Rallida ekipajlar bosqichni imkon qadar qisqa vaqtda bosib o‘tishga intiladi. Shuning uchun maqolada ularning raqibi vaqt deb ta’riflangan.",
+        "explanation_en": "Rally crews aim to complete a stage in the shortest possible time. That is why the article describes time as their opponent.",
+        "evidence": {
+          "quote": "Ularning raqibi - bu vaqt.",
+          "learning_objective": "Distinguish timed rally competition from simultaneous circuit racing."
+        }
+      },
+      {
+        "question_uz": "Ralli bosqichida haydovchi mashinani boshqarayotganda shturmanning asosiy vazifasi nima?",
+        "question_en": "During a rally stage, what is the co-driver’s main job while the driver controls the car?",
+        "options_uz": [
+          "Oldindagi yo‘l va burilishlar haqida aytib turish",
+          "Servis hududidagi to‘xtashlar rejasini muvofiqlashtirish",
+          "Bosqichlar orasida avtomobilga texnik xizmat ko‘rsatish",
+          "Raqib ekipajlarning qoidalarga rioya qilishini baholash"
+        ],
+        "options_en": [
+          "Giving information about the road and turns ahead",
+          "Coordinating the plan for stops in the service area",
+          "Servicing the car between stages",
+          "Judging whether other crews comply with the rules"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Shturman oldindagi yo‘l haqida ma’lumot beradi, haydovchi esa avtomobilni boshqaradi. Bu vazifalar taqsimoti rallida hamkorlikning muhimligini ko‘rsatadi.",
+        "explanation_en": "The co-driver gives information about the road ahead while the driver controls the car. This division of roles shows why teamwork matters in rallying.",
+        "evidence": {
+          "quote": "ularning biri mashinani boshqarsa, narigisi oldinda turgan yo’l haqida ogohlantirib turadi.",
+          "learning_objective": "Recognise the co-driver’s role in rally teamwork."
+        }
+      },
+      {
+        "question_uz": "Yosh poygachi tez qaror qabul qilish va gaz-tormozni vaqtida qo‘llashni mashq qilmoqchi. Maqolaga ko‘ra, karting unga nimasi bilan foydali?",
+        "question_en": "A young racer wants to practise quick decisions and well-timed acceleration and braking. According to the article, how can karting help?",
+        "options_uz": [
+          "Shamol tunnelida aerodinamikani sozlashni o‘rgatadi",
+          "Katta poyga dvigatellarini yig‘ishni o‘rgatadi",
+          "Poygadagi boshqaruv va strategik fikrlashni rivojlantiradi",
+          "Uzoq masofali poyga uchun yoqilg‘i rejasini tuzishni o‘rgatadi"
+        ],
+        "options_en": [
+          "It teaches aerodynamic tuning in a wind tunnel",
+          "It teaches assembly of large racing engines",
+          "It develops racing control and strategic thinking",
+          "It teaches fuel planning for endurance racing"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Maqolada karting gaz va tormozni vaqtida ishlatish, quvib o‘tish va tezkor qarorlar bilan bog‘langan. Bu uni asosiy poyga ko‘nikmalarini rivojlantirish uchun foydali boshlanish qiladi.",
+        "explanation_en": "The article links karting with well-timed acceleration and braking, overtaking and quick decisions. This makes it a useful starting point for developing basic racing skills.",
+        "evidence": {
+          "quote": "tezkor qaror qabul qilish, strategik fikrlashni rivojlanishga yordam beradi.",
+          "learning_objective": "Connect karting with foundational driving and decision skills."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 32,
+    "article_slug": "tezlik-yetarli-emas-motosportdagi-materiallar",
+    "source_title": "Tezlik yetarli emas: Motosportdagi Materiallar",
+    "source_sha256": "a096d3ef9f99bb30cc6ee504a930707bf7e59a69a2ba7b69941e1be3a79eb592",
+    "slug": "maqola-tezlik-yetarli-emas-motosportdagi-materiallar",
+    "category_slug": "motorsports-engineering",
+    "title_uz": "Poyga mashinasiga qaysi material kerak?",
+    "title_en": "Which material does a racing car need?",
+    "description_uz": "Titan, alyuminiy, elastomer va karbon kompozitning vazifalarini tekshiring.",
+    "description_en": "Explore what titanium, aluminium, elastomers and carbon composites do.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Formula 1 avtomobilidagi titandan yasalgan halo qaysi vazifani bajaradi?",
+        "question_en": "What is the purpose of the titanium halo on a Formula 1 car?",
+        "options_uz": [
+          "Dvigatelni sovutishga yordam beradi",
+          "Orqa shinalarning yopishishini oshiradi",
+          "Haydovchining bosh qismini himoya qiladi",
+          "Yonilg‘ini motorga yetkazib beradi"
+        ],
+        "options_en": [
+          "Helping to cool the engine",
+          "Increasing the grip of the rear tyres",
+          "Protecting the driver’s head",
+          "Delivering fuel to the engine"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Halo haydovchining bosh qismini himoya qilish uchun mo‘ljallangan. Maqolada u uchib kelgan jismlar va ag‘darilish xavfi bilan bog‘liq himoya vositasi sifatida tasvirlangan.",
+        "explanation_en": "The halo is designed to protect the driver’s head. The article describes its protection against flying objects and risks during a rollover.",
+        "evidence": {
+          "quote": "mashina ag’darilib ketgan vaqtida haydovchining bosh qismiga zarar yetishligini oldini olish uchun ishlatilinadi.",
+          "learning_objective": "Match the halo to its safety function."
+        }
+      },
+      {
+        "question_uz": "Muhandis radiator uchun material tanlayapti. Alyuminiyning maqolada aytilgan qaysi xususiyati bu tanlovga yordam beradi?",
+        "question_en": "An engineer is choosing a material for a radiator. Which property of aluminium mentioned in the article supports this choice?",
+        "options_uz": [
+          "Issiqlikni yaxshi o‘tkazishi",
+          "Issiqlikni kuchli to‘sib turishi",
+          "Zichligi juda yuqori bo‘lishi",
+          "Kauchuk kabi elastik bo‘lishi"
+        ],
+        "options_en": [
+          "It conducts heat well",
+          "It strongly insulates against heat",
+          "It has very high density",
+          "It is elastic like rubber"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Radiator issiqlik almashinuvida qatnashadi. Alyuminiyning yaxshi issiqlik o‘tkazuvchanligi uning bu tizimda ishlatilish sabablaridan biridir.",
+        "explanation_en": "A radiator takes part in heat transfer. Aluminium’s good thermal conductivity is one reason it is used in this system.",
+        "evidence": {
+          "quote": "aluminium juda ham zo’r termal o’tkazuvchanligi hisobiga sovutish tizimidagi radiatorlarda ham uchratishimiz mumkin.",
+          "learning_objective": "Apply thermal conductivity to a radiator material choice."
+        }
+      },
+      {
+        "question_uz": "Maqolada shinalarda ishlatiladigan elastomerlar qanday material sifatida ta’riflangan?",
+        "question_en": "How does the article describe the elastomers used in tyres?",
+        "options_uz": [
+          "Issiqlik o‘tkazuvchi metall qotishma",
+          "Qattiq va mo‘rt shisha material",
+          "Yuqori zichlikdagi sopol material",
+          "Elastik va mustahkam polimer material"
+        ],
+        "options_en": [
+          "A heat-conducting metal alloy",
+          "A hard and brittle glass material",
+          "A high-density ceramic material",
+          "An elastic and strong polymer material"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Elastomerlar elastik polimerlardir. Maqola ularning egiluvchanligi va bardoshliligini shinalarning ishlashi bilan bog‘laydi.",
+        "explanation_en": "Elastomers are elastic polymers. The article connects their flexibility and durability with the way tyres perform.",
+        "evidence": {
+          "quote": "Bu yuqori darajada elastik, mustahkam va haroratga chidamli polimer material hisoblanadi.",
+          "learning_objective": "Identify elastomers as flexible polymer materials."
+        }
+      },
+      {
+        "question_uz": "Maqolada karbon tolalaridan kompozit hosil qilish uchun tolalar nima bilan birlashtiriladi?",
+        "question_en": "In the article, what is combined with carbon fibres to make a composite?",
+        "options_uz": [
+          "Titan kukuni bilan",
+          "Epoksiy smola bilan",
+          "Kauchuk qatlami bilan",
+          "Sopol donachalari bilan"
+        ],
+        "options_en": [
+          "Titanium powder",
+          "Epoxy resin",
+          "A layer of rubber",
+          "Ceramic particles"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Karbon tolalari epoksiy smola bilan birlashtirilib kompozit material hosil qilinadi. Bu yerda tolalar va ularni bog‘lovchi modda bir material tarkibida ishlaydi.",
+        "explanation_en": "Carbon fibres are combined with epoxy resin to form a composite. The fibres and the material binding them work together in one material.",
+        "evidence": {
+          "quote": "Keyinchalik bu tolalar epoksiy smola (4.2-rasm)  bilan birlashtiriladi va kompozit material hosil bo‘ladi",
+          "learning_objective": "Explain the fibre-and-resin composition of a carbon composite."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 33,
+    "article_slug": "motorsportda-karyera-yoli-1-qism-dunyo-miqyosidagi-cheksiz-imkoniyatlar",
+    "source_title": "Motorsportda Karyera Yo‘li (1-qism): Dunyo Miqyosidagi Cheksiz Imkoniyatlar",
+    "source_sha256": "761690fc01528f0c7cb4ff60e01a07243065f4f925e17e77a4863541448bf478",
+    "slug": "maqola-motorsportda-karyera-yoli-1-qism-dunyo-miqyosidagi-cheksiz-imkoniyatlar",
+    "category_slug": "motorsports-engineering",
+    "title_uz": "Motorsportdagi kelajak uchun ilk qadamlar",
+    "title_en": "First steps towards a future in motorsport",
+    "description_uz": "Maslahat olish, amaliyot va jamoada o‘rganish haqidagi maqolani 4 vaziyatda qo‘llang.",
+    "description_en": "Apply the article’s advice on mentorship, practical experience and teamwork in four situations.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Maktab o‘quvchisi motorsportga qiziqadi va nimadan boshlashni bilmaydi. Maqoladagi tavsiyaga qaysi qadam mos?",
+        "question_en": "A school student is interested in motorsport and is unsure where to start. Which step matches the article’s advice?",
+        "options_uz": [
+          "Sohadagi odamlardan maslahat so‘rashni universitet tugaguncha kutish",
+          "Kasb tanlashda mashhur poygachilarning yo‘lini aynan takrorlash",
+          "Faqat baholarga e’tibor berib, amaliy qiziqishlarni keyinga qoldirish",
+          "Sohadagi mutaxassisdan maslahat olib, o‘qish va mashg‘ulotlarini rejalash"
+        ],
+        "options_en": [
+          "Waiting until after university to ask people in the industry for advice",
+          "Choosing a career by following famous drivers’ paths exactly",
+          "Focusing only on grades and postponing practical interests",
+          "Asking a professional for advice and planning study and activities"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Maqola maktab yoshidayoq sohadagi mutaxassislardan maslahat olishni tavsiya qiladi. Bunday maslahat o‘qish va bo‘sh vaqtni maqsadga mos yo‘naltirishga yordam beradi.",
+        "explanation_en": "The article recommends seeking advice from professionals while still at school. Their advice can help students direct their study and free time towards their interests.",
+        "evidence": {
+          "quote": "Shu sohada allaqachon ishlayotgan mutaxassislardan maslahat olishga harakat qiling.",
+          "learning_objective": "Apply early career exploration advice to a school student."
+        }
+      },
+      {
+        "question_uz": "Maqolada shogirdlikning asosiy afzalligi sifatida nima ko‘rsatilgan?",
+        "question_en": "What does the article highlight as a main advantage of an apprenticeship?",
+        "options_uz": [
+          "Bitta mavzuda ilmiy dissertatsiya yozishga yo‘naltirilishi",
+          "Ish jarayonida amaliy ko‘nikma va tajriba orttirish",
+          "Ko‘proq umumiy nazariy fanlarni auditoriyada o‘rganish",
+          "Poygachilik litsenziyasi sinoviga maxsus tayyorlash"
+        ],
+        "options_en": [
+          "Focusing on writing a research thesis on one topic",
+          "Building practical skills and experience through work",
+          "Studying more general theoretical subjects in a classroom",
+          "Providing specialist preparation for a racing licence test"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Shogirdlik amaliy ish orqali ko‘nikma hosil qilishga yordam beradi. Maqolada avtomobilni yaratish, sozlash va unga xizmat ko‘rsatish bunga misol qilingan.",
+        "explanation_en": "An apprenticeship helps develop skills through practical work. The article gives building, adjusting and servicing a car as examples.",
+        "evidence": {
+          "quote": "poyga avtomobilini yaratish, texnik xizmat ko‘rsatish, sozlash va ishonchliligini ta’minlash ko'nikmalari shakllangan bo‘ladi.",
+          "learning_objective": "Recognise the practical learning value of an apprenticeship."
+        }
+      },
+      {
+        "question_uz": "Yosh mutaxassis mashhur jamoaga kira olmadi, lekin kichik yetkazib beruvchi kompaniyada amaliyot topdi. Maqola bu imkoniyatni qanday baholaydi?",
+        "question_en": "A young specialist cannot join a famous team but finds an internship with a small supplier. How does the article view this opportunity?",
+        "options_uz": [
+          "Tajribaning qiymatini avvalo kompaniyaning mashhurligi belgilaydi",
+          "Bunday amaliyot katta jamoada ishlagandan keyingina foyda beradi",
+          "Turli vazifalarni o‘rganib, tegishli tajriba olish imkonidir",
+          "Yetkazib beruvchidagi ish motorsportga tegishli ko‘nikma bermaydi"
+        ],
+        "options_en": [
+          "The value of the experience is determined mainly by how famous the company is",
+          "This internship becomes useful only after working for a large team",
+          "It is a chance to learn varied tasks and gain relevant experience",
+          "Work at a supplier does not develop skills relevant to motorsport"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Maqolada kichik biznes va sohaga xizmat ko‘rsatuvchi kompaniyalar ham o‘rganish uchun yaxshi joy bo‘lishi aytilgan. Muhimi, kompaniya nomidan tashqari olinadigan tajribaga ham qarashdir.",
+        "explanation_en": "The article says small businesses and suppliers to the industry can also be good places to learn. The experience available matters alongside the company’s name.",
+        "evidence": {
+          "quote": "Kichik bizneslarda esa siz ko‘proq mayda-chuyda narsalarga aralashishga majbur bo‘lasiz — bu hatto afzallik ham bo‘lishi mumkin.",
+          "learning_objective": "Value relevant experience beyond famous employers."
+        }
+      },
+      {
+        "question_uz": "Formula Student jamoasiga qo‘shilgan talaba loyihadan ko‘proq bilim olish uchun nima qilishi kerak?",
+        "question_en": "What should a student who joins a Formula Student team do to learn more from the project?",
+        "options_uz": [
+          "Faol qatnashib, qarorlar nima uchun qabul qilinishini tushunishi",
+          "Jamoa ro‘yxatida ismi turishi bilan kifoyalanishi",
+          "Texnik vazifalarni doimo boshqa a’zolarga qoldirishi",
+          "Faqat yakuniy natijani ko‘rib, jarayonni o‘tkazib yuborishi"
+        ],
+        "options_en": [
+          "Take an active role and understand why decisions are made",
+          "Be satisfied with having their name on the team list",
+          "Always leave technical tasks to other members",
+          "Look only at the final result and skip the process"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Maqolada jamoaga a’zo bo‘lishning o‘zi yetarli emasligi ta’kidlangan. O‘rganish uchun faol qatnashish va bajarilayotgan ishning sababini tushunish zarur.",
+        "explanation_en": "The article stresses that team membership alone is not enough. Learning requires active participation and understanding the reasons behind the work.",
+        "evidence": {
+          "quote": "siz albatta faol qatnashib, nima qilayotganingiz va nima uchun qilayotganingizni chuqur tushunishingiz kerak.",
+          "learning_objective": "Distinguish active project learning from nominal participation."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 51,
+    "article_slug": "kelajakni-tezlashtirish-ozbekiston-motorsport-inqilobi-yangi-bosqichga-kotarilmoqda",
+    "source_title": "Kelajakni tezlashtirish: Oʻzbekiston motorsport inqilobi yangi bosqichga ko‘tarilmoqda",
+    "source_sha256": "01a8b00c45830ec9d8edad32a96aa313f55b64e12362b46357055869f87497a6",
+    "slug": "maqola-kelajakni-tezlashtirish-ozbekiston-motorsport-inqilobi-yangi-bosqichga-kotarilmoqda",
+    "category_slug": "motorsports-engineering",
+    "title_uz": "O‘zbekistonda motorsportga yo‘l",
+    "title_en": "A route into motorsport in Uzbekistan",
+    "description_uz": "NAFKU haqidagi maqola asosida boshlang‘ich imkoniyatlar va infratuzilmani o‘rganing.",
+    "description_en": "Explore entry points and infrastructure through the article about NAFKU.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "NAFKU maqolada qaysi asosiy vazifa bilan tanishtiriladi?",
+        "question_en": "What main purpose is NAFKU introduced with in the article?",
+        "options_uz": [
+          "Avtosportni rivojlantirish va xalqaro darajaga olib chiqish",
+          "Shahar avtobuslari yo‘nalishlarini rejalashtirish",
+          "Yangi yo‘l avtomobillarini zavodda ishlab chiqarish",
+          "Barcha avtomobil savdo narxlarini belgilash"
+        ],
+        "options_en": [
+          "Developing motorsport and supporting its international growth",
+          "Planning city bus routes",
+          "Manufacturing new road cars in a factory",
+          "Setting the sale prices of all cars"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Maqolada NAFKU avtosportni rivojlantirish, xalqaro musobaqalar va imkoniyatlarni kengaytirish bilan bog‘langan. Bu vazifa poyga ekotizimini shakllantirishga qaratilgan.",
+        "explanation_en": "The article connects NAFKU with developing motorsport and expanding international events and opportunities. Its role is described in terms of building the racing ecosystem.",
+        "evidence": {
+          "quote": "avtosportni rivojlantirish va xalqaro darajaga ko’tarish",
+          "learning_objective": "Recognise the federation’s role as described in the article."
+        }
+      },
+      {
+        "question_uz": "Tajribasi kam yosh poygaga qiziqib qoldi. Maqola qaysi yo‘nalishni boshlang‘ich nuqta sifatida tavsiya qiladi?",
+        "question_en": "A young beginner becomes interested in racing. Which discipline does the article recommend as a starting point?",
+        "options_uz": [
+          "Formula 1",
+          "Uzoq masofali ralli reydi",
+          "Yuqori quvvatli GT poygasi",
+          "Karting"
+        ],
+        "options_en": [
+          "Formula 1",
+          "Long-distance rally raid",
+          "High-powered GT racing",
+          "Karting"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Maqola kartingni yangi boshlovchilar uchun tavsiya etilgan kirish nuqtasi sifatida ko‘rsatadi. Uni professional poyga ko‘nikmalari uchun poydevor deb ta’riflaydi.",
+        "explanation_en": "The article presents karting as a recommended entry point for beginners. It describes it as a foundation for professional racing skills.",
+        "evidence": {
+          "quote": "Karting — bu yangi boshlovchilar uchun eng ko’p tavsiya etiladigan va birinchi nuqta bo‘lib",
+          "learning_objective": "Identify the recommended entry point for a beginner."
+        }
+      },
+      {
+        "question_uz": "Maqolada xalqaro musobaqalarga intilayotgan yoshlar uchun qanday yordam aytilgan?",
+        "question_en": "What support does the article describe for young people aiming at international competition?",
+        "options_uz": [
+          "Xalqaro litsenziya o‘rniga oddiy haydovchilik guvohnomasini berish",
+          "FIA sinovlari o‘rniga jamoaning ichki suhbatini tashkil etish",
+          "Xalqaro litsenziya va FIA sinovlariga tayyorlanishda yordam",
+          "Poygachi litsenziyasi o‘rniga texniklar sertifikatini olishda yordam"
+        ],
+        "options_en": [
+          "Providing an ordinary driving licence instead of an international racing licence",
+          "Arranging an internal team interview instead of FIA tests",
+          "Help with international licensing and preparation for FIA tests",
+          "Help obtaining a technician’s certificate instead of a racing licence"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Maqolada NAFKU xalqaro litsenziya olish va kerakli sinovlarga tayyorlanishda yordam berishi aytilgan. Bu yordam yoshlarning xalqaro musobaqalar sari tayyorgarligini qo‘llab-quvvatlaydi.",
+        "explanation_en": "The article says NAFKU helps with international licensing and preparation for the required tests. This supports young racers as they prepare for international competition.",
+        "evidence": {
+          "quote": "NAFKU yosh poygachilarga xalqaro litsenziya olishga, ular uchun zarur bo’lgan FIA test sinovlariga tayyorlanishga yordam beradi.",
+          "learning_objective": "Identify the international licensing support described in the article."
+        }
+      },
+      {
+        "question_uz": "Nega maqolada doimiy, ko‘p funksiyali poyga majmuasi qurish muhim deb ko‘rsatilgan?",
+        "question_en": "Why does the article present a permanent, multi-purpose racing complex as important?",
+        "options_uz": [
+          "Avtosavdo va avtomobil ko‘rgazmalari uchun markaz yaratishi sababli",
+          "Turli poygalar, sportchilar tayyorgarligi va xalqaro tadbirlarga zamin yaratishi sababli",
+          "Musobaqalarni doim yopilgan shahar ko‘chalarida o‘tkazishga yordam berishi sababli",
+          "Asosan umumiy yo‘l transporti haydovchilarini tayyorlashga xizmat qilishi sababli"
+        ],
+        "options_en": [
+          "Because it would create a centre for vehicle sales and car exhibitions",
+          "Because it would support several race formats, training and international events",
+          "Because it would help run races permanently on closed city streets",
+          "Because it would mainly train drivers for ordinary road transport"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Maqoladagi majmua rejasi ralli, drift, gymkhana va karting kabi yo‘nalishlarni qamrab oladi. U tayyorgarlik, musobaqalar va sport turizmi uchun infratuzilma sifatida ko‘rsatilgan.",
+        "explanation_en": "The proposed complex in the article covers disciplines such as rally, drift, gymkhana and karting. It is presented as infrastructure for training, competition and sports tourism.",
+        "evidence": {
+          "quote": "ralli, drift, gymkhana va karting musobaqalari o’tkazishga imkon beradigan ulkan majmua barpo qilishdir.",
+          "learning_objective": "Connect permanent facilities with training and competition opportunities."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 52,
+    "article_slug": "poyga-mashinasi-asosiy-qismlari-xavfsizlik-va-harakatlanish-uchun-zarur-bolgan-qismlar-hamda-ularning-dizayni",
+    "source_title": "Poyga mashinasi asosiy qismlari — xavfsizlik va harakatlanish uchun zarur bo‘lgan qismlar hamda ularning dizayni",
+    "source_sha256": "30d58b288c7e091bbbb049ec161febcee077f7f5fa52d1bc4d773d47787e1211",
+    "slug": "maqola-poyga-mashinasi-asosiy-qismlari-xavfsizlik-va-harakatlanish-uchun-zarur-bolgan-qismlar-hamda-ularning-dizayni",
+    "category_slug": "motorsports-engineering",
+    "title_uz": "Poyga mashinasi qanday ishlaydi?",
+    "title_en": "How does a racing car work?",
+    "description_uz": "Shassi, motor, aerodinamika va telemetriya vazifalarini 4 savolda tekshiring.",
+    "description_en": "Check the roles of the chassis, engine, aerodynamics and telemetry in four questions.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Poyga avtomobilining shassisi qanday asosiy vazifani bajaradi?",
+        "question_en": "What is the main role of a racing car’s chassis?",
+        "options_uz": [
+          "Dvigateldagi havo va yonilg‘i aralashmasini boshqaradi",
+          "Asosiy qismlarni birlashtiradigan mustahkam tuzilma bo‘lib xizmat qiladi",
+          "Sensor ma’lumotlarini jamoaga simsiz jo‘natadi",
+          "Havoni dvigatelga siqib yetkazib beradi"
+        ],
+        "options_en": [
+          "It controls the engine’s air and fuel mixture",
+          "It provides a strong structure that brings the main components together",
+          "It wirelessly sends sensor readings to the team",
+          "It compresses air and supplies it to the engine"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Shassi avtomobilning asosiy qismlarini bir butun tuzilmaga birlashtiradi. Maqolada uning qattiqligi, yengilligi va barqarorlikka hissasi tushuntirilgan.",
+        "explanation_en": "The chassis brings the car’s main parts together in one structure. The article explains the importance of its stiffness, low mass and contribution to stability.",
+        "evidence": {
+          "quote": "Shassi(1.1-rasm) mashinaning barcha qismlarini bir butun holda jamlab",
+          "learning_objective": "Recognise the chassis as the car’s supporting structure."
+        }
+      },
+      {
+        "question_uz": "Maqolada tasvirlangan yonilg‘ili motor energiyani qanday o‘zgartiradi?",
+        "question_en": "How does the fuel-powered engine described in the article transform energy?",
+        "options_uz": [
+          "Mexanik energiyani yonilg‘idagi kimyoviy energiyaga",
+          "Elektr energiyasini faqat yorug‘likka",
+          "Yonilg‘idagi kimyoviy energiyani mexanik ishga",
+          "Tovush energiyasini elektr energiyasiga"
+        ],
+        "options_en": [
+          "Mechanical energy into chemical energy in fuel",
+          "Electrical energy into light only",
+          "Chemical energy in fuel into mechanical work",
+          "Sound energy into electrical energy"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Yonilg‘ili motor yonilg‘ida saqlangan kimyoviy energiyadan mexanik ish hosil qilish uchun foydalanadi. Maqola uni avtomobilning harakatlantiruvchi qismlaridan biri sifatida tasvirlaydi.",
+        "explanation_en": "A fuel-powered engine uses chemical energy stored in fuel to produce mechanical work. The article describes it as a key part of the car’s propulsion.",
+        "evidence": {
+          "quote": "yonilg‘idagi kimyoviy energiyani mexanik kuchga aylantiradi.",
+          "learning_objective": "Identify the energy transformation in a fuel-powered engine."
+        }
+      },
+      {
+        "question_uz": "Muhandis burilishda shinalarning yo‘lga yaxshiroq yopishishini xohlaydi. Aerodinamik pastga bosuvchi kuch bunga qanday yordam beradi?",
+        "question_en": "An engineer wants the tyres to grip the road better in a corner. How does aerodynamic downforce help?",
+        "options_uz": [
+          "Avtomobilni yo‘l sirtiga kuchliroq bosadi",
+          "Avtomobilni yo‘ldan yuqoriga ko‘taradi",
+          "Burilishda barcha g‘ildiraklarni bir xil tezlikda aylantiradi",
+          "Yonilg‘i qo‘shish orqali avtomobil massasini oshiradi"
+        ],
+        "options_en": [
+          "It presses the car more firmly against the road",
+          "It lifts the car away from the road",
+          "It makes every wheel rotate at the same speed in a corner",
+          "It increases the car’s mass by adding fuel"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Pastga bosuvchi aerodinamik kuch shinalarning yo‘l bilan yopishishini yaxshilashga yordam beradi. Buning uchun avtomobilga qo‘shimcha yuk qo‘yish shart emas.",
+        "explanation_en": "Aerodynamic downforce helps improve tyre grip by pressing the car against the road. It does this without requiring extra ballast.",
+        "evidence": {
+          "quote": "Bu kuch avtomobilni yo‘l sirtiga bosib, shinalarning yopishishini va burilish tezligini oshiradi",
+          "learning_objective": "Apply the purpose of downforce to cornering grip."
+        }
+      },
+      {
+        "question_uz": "Pit jamoasi poyga davomida avtomobil parametrlarini kuzatmoqchi. Maqoladagi qaysi tizim ularga real vaqtda ma’lumot yetkazadi?",
+        "question_en": "The pit team wants to monitor the car’s parameters during a race. Which system in the article sends them real-time data?",
+        "options_uz": [
+          "Shassi",
+          "Diffuzor",
+          "Xavfsizlik kabinasi",
+          "Telemetriya"
+        ],
+        "options_en": [
+          "The chassis",
+          "The diffuser",
+          "The survival cell",
+          "Telemetry"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Telemetriya avtomobil parametrlarini jamoaga uzatadi. Bu ma’lumot diagnostika, sozlash va poyga strategiyasini tanlashga yordam beradi.",
+        "explanation_en": "Telemetry sends the car’s parameters to the team. These data help with diagnosis, adjustments and race strategy.",
+        "evidence": {
+          "quote": "yuzlab parametrlar boʻyicha real vaqtdagi maʼlumotlarni pit-uolga",
+          "learning_objective": "Choose telemetry for remote, real-time vehicle monitoring."
+        }
+      }
+    ]
+  }
+]

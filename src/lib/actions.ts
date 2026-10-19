@@ -96,6 +96,24 @@ function revalidateMedia() {
   revalidatePath('/[locale]/media/[id]', 'page')
 }
 
+function revalidateQuizzes() {
+  revalidatePath('/admin/quiz')
+  revalidatePath('/admin/quiz/[id]', 'page')
+  revalidatePath('/admin/quiz/[id]/questions/[qid]', 'page')
+  revalidatePath('/admin/quiz/[id]/preview', 'page')
+  for (const locale of ['uz', 'en']) {
+    revalidatePath(`/${locale}/quiz`)
+    revalidatePath(`/${locale}/articles`)
+    revalidatePath(`/${locale}`)
+  }
+  revalidatePath('/[locale]/quiz/[slug]', 'page')
+  revalidatePath('/[locale]/articles/[slug]', 'page')
+}
+
+function isQuizTable(table: string) {
+  return table === 'quizzes' || table === 'quiz_questions' || table === 'quiz_articles'
+}
+
 function validateMediaDimensions(data: { width?: unknown; height?: unknown }) {
   for (const dimension of [data.width, data.height]) {
     if (dimension === undefined || dimension === null) continue
@@ -114,6 +132,7 @@ export async function adminDeleteRecord(table: string, id: number | string) {
   revalidateShowcase(table)
   if (table === 'articles') revalidateArticles()
   if (table === 'media') revalidateMedia()
+  if (isQuizTable(table)) revalidateQuizzes()
 }
 
 export async function adminSaveRecord(table: string, data: Record<string, unknown>, id?: number | string) {
@@ -133,13 +152,17 @@ export async function adminSaveRecord(table: string, data: Record<string, unknow
     if (error) throw new Error(error.message)
     result = d
   } else {
-    const { data: d, error } = await admin.from(table as any).insert(data).select()
+    // Draft is enforced at the write boundary, even if an old client sends
+    // published:true. Publishing remains an explicit update after review.
+    const values = table === 'quizzes' ? { ...data, published: false } : data
+    const { data: d, error } = await admin.from(table as any).insert(values).select()
     if (error) throw new Error(error.message)
     result = d
   }
   revalidatePath(`/admin/${table}`)
   revalidateShowcase(table)
   if (table === 'media') revalidateMedia()
+  if (isQuizTable(table)) revalidateQuizzes()
   return result
 }
 
@@ -179,19 +202,24 @@ export async function adminSetFeaturedQuiz(quizId: number, featured: boolean) {
   await getAdminUser()
   const admin = createAdminClient()
 
-  if (featured) {
-    const { error: clearError } = await admin
-      .from('quizzes')
-      .update({ featured: false })
-      .eq('featured', true)
-      .neq('id', quizId)
-    if (clearError) throw new Error(clearError.message)
+  let changed = false
+  try {
+    if (featured) {
+      const { error: clearError } = await admin
+        .from('quizzes')
+        .update({ featured: false })
+        .eq('featured', true)
+        .neq('id', quizId)
+      if (clearError) throw new Error(clearError.message)
+      changed = true
+    }
+
+    const { error } = await admin.from('quizzes').update({ featured }).eq('id', quizId)
+    if (error) throw new Error(error.message)
+    changed = true
+  } finally {
+    if (changed) revalidateQuizzes()
   }
-
-  const { error } = await admin.from('quizzes').update({ featured }).eq('id', quizId)
-  if (error) throw new Error(error.message)
-
-  revalidatePath('/admin/quiz')
 }
 
 // ── Quiz ↔ article links ──
@@ -203,13 +231,16 @@ export async function adminSetQuizArticles(quizId: number, articleIds: number[])
   const { error: delError } = await admin.from('quiz_articles').delete().eq('quiz_id', quizId)
   if (delError) throw new Error(delError.message)
 
-  if (articleIds.length > 0) {
-    const rows = articleIds.map((article_id) => ({ quiz_id: quizId, article_id }))
-    const { error } = await admin.from('quiz_articles').insert(rows)
-    if (error) throw new Error(error.message)
+  try {
+    if (articleIds.length > 0) {
+      const rows = [...new Set(articleIds)].map((article_id) => ({ quiz_id: quizId, article_id }))
+      const { error } = await admin.from('quiz_articles').insert(rows)
+      if (error) throw new Error(error.message)
+    }
+  } finally {
+    // The old links were already removed, including when replacement fails.
+    revalidateQuizzes()
   }
-
-  revalidatePath('/admin/quiz')
 }
 
 // ── Article-specific ──
@@ -396,6 +427,9 @@ export async function adminInsertMedia(data: {
  */
 export async function adminGenerateQuizQuestions(quizId: number, count: number) {
   await getAdminUser()
+  if (!Number.isInteger(count) || count < 1 || count > 15) {
+    throw new Error('Savollar soni 1 dan 15 gacha bo‘lishi kerak / Choose between 1 and 15 questions.')
+  }
   const admin = createAdminClient()
 
   const { data: links, error: linkError } = await admin
@@ -404,29 +438,34 @@ export async function adminGenerateQuizQuestions(quizId: number, count: number) 
     .eq('quiz_id', quizId)
   if (linkError) throw new Error(linkError.message)
 
-  const ids = (links ?? []).map((l) => l.article_id)
+  const ids = [...new Set((links ?? []).map((l) => l.article_id))]
   if (ids.length === 0) {
     throw new Error('Link at least one article to this quiz first, then generate.')
   }
 
   const { data: articles, error: articleError } = await admin
     .from('articles')
-    .select('title_uz, body_uz')
+    .select('id, title_uz, body_uz')
     .in('id', ids)
+    .eq('published', true)
+    .lte('published_date', new Date().toISOString())
   if (articleError) throw new Error(articleError.message)
+  if (articles?.length !== ids.length) {
+    throw new Error('Faqat hozir nashr qilingan maqolalarni tanlang. Qoralama yoki rejalashtirilgan maqolalarni olib tashlang. / Link only articles that are publicly available now. Remove draft or scheduled articles before generating.')
+  }
 
   const source = (articles ?? []).map((a) => ({
     title: a.title_uz ?? '',
     body: richTextToPlain(a.body_uz),
   }))
 
-  // Worth naming explicitly: the seeded articles carry only a title, an
-  // excerpt and a cover image, so this is the failure an admin will hit first.
-  if (source.every((a) => a.body.trim().length === 0)) {
-    const names = source.map((a) => a.title).filter(Boolean).join(', ')
+  // Do not silently skip a linked article and claim that all sources were used.
+  const incomplete = source.filter((a) => !a.title.trim() || a.body.trim().length <= 200)
+  if (incomplete.length > 0) {
+    const names = incomplete.map((a) => a.title).filter(Boolean).join(', ')
     throw new Error(
-      `These articles have no body text yet, so there is nothing to build questions from: ${names}. ` +
-        'Write the article content in the article editor first.'
+      `Maqola matni yetarli emas / These articles need more body text: ${names}. ` +
+        'Avval maqola matnini to‘ldiring / Complete the article content before generating questions.'
     )
   }
 
@@ -450,12 +489,13 @@ export async function adminSaveGeneratedQuestions(
 
   const admin = createAdminClient()
 
-  const { data: existing } = await admin
+  const { data: existing, error: existingError } = await admin
     .from('quiz_questions')
     .select('sort_order')
     .eq('quiz_id', quizId)
     .order('sort_order', { ascending: false })
     .limit(1)
+  if (existingError) throw new Error(existingError.message)
 
   const start = (existing?.[0]?.sort_order ?? -1) + 1
 
@@ -474,6 +514,6 @@ export async function adminSaveGeneratedQuestions(
   )
   if (error) throw new Error(error.message)
 
-  revalidatePath(`/admin/quiz/${quizId}`)
+  revalidateQuizzes()
   return questions.length
 }

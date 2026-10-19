@@ -111,7 +111,7 @@ async function loadCatalogue(locale: string): Promise<string> {
       .eq('published', true)
       .order('published_date', { ascending: false })
       .limit(60),
-    supabase.from('quizzes').select('title_uz, title_en, difficulty').eq('published', true).limit(40),
+    supabase.from('quizzes').select('title_uz, title_en').eq('published', true).limit(40),
     supabase.from('hackathons').select('title_uz, title_en').limit(30),
     supabase.from('projects').select('title_uz, title_en').limit(40),
   ])
@@ -128,7 +128,6 @@ async function loadCatalogue(locale: string): Promise<string> {
       })),
       quizzes: (quizzes.data ?? []).map((q: any) => ({
         title: pick(q.title_uz, q.title_en),
-        difficulty: q.difficulty ?? null,
       })),
       hackathons: (hackathons.data ?? []).map((h: any) => ({ title: pick(h.title_uz, h.title_en) })),
       projects: (projects.data ?? []).map((p: any) => ({ title: pick(p.title_uz, p.title_en) })),

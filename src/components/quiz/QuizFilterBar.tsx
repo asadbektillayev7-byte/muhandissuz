@@ -1,12 +1,10 @@
 'use client'
 
-import { DIFFICULTIES, DIFFICULTY_LABELS, type Difficulty } from '@/lib/quiz'
 import { outline } from './surface'
 
 export type Filters = {
   search: string
   category: string | null
-  difficulty: Difficulty | null
 }
 
 /** Native select, restyled to sit quietly next to the search field. */
@@ -56,8 +54,8 @@ export function QuizFilterBar({
 }) {
   const uz = locale === 'uz'
   const t = uz
-    ? { search: 'Quiz qidirish...', allFields: 'Yo‘nalish', allLevels: 'Daraja', field: 'Yo‘nalish', difficulty: 'Daraja' }
-    : { search: 'Search quizzes...', allFields: 'Disciplines', allLevels: 'Levels', field: 'Discipline', difficulty: 'Difficulty' }
+    ? { search: 'Quiz qidirish...', allFields: 'Yo‘nalish', field: 'Yo‘nalish' }
+    : { search: 'Search quizzes...', allFields: 'Disciplines', field: 'Discipline' }
 
   const set = (patch: Partial<Filters>) => onChange({ ...filters, ...patch })
 
@@ -89,19 +87,6 @@ export function QuizFilterBar({
             {categories.map((c) => (
               <option key={c.id} value={c.slug}>
                 {uz ? c.name_uz : c.name_en}
-              </option>
-            ))}
-          </Dropdown>
-
-          <Dropdown
-            label={t.difficulty}
-            value={filters.difficulty ?? ''}
-            onChange={(v) => set({ difficulty: (v || null) as Difficulty | null })}
-          >
-            <option value="">{t.allLevels}</option>
-            {DIFFICULTIES.map((d) => (
-              <option key={d} value={d}>
-                {DIFFICULTY_LABELS[d][uz ? 'uz' : 'en']}
               </option>
             ))}
           </Dropdown>

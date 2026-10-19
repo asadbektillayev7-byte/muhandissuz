@@ -1,0 +1,1072 @@
+[
+  {
+    "article_id": 34,
+    "article_slug": "elektr-energiyasi",
+    "source_title": "Elektr energiyasi",
+    "source_sha256": "dcba830dd495c98e03a1c835181ea246af2f463c1fef0f60229875a76ecea35d",
+    "slug": "maqola-elektr-energiyasi",
+    "category_slug": "electrical-engineering",
+    "title_uz": "Elektr zaryadlarini tushunamiz",
+    "title_en": "Understanding electric charges",
+    "description_uz": "Statik elektr, elektronlar va zaryadlarning o‘zaro ta’siri haqida 4 savol.",
+    "description_en": "Four questions about static electricity, electrons and electric charges.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Jismda elektr zaryadi to‘planib qolishi qanday hodisa deyiladi?",
+        "question_en": "What is the build-up of electric charge on an object called?",
+        "options_uz": [
+          "Uzluksiz elektr toki",
+          "Statik elektr",
+          "Magnit induksiya",
+          "Issiqlik uzatish"
+        ],
+        "options_en": [
+          "Continuous electric current",
+          "Static electricity",
+          "Magnetic induction",
+          "Heat transfer"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Statik elektrda zaryad bir joyda to‘planadi. Elektr toki esa zaryadning oqishi bilan bog‘liq.",
+        "explanation_en": "Static electricity involves a build-up of charge. Electric current involves the flow of charge.",
+        "evidence": {
+          "quote": "Elektr bir joyda\nto‘plansa, bu statik elektr deb ataladi",
+          "learning_objective": "Distinguish static charge from current."
+        }
+      },
+      {
+        "question_uz": "Elektron qanday elektr zaryadiga ega?",
+        "question_en": "What electric charge does an electron have?",
+        "options_uz": [
+          "Musbat",
+          "Neytral",
+          "Haroratga qarab musbat yoki manfiy",
+          "Manfiy"
+        ],
+        "options_en": [
+          "Positive",
+          "Neutral",
+          "Positive or negative depending on temperature",
+          "Negative"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Elektron manfiy zaryadga ega; proton esa musbat zaryadli zarrachadir.",
+        "explanation_en": "An electron has a negative charge; a proton has a positive charge.",
+        "evidence": {
+          "quote": "Har bir elektron manfiy zaryadga ega.",
+          "learning_objective": "Identify the charge of an electron."
+        }
+      },
+      {
+        "question_uz": "Neytral atomda qaysi zarrachalarning soni teng bo‘ladi?",
+        "question_en": "Which particles are equal in number in a neutral atom?",
+        "options_uz": [
+          "Protonlar va elektronlar",
+          "Protonlar va neytronlar",
+          "Neytronlar va elektronlar",
+          "Yadrodagi jami zarrachalar va elektronlar"
+        ],
+        "options_en": [
+          "Protons and electrons",
+          "Protons and neutrons",
+          "Neutrons and electrons",
+          "All particles in the nucleus and electrons"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Musbat protonlar va manfiy elektronlarning soni teng bo‘lsa, umumiy zaryad nol bo‘ladi.",
+        "explanation_en": "Equal numbers of positive protons and negative electrons give a net charge of zero.",
+        "evidence": {
+          "quote": "Har bir atomda odatda bir\nxil miqdorda elektronlar va musbat\nzaryadli zarrachalar — protonlar bo‘ladi",
+          "learning_objective": "Explain electrical neutrality."
+        }
+      },
+      {
+        "question_uz": "Ikki soch tolasi bir xil ishorali zaryad olsa, ular qanday ta’sirlashadi?",
+        "question_en": "How do two strands of hair interact if they acquire charges with the same sign?",
+        "options_uz": [
+          "Bir-birini tortadi",
+          "Bir-biriga elektr kuchi bilan ta’sir qilmaydi",
+          "Bir-birini itaradi",
+          "Yaqinda tortishib, uzoqlashganda itarishadi"
+        ],
+        "options_en": [
+          "They attract each other",
+          "They exert no electric force on each other",
+          "They repel each other",
+          "They attract when close and repel when farther apart"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Bir xil ishorali zaryadlar bir-birini itaradi. Maqolada soch tolalarining uzoqlashishi shu bilan tushuntirilgan.",
+        "explanation_en": "Charges with the same sign repel. The article uses this to explain why charged hair strands spread apart.",
+        "evidence": {
+          "quote": "Bir xil ishorali zaryadlar bir-birini itargani sababli soch tolalari\nbir-biridan uzoqlashadi.",
+          "learning_objective": "Apply the rule for like charges."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 42,
+    "article_slug": "elektr-tarmogi",
+    "source_title": "Elektr tarmog'i",
+    "source_sha256": "4898fb1d9d9be007f4d20fe99433c28bf6b9569119f02abb321e1b5af382c381",
+    "slug": "maqola-elektr-tarmogi",
+    "category_slug": "electrical-engineering",
+    "title_uz": "Elektr uyimizga qanday yetib keladi?",
+    "title_en": "How does electricity reach our homes?",
+    "description_uz": "Elektr ishlab chiqarish, uzatish va taqsimlashni tushunishga yordam beradigan 4 savol.",
+    "description_en": "Four questions about generating, transmitting and distributing electricity.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Elektr tarmog‘idagi uch asosiy bosqich qaysi tartibda keladi?",
+        "question_en": "What is the order of the three main stages in an electricity grid?",
+        "options_uz": [
+          "Taqsimlash → uzatish → ishlab chiqarish",
+          "Uzatish → ishlab chiqarish → taqsimlash",
+          "Ishlab chiqarish → uzatish → taqsimlash",
+          "Ishlab chiqarish → taqsimlash → uzatish"
+        ],
+        "options_en": [
+          "Distribution → transmission → generation",
+          "Transmission → generation → distribution",
+          "Generation → transmission → distribution",
+          "Generation → distribution → transmission"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Elektr avval ishlab chiqariladi, keyin uzoq masofaga uzatiladi va oxirida iste’molchilarga taqsimlanadi.",
+        "explanation_en": "Electricity is generated, transmitted over distances and then distributed to consumers.",
+        "evidence": {
+          "quote": "Elektr energiyasini ishlab chiqarish, uzatish va taqsimlashni tushunish",
+          "learning_objective": "Identify the sequence of grid stages."
+        }
+      },
+      {
+        "question_uz": "Elektr energiyasini uzoq masofaga uzatishda kuchlanish nega oshiriladi?",
+        "question_en": "Why is voltage increased when electricity is transmitted over long distances?",
+        "options_uz": [
+          "Uzatishdagi energiya yo‘qotilishini kamaytirish uchun",
+          "Uzatish simlarining qarshiligini nolga tushirish uchun",
+          "Stansiya ishlab chiqargan energiyani o‘z-o‘zidan ko‘paytirish uchun",
+          "Yuqori kuchlanishni uy qurilmalariga o‘zgartirmay yetkazish uchun"
+        ],
+        "options_en": [
+          "To reduce energy losses during transmission",
+          "To reduce the resistance of transmission wires to zero",
+          "To automatically multiply the energy generated at the power station",
+          "To deliver high voltage to household appliances without reducing it"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Yuqori kuchlanishli liniyalar uzoq masofaga uzatishda ortiqcha energiya yo‘qotilishini kamaytirishga xizmat qiladi.",
+        "explanation_en": "High-voltage lines help reduce energy losses when electricity is transmitted over long distances.",
+        "evidence": {
+          "quote": "yuqori kuchlanishli uzatish\nliniyalaridan foydalaniladi , bunday liniyalar tizimi ortiqcha energiya yo'qotilishining oldini oladi.",
+          "learning_objective": "Explain the purpose of high-voltage transmission."
+        }
+      },
+      {
+        "question_uz": "Elektr uyga yetkazilishidan oldin yuqori kuchlanish qaysi qurilma yordamida pasaytiriladi?",
+        "question_en": "Which device reduces high voltage before electricity is delivered to homes?",
+        "options_uz": [
+          "Generator",
+          "Akkumulyator",
+          "Quyosh paneli",
+          "Transformator"
+        ],
+        "options_en": [
+          "Generator",
+          "Battery",
+          "Solar panel",
+          "Transformer"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Taqsimlash bosqichida maxsus transformatorlar kuchlanishni pasaytiradi. Shundan so‘ng elektr iste’molchilarga yetkaziladi.",
+        "explanation_en": "During distribution, transformers reduce the voltage before electricity reaches consumers.",
+        "evidence": {
+          "quote": "elektr energiyasining kuchlanishi maxsus transformatorlar orqali pasaytiriladi",
+          "learning_objective": "Identify the role of a distribution transformer."
+        }
+      },
+      {
+        "question_uz": "Muhandislar elektr tarmog‘ining holatini kuzatishni yaxshilamoqchi. Maqoladagi qaysi yechim bunga mos?",
+        "question_en": "Engineers want to monitor the grid more effectively. Which solution in the article fits this goal?",
+        "options_uz": [
+          "Elektr stansiyasini boshqa yoqilg‘iga o‘tkazish",
+          "Raqamli monitoring va avtomatlashtirish",
+          "Qo‘shimcha energiya saqlash batareyalarini o‘rnatish",
+          "Uzatish liniyalarining quvvatini oshirish"
+        ],
+        "options_en": [
+          "Switching a power station to a different fuel",
+          "Digital monitoring and automation",
+          "Installing additional energy storage batteries",
+          "Increasing the capacity of transmission lines"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Maqolada raqamli monitoring hamda avtomatlashtirish tarmoq muammolarini bartaraf etishga qaratilgan yondashuvlar qatorida keltirilgan.",
+        "explanation_en": "The article lists digital monitoring and automation among approaches for addressing grid problems.",
+        "evidence": {
+          "quote": "Raqamli monitoring hamda avtomatlashtirish",
+          "learning_objective": "Match a grid improvement to a practical need."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 43,
+    "article_slug": "aqlli-uy-texnologiyasida-suniy-intellekt-va-elektrotexnika-muhandislarining-roli",
+    "source_title": "Aqlli uy texnologiyasida sun’iy intellekt va elektrotexnika muhandislarining roli",
+    "source_sha256": "d00dafff8dbd57e777b256e4a2ab318fa227455660bb294587a5e139e5037c5e",
+    "slug": "maqola-aqlli-uy-texnologiyasida-suniy-intellekt-va-elektrotexnika-muhandislarining-roli",
+    "category_slug": "electrical-engineering",
+    "title_uz": "Aqlli uy qanday ishlaydi?",
+    "title_en": "How does a smart home work?",
+    "description_uz": "Sun’iy intellekt, sensorlar va muhandislarning aqlli uydagi vazifalari.",
+    "description_en": "Explore the roles of AI, sensors and engineers in a smart home.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Aqlli uyda sun’iy intellektning asosiy vazifasi qaysi?",
+        "question_en": "What is a main role of AI in a smart home?",
+        "options_uz": [
+          "Haroratni bevosita o‘lchab, signalga aylantirish",
+          "Elektr quvvatini akkumulyatorda saqlash",
+          "Chiroqning elektr zanjirini jismonan ulash",
+          "Odatlarni o‘rganib, avtomatik qarorlar qabul qilish"
+        ],
+        "options_en": [
+          "Directly measuring temperature and converting it into a signal",
+          "Storing electrical energy in a battery",
+          "Physically closing a lamp’s electrical circuit",
+          "Learning habits and making automatic decisions"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Sun’iy intellekt foydalanuvchining odatlarini o‘rganadi va qurilmalarga avtomatik vazifalarni bajartiradi.",
+        "explanation_en": "AI learns the user’s habits and directs devices to perform tasks automatically.",
+        "evidence": {
+          "quote": "foydalanuvchining odatlarini o‘rganib, qaror qabul qiladi",
+          "learning_objective": "Distinguish AI decision-making from hardware work."
+        }
+      },
+      {
+        "question_uz": "Aqlli termostat foydalanuvchi uyda yoki tashqaridaligini bilsa, maqolaga ko‘ra qanday moslashadi?",
+        "question_en": "If a smart thermostat knows whether the user is at home or away, how does it adapt according to the article?",
+        "options_uz": [
+          "Odam bor-yo‘qligidan qat’i nazar bir xil rejimni saqlaydi",
+          "Isitish yoki sovitishni vaziyatga moslaydi",
+          "Harorat o‘rniga xonadagi chiroqlar sonini boshqaradi",
+          "Sozlamani faqat foydalanuvchi har safar qo‘lda o‘zgartiradi"
+        ],
+        "options_en": [
+          "It keeps the same setting regardless of whether anyone is home",
+          "It adjusts heating or cooling to the situation",
+          "It controls the number of lights in the room instead of temperature",
+          "The user must manually change the setting every time"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Maqolada termostat foydalanuvchining uyda yoki tashqarida bo‘lishiga qarab isitish va sovitishni sozlashi aytilgan.",
+        "explanation_en": "The article explains that a thermostat can adjust heating and cooling based on whether the user is at home or away.",
+        "evidence": {
+          "quote": "AI yordamida termostatlar foydalanuvchining qachon uyda yoki tashqarida bo‘lishini oldindan aniqlaydi, isitish/sovitish tizimini avtomatik sozlaydi.",
+          "learning_objective": "Apply occupancy-aware temperature control."
+        }
+      },
+      {
+        "question_uz": "Aqlli uydagi sensorlar sun’iy intellektga nima uchun kerak?",
+        "question_en": "Why does AI in a smart home need sensors?",
+        "options_uz": [
+          "Buyruqni bajarib, mexanik harakat hosil qilish uchun",
+          "Qurilmalar orasida tarmoq xabarlarini yo‘naltirish uchun",
+          "Harorat, harakat kabi holatlar haqida ma’lumot olish uchun",
+          "Avvalgi ma’lumotlarni xotirada saqlash uchun"
+        ],
+        "options_en": [
+          "To execute commands by producing mechanical movement",
+          "To route network messages between devices",
+          "To obtain information such as temperature and movement",
+          "To store previous data in memory"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Sensorlar o‘lchov ma’lumotlarini beradi. Shu ma’lumotlar sun’iy intellektning qarorlariga asos bo‘ladi.",
+        "explanation_en": "Sensors provide measurements that AI can use to make decisions.",
+        "evidence": {
+          "quote": "Aniq ma’lumotlar berib, AI qarorlariga asos bo‘lishi uchun.",
+          "learning_objective": "Explain why automated decisions need measurements."
+        }
+      },
+      {
+        "question_uz": "Maqola aqlli uy yaratishda elektrotexnika muhandislarining qaysi vazifasini ajratib ko‘rsatadi?",
+        "question_en": "Which role of electrical engineers in creating a smart home does the article highlight?",
+        "options_uz": [
+          "Apparat va elektr tizimlarini loyihalab birlashtiradi",
+          "Uy egasining ovozli buyruqlarini tanib, javob beradi",
+          "Har bir xonadagi haroratni bevosita o‘lchaydi",
+          "Oila odatlarini o‘rganib, avtomatik jadvallar tuzadi"
+        ],
+        "options_en": [
+          "Designing and integrating hardware and electrical systems",
+          "Recognising and responding to the user’s voice commands",
+          "Directly measuring the temperature in each room",
+          "Learning family habits and creating automatic schedules"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Muhandislar sun’iy intellekt ishlashi uchun zarur texnik infratuzilmani yaratadi va qurilmalarni birlashtiradi.",
+        "explanation_en": "Engineers create the technical infrastructure needed to run AI and connect the devices.",
+        "evidence": {
+          "quote": "apparat va elektr tizimlarini loyihalashtiradi hamda integratsiya(birlashtirish) qiladi.",
+          "learning_objective": "Identify the engineering role in a smart home."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 44,
+    "article_slug": "simsiz-zaryadlash-qanday-ishlaydi",
+    "source_title": "Simsiz zaryadlash qanday ishlaydi?",
+    "source_sha256": "d0c8951a5bb89d8cdf6910c0ba54b85722175a81ed144dfc5b2434466143f0e4",
+    "slug": "maqola-simsiz-zaryadlash-qanday-ishlaydi",
+    "category_slug": "electrical-engineering",
+    "title_uz": "Simsiz zaryadlash siri",
+    "title_en": "The idea behind wireless charging",
+    "description_uz": "G‘altaklar, elektromagnit induksiya va mos qurilmalar haqida 4 savol.",
+    "description_en": "Four questions about coils, electromagnetic induction and compatible devices.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Induktiv simsiz zaryadlash qaysi hodisaga asoslanadi?",
+        "question_en": "Which phenomenon is inductive wireless charging based on?",
+        "options_uz": [
+          "Elektromagnit induksiya",
+          "Elektrostatik zaryad to‘planishi",
+          "Fotoelektrik energiya aylanishi",
+          "Batareyadagi kimyoviy reaksiya"
+        ],
+        "options_en": [
+          "Electromagnetic induction",
+          "Electrostatic charge accumulation",
+          "Photovoltaic energy conversion",
+          "A chemical reaction inside a battery"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "G‘altaklar orasidagi magnit maydon orqali energiya uzatilishi elektromagnit induksiyaga asoslanadi.",
+        "explanation_en": "Energy transfer through the magnetic field between coils relies on electromagnetic induction.",
+        "evidence": {
+          "quote": "Simsiz zaryadlash qanday ishlashining siri elektromagnit induksiyadir:",
+          "learning_objective": "Identify the principle of inductive charging."
+        }
+      },
+      {
+        "question_uz": "Zaryadlash bazasidagi g‘altakka mos keluvchi qabul qiluvchi g‘altak qayerda bo‘ladi?",
+        "question_en": "Where is the receiving coil that works with the coil in a charging pad?",
+        "options_uz": [
+          "Zaryadlash bazasining o‘zida",
+          "Rozetkaga ulangan quvvat adapterida",
+          "Zaryadlanayotgan qurilmada",
+          "Wi-Fi routerining antenna qismida"
+        ],
+        "options_en": [
+          "Inside the charging pad itself",
+          "Inside the power adapter connected to the wall socket",
+          "Inside the device being charged",
+          "In the antenna section of a Wi-Fi router"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Maqolada baza mos smartfondagi qabul qiluvchi g‘altakni aniqlashi tushuntirilgan. Ikki g‘altak energiya uzatishda birga ishlaydi.",
+        "explanation_en": "The article describes the pad detecting a receiving coil in a compatible phone. The two coils work together to transfer energy.",
+        "evidence": {
+          "quote": "Signal mos keluvchi smartfondagi kabi qabul qiluvchi lasanni qidiradi.",
+          "learning_objective": "Locate the receiver in a wireless charging system."
+        }
+      },
+      {
+        "question_uz": "Qi belgisi bo‘lgan zaryadlash qurilmalari uchun standartning asosiy maqsadlaridan biri nima?",
+        "question_en": "What is one main aim of the standard for charging devices carrying the Qi logo?",
+        "options_uz": [
+          "Barcha telefonlarni bir xil quvvatda zaryadlash",
+          "Mos qurilmalar o‘rtasida muvofiqlikni ta’minlash",
+          "Barcha batareyalarning sig‘imini bir xil qilish",
+          "Har bir batareyaning bir xil vaqtda to‘lishini kafolatlash"
+        ],
+        "options_en": [
+          "Charging all phones at the same power level",
+          "Ensuring compatibility between supported devices",
+          "Making all batteries have the same capacity",
+          "Guaranteeing that every battery takes the same time to charge"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Qi standarti simsiz quvvatlashni qulay va xavfsiz qilish hamda mos qurilmalar o‘rtasida muvofiqlikni ta’minlashga qaratilgan.",
+        "explanation_en": "The Qi standard aims to make wireless charging convenient and safe while supporting device compatibility.",
+        "evidence": {
+          "quote": "Qi logotipi tushirilgan barcha qurilmalarda moslikni ta'minlashdir.",
+          "learning_objective": "Explain why a charging standard matters."
+        }
+      },
+      {
+        "question_uz": "Maqolada rezonant quvvatlashning qanday imkoniyati tilga olingan?",
+        "question_en": "Which capability of resonant charging is mentioned in the article?",
+        "options_uz": [
+          "Qurilmalarni masofa cheklovisiz zaryadlash",
+          "Qabul qiluvchi g‘altaksiz energiya uzatish",
+          "Tashqi quvvat manbaisiz doimiy zaryadlash",
+          "Bir vaqtning o‘zida bir nechta qurilmani quvvatlash"
+        ],
+        "options_en": [
+          "Charging devices with no limit on distance",
+          "Transferring energy without a receiving coil",
+          "Charging continuously without an external power source",
+          "Charging several devices at the same time"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Maqolada rezonant quvvatlash bir vaqtning o‘zida bir nechta qurilmani quvvatlashi mumkinligi aytilgan. G‘altaklar baribir bir-biriga yaqin bo‘lishi kerak.",
+        "explanation_en": "The article says resonant charging can charge several devices at once. The coils still need to be near each other.",
+        "evidence": {
+          "quote": "bir vaqtning o’zida bir nechta qurulmani quvvatlashi mumkin.",
+          "learning_objective": "Recognise a capability of resonant charging."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 45,
+    "article_slug": "zamonaviy-sensor-texnologiyasi",
+    "source_title": "Zamonaviy sensor texnologiyasi",
+    "source_sha256": "5f658b442ce191ce337a9e8593654cb8eb858cd0cd7c850f76faa7b48c208e27",
+    "slug": "maqola-zamonaviy-sensor-texnologiyasi",
+    "category_slug": "electrical-engineering",
+    "title_uz": "Sensorlar dunyoni qanday sezadi?",
+    "title_en": "How do sensors sense the world?",
+    "description_uz": "Sensor vazifasi, signal sifati va foydali o‘lchovlar haqida 4 savol.",
+    "description_en": "Four questions about sensing, signal quality and useful measurements.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Telefon ekran yorqinligini atrofga qarab o‘zgartirishi uchun qaysi sensor kerak?",
+        "question_en": "Which sensor helps a phone adjust screen brightness to its surroundings?",
+        "options_uz": [
+          "Bosim sensori",
+          "Yorug‘lik sensori",
+          "Gaz sensori",
+          "Namlik sensori"
+        ],
+        "options_en": [
+          "Pressure sensor",
+          "Light sensor",
+          "Gas sensor",
+          "Humidity sensor"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Yorug‘lik sensori atrofdagi yorug‘likni sezadi. Telefon shu ma’lumotdan ekran yorqinligini moslashda foydalanishi mumkin.",
+        "explanation_en": "A light sensor detects surrounding light, giving the phone information it can use to adjust screen brightness.",
+        "evidence": {
+          "quote": "Chunki unda yorug‘likni “ko‘radigan” sensor bor.",
+          "learning_objective": "Choose a sensor for a familiar task."
+        }
+      },
+      {
+        "question_uz": "Transduserning vazifasi qanday ta’riflangan?",
+        "question_en": "How is a transducer’s role described?",
+        "options_uz": [
+          "Energiyani turini o‘zgartirmay zaxirada saqlash",
+          "Ma’lumot paketlarini tarmoqdagi manziliga yo‘naltirish",
+          "O‘lchov natijalarini vaqt bo‘yicha xotirada saqlash",
+          "Bir turdagi energiyani boshqasiga aylantirish"
+        ],
+        "options_en": [
+          "Storing energy without changing its form",
+          "Routing data packets to their network destinations",
+          "Keeping a time-based record of measurements in memory",
+          "Converting one form of energy into another"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Transduser energiya turini o‘zgartiradi; maqola sensorning muhitdagi fizik ta’sirni sezish vazifasini ham ajratib ko‘rsatadi.",
+        "explanation_en": "A transducer changes the form of energy; the article also distinguishes a sensor’s role in detecting physical effects.",
+        "evidence": {
+          "quote": "transduser esa bir turdagi energiyani boshqasiga aylantiradi.",
+          "learning_objective": "Explain energy conversion in a transducer."
+        }
+      },
+      {
+        "question_uz": "Sensor signalidagi shovqin kamaytirilsa, o‘lchovga qanday foyda bo‘ladi?",
+        "question_en": "How does reducing noise in a sensor signal help the measurement?",
+        "options_uz": [
+          "Natija ishonchliroq bo‘ladi",
+          "Sensorning o‘lchash diapazoni avtomatik kengayadi",
+          "O‘lchovning fizik birligi avtomatik almashadi",
+          "O‘lchanayotgan miqdor o‘zgarsa ham natija bir xil qoladi"
+        ],
+        "options_en": [
+          "The result becomes more reliable",
+          "The sensor’s measurement range automatically expands",
+          "The physical unit of measurement automatically changes",
+          "The result stays fixed even when the measured quantity changes"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Shovqin foydali o‘lchovga aloqasi bo‘lmagan signaldir. Uni kamaytirish o‘lchov natijasining ishonchliligini oshiradi.",
+        "explanation_en": "Noise is an unwanted signal unrelated to the intended measurement. Reducing it improves measurement reliability.",
+        "evidence": {
+          "quote": "Shovqinning pastligi o‘lchov natijalarining ishonchliligini ta’minlaydi.",
+          "learning_objective": "Explain why low noise is desirable."
+        }
+      },
+      {
+        "question_uz": "Haroratni o‘lchayotgan sensor obyektni o‘zi qizdirib yuborsa, qaysi talab buziladi?",
+        "question_en": "If a temperature sensor heats the object it is measuring, which requirement is violated?",
+        "options_uz": [
+          "Chiqish signalining past shovqin darajasi",
+          "Kirish va chiqishning chiziqli bog‘liqligi",
+          "O‘lchanayotgan obyektga minimal ta’sir",
+          "Boshqa fizik kattaliklarga sezgir bo‘lmaslik"
+        ],
+        "options_en": [
+          "Low noise in the output signal",
+          "A linear relationship between input and output",
+          "Minimal influence on the measured object",
+          "Lack of sensitivity to other physical quantities"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Sensor o‘lchayotgan obyektning fizik holatini sezilarli o‘zgartirmasligi kerak. Aks holda uning o‘zi o‘lchovga ta’sir qiladi.",
+        "explanation_en": "A sensor should avoid significantly changing the physical state of its target, or it will influence its own measurement.",
+        "evidence": {
+          "quote": "Yaxshi sensor o‘lchanayotgan obyekt yoki jarayonga minimal ta’sir ko‘rsatadi. Bu degani, sensorning o‘zi o‘lchov jarayoniga aralashib, obyektning fizik holatini o‘zgartirmasligi kerak.",
+          "learning_objective": "Apply the principle of minimal measurement disturbance."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 46,
+    "article_slug": "elektromobillarning-kopayishi",
+    "source_title": "Elektromobillarning ko’payishi",
+    "source_sha256": "e554d06c7213d29eeebd66e0b50c1c26e0d6abd6b3df82f94b861b25f3658b7f",
+    "slug": "maqola-elektromobillarning-kopayishi",
+    "category_slug": "electrical-engineering",
+    "title_uz": "Elektromobillar: imkoniyat va yechimlar",
+    "title_en": "Electric cars: opportunities and solutions",
+    "description_uz": "Quvvatlash, xizmat xarajatlari va batareyalarning hayot davri.",
+    "description_en": "Explore charging, maintenance costs and the battery life cycle.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Uzoq yo‘lda elektromobilni quvvatlashdan xavotirni kamaytirish uchun qaysi yechim eng mos?",
+        "question_en": "Which solution best addresses concern about charging an electric car on a long journey?",
+        "options_uz": [
+          "Har bir shaharda avtoservislar sonini ko‘paytirish",
+          "Batareyani qayta ishlash markazlarini kengaytirish",
+          "Quvvatlash stansiyalarini kengaytirish",
+          "Avtomobil sotib olish uchun boshlang‘ich narxni pasaytirish"
+        ],
+        "options_en": [
+          "Increasing the number of repair centres in each city",
+          "Expanding battery recycling centres",
+          "Expanding the charging network",
+          "Reducing the upfront purchase price of the car"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Maqolada quvvatlash stansiyalarining mavjudligi va ulardan foydalanish imkoniyati asosiy masala sifatida ko‘rsatilgan.",
+        "explanation_en": "The article identifies the availability and accessibility of charging stations as a key issue.",
+        "evidence": {
+          "quote": "Quvvatlash stansiyalarining mavjudligi va ulardan foydalana olish muhim masala boʻlib qolmoqda. Quvvatlash infratuzilmasini kengaytirish yoʻllarda elektrda harakatlanuvchi transport vositalarining sonini oshirish uchun zarur hisoblanadi.",
+          "learning_objective": "Match charging infrastructure to a driver’s concern."
+        }
+      },
+      {
+        "question_uz": "Maqolaga ko‘ra, elektromobilning texnik xizmat xarajatlari kamayishiga nima yordam beradi?",
+        "question_en": "According to the article, what can help reduce an electric car’s maintenance costs?",
+        "options_uz": [
+          "Harakatlanuvchi qismlarining kamroq bo‘lishi",
+          "Salon ekranining kattaroq bo‘lishi",
+          "Batareyani quvvatlash tezligining oshishi",
+          "Dastlabki sotib olish narxining yuqoriroq bo‘lishi"
+        ],
+        "options_en": [
+          "Having fewer moving parts",
+          "Having a larger cabin display",
+          "Increasing battery charging speed",
+          "Having a higher initial purchase price"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Maqola ichki yonuv dvigatellariga nisbatan kamroq harakatlanuvchi qismlar va kamroq xizmat talabini xarajatlarni kamaytiruvchi omillar sifatida keltiradi.",
+        "explanation_en": "The article links fewer moving parts and reduced maintenance needs compared with combustion engines to lower running costs.",
+        "evidence": {
+          "quote": "kamroq harakatlanuvchi qismlar tufayli kamroq operatsion xarajatlarga ega.",
+          "learning_objective": "Connect mechanical simplicity with maintenance needs."
+        }
+      },
+      {
+        "question_uz": "Elektromobilni quvvatlashning ekologik foydasini oshirish uchun qaysi manbadan foydalanish taklif qilingan?",
+        "question_en": "Which energy sources are suggested to increase the environmental benefit of charging an electric car?",
+        "options_uz": [
+          "Ko‘mir elektr stansiyasi",
+          "Benzin generatori",
+          "Dizel generatori",
+          "Quyosh yoki shamol energiyasi"
+        ],
+        "options_en": [
+          "A coal-fired power station",
+          "A petrol generator",
+          "A diesel generator",
+          "Solar or wind energy"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Quyosh va shamol qayta tiklanuvchi energiya manbalaridir. Maqola ulardan quvvatlashda foydalanishni taklif qiladi.",
+        "explanation_en": "Solar and wind are renewable sources. The article suggests using them to charge electric vehicles.",
+        "evidence": {
+          "quote": "Ularni quyosh yoki shamol energiyasi bilan zaryadlash orqali",
+          "learning_objective": "Recognise renewable-powered charging."
+        }
+      },
+      {
+        "question_uz": "Ishlatilgan elektromobil batareyalarining atrof-muhitga ta’sirini kamaytirish uchun nima muhim?",
+        "question_en": "What is important for reducing the environmental impact of used electric-car batteries?",
+        "options_uz": [
+          "Batareyalarni qayta ishlamasdan uzoq muddat saqlash",
+          "Samarali qayta ishlash tizimlarini yaratish",
+          "Batareyalarni saralamasdan boshqa chiqindilarga qo‘shish",
+          "Faqat batareyaning tashqi qoplamasini almashtirish"
+        ],
+        "options_en": [
+          "Storing batteries long-term without recycling them",
+          "Developing effective recycling systems",
+          "Mixing batteries with other waste without sorting them",
+          "Replacing only the battery’s outer casing"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Batareyani ishlab chiqarish va undan foydalanish tugagach ishlov berish ham muhim. Maqola samarali qayta ishlash usullarini tavsiya qiladi.",
+        "explanation_en": "Battery production and end-of-life handling both matter. The article recommends effective recycling methods.",
+        "evidence": {
+          "quote": "Samarali qayta ishlash uslublarini joriy etish va uzoq vaqtga chidaydigan xomashyolardan foydalanish, ushbu zararli taʼsirlarni kamaytirishda muhim oʻrin tutadi.",
+          "learning_objective": "Consider battery impacts beyond driving."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 47,
+    "article_slug": "kimyo-muhandisligi-tarixi",
+    "source_title": "Kimyo muhandisligi tarixi",
+    "source_sha256": "2a63bcc64d0aaae37d342c754edf9ad258af4d581c5cb1eea30f64f2524de844",
+    "slug": "maqola-kimyo-muhandisligi-tarixi",
+    "category_slug": "chemical-engineering",
+    "title_uz": "Kimyo muhandisligi nima yaratadi?",
+    "title_en": "What does chemical engineering create?",
+    "description_uz": "Jarayonlar, zavodlar, ekologiya va biomassa haqida 4 savol.",
+    "description_en": "Four questions about processes, factories, the environment and biomass.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Yangi kimyoviy mahsulotni ko‘p miqdorda ishlab chiqarish uchun kimyo muhandisi nima loyihalaydi?",
+        "question_en": "What does a chemical engineer design to manufacture a new chemical product at scale?",
+        "options_uz": [
+          "Laboratoriyadagi kichik tajribani o‘zgartirmay takrorlash rejasini",
+          "Moddaning kimyoviy formulasini yozish usulini",
+          "Tayyor mahsulotni tashish yo‘nalishlarini",
+          "Zarur zavodlar va ishlab chiqarish jarayonlarini"
+        ],
+        "options_en": [
+          "A plan to repeat the same small laboratory experiment unchanged",
+          "A method of writing the substance’s chemical formula",
+          "Routes for transporting the finished product",
+          "The required plants and production processes"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Kimyo muhandisligi moddalarni o‘rganish bilan birga, ularni ishlab chiqaradigan zavod va jarayonlarni loyihalashni ham o‘z ichiga oladi.",
+        "explanation_en": "Chemical engineering includes designing the plants and processes used to manufacture substances.",
+        "evidence": {
+          "quote": "ularni ishlab chiqarish uchun zarur bo‘lgan zavodlar va jarayonlarni loyihalash",
+          "learning_objective": "Identify chemical engineering’s manufacturing role."
+        }
+      },
+      {
+        "question_uz": "Zavodni alohida bosqichlar orqali tahlil qiluvchi “birlik amaliyotlar” yondashuvi nimani anglatadi?",
+        "question_en": "What does the “unit operations” approach to analysing a factory mean?",
+        "options_uz": [
+          "Jarayonlarni faqat ishlatilgan xomashyo nomi bo‘yicha guruhlash",
+          "Har bir bosqichni alohida jarayon sifatida ko‘rish",
+          "Butun zavodni ajralmas bitta jarayon sifatida baholash",
+          "Uskunalarni vazifasi emas, o‘lchami bo‘yicha guruhlash"
+        ],
+        "options_en": [
+          "Grouping processes only by the name of the raw material used",
+          "Treating each stage as a separate operation",
+          "Evaluating the whole plant as one indivisible process",
+          "Grouping equipment by size rather than function"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Tashish, aralashtirish va ajratish kabi bosqichlar alohida birliklar sifatida ko‘riladi. Bu murakkab zavodni tahlil qilishga yordam beradi.",
+        "explanation_en": "Stages such as transport, mixing and separation are treated as individual operations, helping engineers analyse a complex plant.",
+        "evidence": {
+          "quote": "Zavoddagi har bir bosqich alohida birlik sifatida ko‘riladi.",
+          "learning_objective": "Explain the unit-operations approach."
+        }
+      },
+      {
+        "question_uz": "Maqoladagi Leblank jarayoni tarixi muhandisga qanday saboq beradi?",
+        "question_en": "What engineering lesson does the article’s account of the Leblanc process illustrate?",
+        "options_uz": [
+          "Ishlab chiqarish hajmi va tannarxni yetarli mezon deb olish",
+          "Baholashni tayyor mahsulotning tozaligi bilan cheklash",
+          "Mahsulot unumdorligi va chiqindilar ta’sirini birga baholash",
+          "Jarayon samarali bo‘lsa, ekologik tahlilni keyinga qoldirish"
+        ],
+        "options_en": [
+          "Treating output volume and cost as sufficient criteria",
+          "Limiting evaluation to the purity of the finished product",
+          "Assessing production performance together with the impacts of waste",
+          "Postponing environmental assessment when the process is efficient"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Jarayon ishlab chiqarishda foydali bo‘lsa-da, zararli chiqindilar chiqargan. Bu ekologik talablar paydo bo‘lishiga sabab bo‘lgan.",
+        "explanation_en": "Although the process was useful for production, it produced harmful waste, contributing to environmental regulation.",
+        "evidence": {
+          "quote": "Jarayon samarali bo‘lgan bo‘lsa-da, ekologik jihatdan zararli edi. Juda ko‘p yoqimsiz hidli chiqindilar hosil qilardi.",
+          "learning_objective": "Recognise environmental trade-offs in production."
+        }
+      },
+      {
+        "question_uz": "Qaysi energiya xomashyosi maqoladagi biomassa tushunchasiga mos keladi?",
+        "question_en": "Which energy resource fits the article’s definition of biomass?",
+        "options_uz": [
+          "Organik qishloq xo‘jaligi chiqindilari",
+          "Ko‘mir",
+          "Tabiiy gaz",
+          "Neft"
+        ],
+        "options_en": [
+          "Organic agricultural waste",
+          "Coal",
+          "Natural gas",
+          "Crude oil"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Biomassa o‘simlik va hayvonlardan olingan organik materialdir. Maqolada qishloq xo‘jaligi chiqindilari uning misollaridan biri sifatida berilgan.",
+        "explanation_en": "Biomass is organic material derived from plants and animals. The article includes agricultural waste as an example.",
+        "evidence": {
+          "quote": "Biomassaga yog‘och, qishloq xo‘jaligi chiqindilari, axlat va hayvon go‘ngi kiradi.",
+          "learning_objective": "Identify a biomass resource."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 48,
+    "article_slug": "atom-nima",
+    "source_title": "Atom nima?",
+    "source_sha256": "8ab6b89e804ea5aae29ada29be2aa6537aa8f524860b3bd8c78dc5bc5357104a",
+    "slug": "maqola-atom-nima",
+    "category_slug": "chemical-engineering",
+    "title_uz": "Atomni ichkaridan tushunamiz",
+    "title_en": "Understanding the atom",
+    "description_uz": "Protonlar, elektronlar, ionlar va izotoplar haqida 4 savol.",
+    "description_en": "Four questions about protons, electrons, ions and isotopes.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Atom qaysi kimyoviy elementga mansubligini nima belgilaydi?",
+        "question_en": "What determines which chemical element an atom belongs to?",
+        "options_uz": [
+          "Protonlar soni",
+          "Neytronlar soni",
+          "Protonlar va neytronlar sonining yig‘indisi",
+          "Protonlar va elektronlar sonining farqi"
+        ],
+        "options_en": [
+          "The number of protons",
+          "The number of neutrons",
+          "The sum of the numbers of protons and neutrons",
+          "The difference between the numbers of protons and electrons"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Protonlar soni atom raqamini belgilaydi. Masalan, 6 ta protonli atom ugleroddir.",
+        "explanation_en": "The proton count determines the atomic number. For example, an atom with six protons is carbon.",
+        "evidence": {
+          "quote": "Atomdagi protonlar soni — uning atom raqami",
+          "learning_objective": "Identify what defines an element."
+        }
+      },
+      {
+        "question_uz": "Neytral atomning umumiy elektr zaryadi nega nolga teng?",
+        "question_en": "Why is a neutral atom’s net electric charge zero?",
+        "options_uz": [
+          "Protonlar va neytronlar soni teng",
+          "Neytronlar va elektronlar soni teng",
+          "Protonlar va elektronlar soni teng",
+          "Yadrodagi jami zarrachalar va elektronlar soni teng"
+        ],
+        "options_en": [
+          "It has equal numbers of protons and neutrons",
+          "It has equal numbers of neutrons and electrons",
+          "It has equal numbers of protons and electrons",
+          "Its total number of nuclear particles equals its number of electrons"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Musbat protonlar va manfiy elektronlar zaryadlari bir-birini muvozanatlaydi.",
+        "explanation_en": "The charges of positive protons and negative electrons balance each other.",
+        "evidence": {
+          "quote": "Neytral atomda protonlar va elektronlar soni teng bo‘ladi.",
+          "learning_objective": "Explain charge balance in a neutral atom."
+        }
+      },
+      {
+        "question_uz": "3 ta proton va 2 ta elektronga ega litiy ionining zaryadi qanday?",
+        "question_en": "What is the charge of a lithium ion with three protons and two electrons?",
+        "options_uz": [
+          "−1",
+          "+1",
+          "0",
+          "+3"
+        ],
+        "options_en": [
+          "−1",
+          "+1",
+          "0",
+          "+3"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Protonlar sonidan elektronlar sonini ayiramiz: 3 − 2 = +1. Ion bitta manfiy elektronni yo‘qotgan.",
+        "explanation_en": "Subtract electrons from protons: 3 − 2 = +1. The ion has lost one negatively charged electron.",
+        "evidence": {
+          "quote": "Litiyda 3 − 2 = +1.",
+          "learning_objective": "Calculate a simple ionic charge."
+        }
+      },
+      {
+        "question_uz": "Bir elementning ikki izotopidagi proton va neytronlar soni qanday taqqoslanadi?",
+        "question_en": "How do the proton and neutron counts compare in two isotopes of the same element?",
+        "options_uz": [
+          "Protonlar soni farqli, neytronlar soni teng",
+          "Protonlar soni ham, neytronlar soni ham teng",
+          "Protonlar soni ham, neytronlar soni ham farqli",
+          "Protonlar soni teng, neytronlar soni farqli"
+        ],
+        "options_en": [
+          "Different proton counts, equal neutron counts",
+          "Equal proton counts and equal neutron counts",
+          "Different proton counts and different neutron counts",
+          "Equal proton counts, different neutron counts"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Izotoplarda protonlar soni bir xil, neytronlar soni esa turlicha bo‘ladi. Shu sababli ular bir elementga mansub bo‘lib qoladi.",
+        "explanation_en": "Isotopes have the same number of protons but different numbers of neutrons, so they remain the same element.",
+        "evidence": {
+          "quote": "Izotoplar bir xil protonlar soniga ega, ammo neytronlar soni farq qiluvchi",
+          "learning_objective": "Distinguish isotopes from different elements."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 49,
+    "article_slug": "elektron-konfiguratsiyalari-nima",
+    "source_title": "Elektron konfiguratsiyalari nima?",
+    "source_sha256": "e4f8eec3ec5855daa6201f12876900186558b137e2de3bcb2241e0b0039abfa8",
+    "slug": "maqola-elektron-konfiguratsiyalari-nima",
+    "category_slug": "chemical-engineering",
+    "title_uz": "Elektron konfiguratsiyasini o‘qiymiz",
+    "title_en": "Reading electron configurations",
+    "description_uz": "Energiya darajasi, elektronlar soni va qisqartirilgan yozuv haqida 4 savol.",
+    "description_en": "Four questions about energy levels, electron counts and shorthand notation.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "2p⁴ yozuvida boshidagi 2 raqami nimani bildiradi?",
+        "question_en": "In the notation 2p⁴, what does the initial 2 represent?",
+        "options_uz": [
+          "Shu yozuv bilan ifodalangan elektronlar sonini",
+          "Energiya darajasini",
+          "Atomdagi jami elektronlar sonini",
+          "p orbitalar sonini"
+        ],
+        "options_en": [
+          "The number of electrons represented by that term",
+          "The energy level",
+          "The total number of electrons in the atom",
+          "The number of p orbitals"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Elektron konfiguratsiyasidagi oldingi raqam energiya darajasini ko‘rsatadi; harf esa turini bildiradi.",
+        "explanation_en": "The leading number in an electron configuration identifies the energy level; the letter identifies the type.",
+        "evidence": {
+          "quote": "katta raqamlar esa qaysi energiya darajasida joylashganini bildiradi.",
+          "learning_objective": "Interpret the leading number in configuration notation."
+        }
+      },
+      {
+        "question_uz": "1s² 2s² 2p⁴ konfiguratsiyasida jami nechta elektron ko‘rsatilgan?",
+        "question_en": "How many electrons are shown in 1s² 2s² 2p⁴?",
+        "options_uz": [
+          "4",
+          "6",
+          "10",
+          "8"
+        ],
+        "options_en": [
+          "4",
+          "6",
+          "10",
+          "8"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Yuqori indekslarni qo‘shamiz: 2 + 2 + 4 = 8. Maqolada bu kislorod konfiguratsiyasi sifatida keltirilgan.",
+        "explanation_en": "Add the superscripts: 2 + 2 + 4 = 8. The article gives this as the configuration of oxygen.",
+        "evidence": {
+          "quote": "indekslar yig‘indisi 8 ga teng",
+          "learning_objective": "Count electrons from configuration notation."
+        }
+      },
+      {
+        "question_uz": "Natriyning [Ne] 3s¹ yozuvidagi [Ne] nimani almashtiradi?",
+        "question_en": "What does [Ne] replace in sodium’s shorthand configuration [Ne] 3s¹?",
+        "options_uz": [
+          "1s² 2s² 2p⁶ — neonning konfiguratsiyasini",
+          "1s² 2s² 2p⁶ 3s¹ — natriyning to‘liq konfiguratsiyasini",
+          "3s¹ — natriyning tashqi elektronini",
+          "2s² 2p⁶ — neonning faqat tashqi qavatini"
+        ],
+        "options_en": [
+          "1s² 2s² 2p⁶ — neon’s configuration",
+          "1s² 2s² 2p⁶ 3s¹ — sodium’s complete configuration",
+          "3s¹ — sodium’s outermost electron",
+          "2s² 2p⁶ — only neon’s outer shell"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "[Ne] neonning to‘liq elektron konfiguratsiyasini qisqartirib yozadi. Natriyning qolgan elektroni 3s¹ bilan ko‘rsatiladi.",
+        "explanation_en": "[Ne] abbreviates neon’s complete electron configuration. Sodium’s remaining electron is shown as 3s¹.",
+        "evidence": {
+          "quote": "Chunki Neon quyidagi konfiguratsiyaga ega: 1s^2 2s^2 2p^6.",
+          "learning_objective": "Interpret noble-gas shorthand."
+        }
+      },
+      {
+        "question_uz": "Maqoladagi 4 elektronli berilliy uchun qaysi konfiguratsiya to‘g‘ri?",
+        "question_en": "Which configuration does the article give for beryllium with four electrons?",
+        "options_uz": [
+          "1s² 2s¹",
+          "1s² 2s² 2p²",
+          "1s² 2s²",
+          "1s¹"
+        ],
+        "options_en": [
+          "1s² 2s¹",
+          "1s² 2s² 2p²",
+          "1s² 2s²",
+          "1s¹"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Berilliy uchun 1s² 2s² yoziladi: ikki va yana ikki elektron, jami to‘rtta.",
+        "explanation_en": "Beryllium is written as 1s² 2s²: two plus two electrons, four in total.",
+        "evidence": {
+          "quote": "berilliy uchun to‘g‘ri konfiguratsiyani bildiradi:\n1s^2 2s^2",
+          "learning_objective": "Connect an example configuration to its electron count."
+        }
+      }
+    ]
+  },
+  {
+    "article_id": 50,
+    "article_slug": "moddaning-agregat-holatlari",
+    "source_title": "Moddaning agregat holatlari",
+    "source_sha256": "42f14034238493c362237faf7d7942368eb610e00b7d61cb264f8f732958f106",
+    "slug": "maqola-moddaning-agregat-holatlari",
+    "category_slug": "chemical-engineering",
+    "title_uz": "Modda holatlarini taniymiz",
+    "title_en": "Recognising states of matter",
+    "description_uz": "Qattiq, suyuq va gaz holatlari hamda ularning o‘zgarishi.",
+    "description_en": "Explore solids, liquids, gases and changes of state.",
+    "duration_minutes": 3,
+    "questions": [
+      {
+        "question_uz": "Suvni boshqa shakldagi idishga quysak, suyuqlikning qaysi xossasi ko‘rinadi?",
+        "question_en": "Which property of a liquid is illustrated by pouring water into a differently shaped container?",
+        "options_uz": [
+          "Shaklini ham, hajmini ham o‘zgartirmaydi",
+          "Har doim butun idishni gazdek to‘ldiradi",
+          "Hajmini saqlab, idish shaklini oladi",
+          "Shaklini saqlaydi, lekin hajmi idishga qarab o‘zgaradi"
+        ],
+        "options_en": [
+          "It changes neither its shape nor its volume",
+          "It always fills the whole container like a gas",
+          "It keeps its volume but takes the container’s shape",
+          "It keeps its shape, but its volume changes with the container"
+        ],
+        "correct_index": 2,
+        "explanation_uz": "Suyuqlikning aniq hajmi bor, lekin o‘ziga xos qat’iy shakli yo‘q. U idish shaklini oladi.",
+        "explanation_en": "A liquid has a definite volume but no fixed shape of its own, so it takes the shape of its container.",
+        "evidence": {
+          "quote": "Suyuqlikda aniq hajmga ega bo'lgan, ammo aniq shaklga ega bo'lmagan modda holatidir. Boshqacha qilib aytganda, suyuqliklar o'zlari joylashgan idishning shaklini oladi.",
+          "learning_objective": "Apply the shape and volume properties of liquids."
+        }
+      },
+      {
+        "question_uz": "Gazning suyuqlikdan muhim farqi qaysi?",
+        "question_en": "What is an important difference between a gas and a liquid?",
+        "options_uz": [
+          "Gaz butun idish hajmini to‘ldirish uchun kengaya oladi",
+          "Gaz idish shaklini oladi, ammo hajmi o‘zgarmaydi",
+          "Gaz zarrachalari suyuqlikdagidan zichroq joylashadi",
+          "Gazni siqish suyuqlikni siqishdan qiyinroq"
+        ],
+        "options_en": [
+          "A gas can expand to fill the whole container",
+          "A gas takes the container’s shape but keeps a fixed volume",
+          "Gas particles are packed more closely than those in a liquid",
+          "A gas is harder to compress than a liquid"
+        ],
+        "correct_index": 0,
+        "explanation_uz": "Gazning aniq shakli va hajmi yo‘q. U mavjud idish hajmini to‘ldirish uchun kengayishi mumkin.",
+        "explanation_en": "A gas has no fixed shape or volume and can expand to fill its container.",
+        "evidence": {
+          "quote": "gaz butun idish hajmini to'ldirish uchun osongina kengayadi yoki siqiladi.",
+          "learning_objective": "Distinguish gases from liquids."
+        }
+      },
+      {
+        "question_uz": "Suv bug‘i suyuq tomchilarga aylansa, bu faza o‘tishi nima deyiladi?",
+        "question_en": "What is the phase change called when water vapour becomes liquid droplets?",
+        "options_uz": [
+          "Bug‘lanish",
+          "Erish",
+          "Sublimatsiya",
+          "Kondensatsiya"
+        ],
+        "options_en": [
+          "Evaporation",
+          "Melting",
+          "Sublimation",
+          "Condensation"
+        ],
+        "correct_index": 3,
+        "explanation_uz": "Kondensatsiya gazsimon holatdan suyuq holatga o‘tishdir. Bug‘lanish esa uning teskari yo‘nalishidir.",
+        "explanation_en": "Condensation is the change from gas to liquid; evaporation goes in the opposite direction.",
+        "evidence": {
+          "quote": "Kondensatsiya : Gazsimon holatdan suyuq holatga faza o'tishi.",
+          "learning_objective": "Identify gas-to-liquid phase change."
+        }
+      },
+      {
+        "question_uz": "Muz erib suvga aylanganda nima o‘zgaradi?",
+        "question_en": "What changes when ice melts into water?",
+        "options_uz": [
+          "Suv molekulalari vodorod va kislorodga parchalanadi",
+          "Agregat holati o‘zgaradi, modda suv bo‘lib qoladi",
+          "Har bir suv molekulasidagi atomlar soni ko‘payadi",
+          "Yangi kimyoviy modda hosil bo‘ladi"
+        ],
+        "options_en": [
+          "Water molecules split into hydrogen and oxygen",
+          "Its state changes, but the substance remains water",
+          "The number of atoms in each water molecule increases",
+          "A new chemical substance forms"
+        ],
+        "correct_index": 1,
+        "explanation_uz": "Erish qattiq holatdan suyuq holatga o‘tishdir. Bu misolda modda o‘sha suvligicha qoladi.",
+        "explanation_en": "Melting changes a solid to a liquid. In this example, the substance remains water.",
+        "evidence": {
+          "quote": "muz eritilib suvga aylanadi, ammo u har doim suv bo‘lib qoladi.",
+          "learning_objective": "Distinguish physical state change from chemical change."
+        }
+      }
+    ]
+  }
+]

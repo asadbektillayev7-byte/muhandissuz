@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation'
 import { field } from '@/lib/supabase/locale'
 import { effectiveDuration } from '@/lib/quiz'
 import { getQuizBySlug, getQuizQuestions, getQuizArticles } from '@/lib/supabase/quiz-queries'
-import { DifficultyBadge } from '@/components/quiz/DifficultyBadge'
 import { CategoryChip } from '@/components/quiz/CategoryChip'
 import { QuizThumbnail } from '@/components/quiz/QuizThumbnail'
 import styles from '@/components/quiz/quiz-player.module.css'
@@ -50,7 +49,6 @@ export default async function QuizDetailPage({
             {quiz.categories && (
               <CategoryChip as="span" label={field(quiz.categories, 'name', locale)} />
             )}
-            <DifficultyBadge difficulty={quiz.difficulty} locale={locale} />
           </div>
 
           <h1 className={styles.detailTitle}>{title}</h1>

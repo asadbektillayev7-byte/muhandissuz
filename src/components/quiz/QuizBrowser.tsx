@@ -10,7 +10,7 @@ import { EmptyQuizState } from './EmptyQuizState'
 import { ContinueLearning } from './ContinueLearning'
 import { QuizStats } from './QuizStats'
 
-const EMPTY: Filters = { search: '', category: null, difficulty: null }
+const EMPTY: Filters = { search: '', category: null }
 
 export function QuizBrowser({
   quizzes,
@@ -29,15 +29,12 @@ export function QuizBrowser({
 }) {
   const [filters, setFilters] = useState<Filters>(EMPTY)
   const isFiltering =
-    filters.search.trim() !== '' || !!filters.category || !!filters.difficulty
+    filters.search.trim() !== '' || !!filters.category
 
   const results = useMemo(() => {
     const q = filters.search.trim().toLowerCase()
     return quizzes.filter((quiz) => {
       if (filters.category && quiz.categories?.slug !== filters.category) return false
-      if (filters.difficulty && quiz.difficulty !== filters.difficulty) return false
-
-
       if (q) {
         const haystack = [
           quiz.title_uz,

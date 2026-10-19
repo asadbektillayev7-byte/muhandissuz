@@ -74,7 +74,7 @@ export class ChatError extends Error {
 
 export type SiteContext = {
   articles: { title: string; excerpt: string | null; category: string | null; slug: string }[]
-  quizzes: { title: string; difficulty: string | null }[]
+  quizzes: { title: string }[]
   hackathons: { title: string }[]
   projects: { title: string }[]
 }
@@ -99,7 +99,7 @@ export function renderSiteContext(ctx: SiteContext, locale: string): string {
   }
   if (ctx.quizzes.length) {
     lines.push('', 'QUIZZES:')
-    for (const q of ctx.quizzes) lines.push(`- ${q.title}${q.difficulty ? ` (${q.difficulty})` : ''}`)
+    for (const q of ctx.quizzes) lines.push(`- ${q.title}`)
   }
   if (ctx.hackathons.length) {
     lines.push('', 'HACKATHONS:')

@@ -21,7 +21,7 @@ export default async function QuizPage({
       getQuizzes(),
       getQuizStats(),
       supabase.from('categories').select('id, slug, name_uz, name_en').order('name_uz'),
-      supabase.from('quiz_articles').select('quiz_id, article_id'),
+      supabase.from('quiz_articles').select('quiz_id, article_id, quizzes!inner(published)').eq('quizzes.published', true),
       supabase.from('articles').select('id, title_uz, title_en'),
     ])
 

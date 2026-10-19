@@ -18,7 +18,7 @@ export function GenerateQuestions({
   articleCount: number
 }) {
   const router = useRouter()
-  const [count, setCount] = useState(5)
+  const [count, setCount] = useState(4)
   const [drafts, setDrafts] = useState<DraftQuestion[] | null>(null)
   const [keep, setKeep] = useState<Set<number>>(new Set())
   const [busy, setBusy] = useState(false)

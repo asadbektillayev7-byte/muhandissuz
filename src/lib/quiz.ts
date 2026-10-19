@@ -1,4 +1,3 @@
-export type Difficulty = 'easy' | 'medium' | 'hard'
 export type LanguageMode = 'bilingual' | 'en' | 'uz'
 
 export type QuizCategory = {
@@ -16,7 +15,6 @@ export type Quiz = {
   title_en: string | null
   description_uz: string | null
   description_en: string | null
-  difficulty: Difficulty
   duration_minutes: number | null
   thumbnail_url: string | null
   language_mode: LanguageMode
@@ -44,14 +42,6 @@ export type QuizQuestion = {
   explanation_uz: string | null
   explanation_en: string | null
   sort_order: number
-}
-
-export const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard']
-
-export const DIFFICULTY_LABELS: Record<Difficulty, { uz: string; en: string }> = {
-  easy: { uz: 'Oson', en: 'Easy' },
-  medium: { uz: "O'rta", en: 'Medium' },
-  hard: { uz: 'Qiyin', en: 'Hard' },
 }
 
 /** Falls back to ~30s per question when an author leaves duration blank. */

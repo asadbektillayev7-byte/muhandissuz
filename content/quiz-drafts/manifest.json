@@ -1,0 +1,128 @@
+{
+  "reviewed_at": "2026-10-19",
+  "status": "draft",
+  "published_article_count": 37,
+  "quiz_count": 23,
+  "question_count": 92,
+  "source_article_ids": [
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52
+  ],
+  "pending_articles": [
+    {
+      "id": 1,
+      "slug": "gears-and-gearboxes",
+      "title": "Tishli gildiraklar va reduktorlar: Mashinalarda quvvat uzatish",
+      "reason": "Published record has no article body in Uzbek or English; only a short excerpt. Add body text before writing an article-based quiz."
+    },
+    {
+      "id": 2,
+      "slug": "thermodynamics-ic-engines",
+      "title": "Ichki yonuv dvigatellarining termodinamikasi",
+      "reason": "Published record has no article body in Uzbek or English; only a short excerpt. Add body text before writing an article-based quiz."
+    },
+    {
+      "id": 3,
+      "slug": "pcb-design-basics",
+      "title": "Yangi boshlovchilar uchun PCB dizayn asoslari",
+      "reason": "Published record has no article body in Uzbek or English; only a short excerpt. Add body text before writing an article-based quiz."
+    },
+    {
+      "id": 4,
+      "slug": "electric-motors-dc-stepper",
+      "title": "Elektr dvigatellarni tushunish: DC dan Steppergacha",
+      "reason": "Published record has no article body in Uzbek or English; only a short excerpt. Add body text before writing an article-based quiz."
+    },
+    {
+      "id": 5,
+      "slug": "chemical-process-optimization",
+      "title": "Sanoatda kimyoviy jarayonlarni optimallashtirish",
+      "reason": "Published record has no article body in Uzbek or English; only a short excerpt. Add body text before writing an article-based quiz."
+    },
+    {
+      "id": 6,
+      "slug": "polymer-engineering-intro",
+      "title": "Polimer muhandisligiga kirish",
+      "reason": "Published record has no article body in Uzbek or English; only a short excerpt. Add body text before writing an article-based quiz."
+    },
+    {
+      "id": 7,
+      "slug": "f1-aerodynamics-downforce",
+      "title": "Formula 1 aerodinamikasi: Downforce qanday ishlaydi",
+      "reason": "Published record has no article body in Uzbek or English; only a short excerpt. Add body text before writing an article-based quiz."
+    },
+    {
+      "id": 8,
+      "slug": "suspension-geometry-dynamics",
+      "title": "Podveska geometriyasi va avtomobil dinamikasi",
+      "reason": "Published record has no article body in Uzbek or English; only a short excerpt. Add body text before writing an article-based quiz."
+    },
+    {
+      "id": 9,
+      "slug": "bridge-design-principles",
+      "title": "Koprik dizayn prinsiplari: Rim arkalaridan tortilgan kopriklargacha",
+      "reason": "Published record has no article body in Uzbek or English; only a short excerpt. Add body text before writing an article-based quiz."
+    },
+    {
+      "id": 10,
+      "slug": "earthquake-resistant-design",
+      "title": "Zilzilabardosh binolarni loyihalash",
+      "reason": "Published record has no article body in Uzbek or English; only a short excerpt. Add body text before writing an article-based quiz."
+    },
+    {
+      "id": 11,
+      "slug": "renewable-energy-solar-wind",
+      "title": "Qayta tiklanadigan energiya tizimlari: Quyosh va shamol integratsiyasi",
+      "reason": "Published record has no article body in Uzbek or English; only a short excerpt. Add body text before writing an article-based quiz."
+    },
+    {
+      "id": 12,
+      "slug": "wastewater-treatment-tech",
+      "title": "Oqova suvlarni tozalash texnologiyalari",
+      "reason": "Published record has no article body in Uzbek or English; only a short excerpt. Add body text before writing an article-based quiz."
+    },
+    {
+      "id": 13,
+      "slug": "neural-networks-image-recognition",
+      "title": "Tasvirni aniqlash uchun neyron tarmoqlar",
+      "reason": "Published record has no article body in Uzbek or English; only a short excerpt. Add body text before writing an article-based quiz."
+    },
+    {
+      "id": 14,
+      "slug": "large-language-models-gpt",
+      "title": "Katta til modellari: GPT qanday ishlaydi",
+      "reason": "Published record has no article body in Uzbek or English; only a short excerpt. Add body text before writing an article-based quiz."
+    }
+  ],
+  "guidance": [
+    {
+      "title": "Carnegie Mellon — Creating Exams",
+      "url": "https://www.cmu.edu/teaching/assessment/assesslearning/creatingexams.html"
+    },
+    {
+      "title": "W3C WAI — User Notifications",
+      "url": "https://www.w3.org/WAI/tutorials/forms/notifications/"
+    }
+  ]
+}

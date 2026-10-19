@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { adminSaveRecord, adminSetQuizArticles, adminSetFeaturedQuiz } from '@/lib/actions'
 import { ImageUpload } from '../ImageUpload'
-import { DIFFICULTIES, DIFFICULTY_LABELS } from '@/lib/quiz'
 
 const input =
   'w-full border border-border bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-chart-2'
@@ -39,10 +38,9 @@ export function QuizMetaForm({
   const [descUz, setDescUz] = useState(item?.description_uz ?? '')
   const [descEn, setDescEn] = useState(item?.description_en ?? '')
   const [categoryId, setCategoryId] = useState<string>(item?.category_id?.toString() ?? '')
-  const [difficulty, setDifficulty] = useState(item?.difficulty ?? 'easy')
   const [duration, setDuration] = useState<string>(item?.duration_minutes?.toString() ?? '')
   const [thumb, setThumb] = useState(item?.thumbnail_url ?? '')
-  const [published, setPublished] = useState<boolean>(item?.published ?? true)
+  const [published, setPublished] = useState<boolean>(item?.published ?? false)
   const [featured, setFeatured] = useState<boolean>(item?.featured ?? false)
   const [linked, setLinked] = useState<number[]>(linkedArticleIds)
 
@@ -71,10 +69,9 @@ export function QuizMetaForm({
           description_uz: descUz || null,
           description_en: descEn || null,
           category_id: categoryId ? Number(categoryId) : null,
-          difficulty,
           duration_minutes: duration ? Number(duration) : null,
           thumbnail_url: thumb || null,
-          published,
+          published: item?.id ? published : false,
         },
         item?.id,
       )
@@ -150,15 +147,7 @@ export function QuizMetaForm({
         <textarea value={descEn} onChange={(e) => setDescEn(e.target.value)} rows={2} className={`${input} resize-none`} style={{ borderRadius: 'var(--radius)' }} />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Difficulty</label>
-          <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)} className={input} style={{ borderRadius: 'var(--radius)' }}>
-            {DIFFICULTIES.map((d) => (
-              <option key={d} value={d}>{DIFFICULTY_LABELS[d].en} / {DIFFICULTY_LABELS[d].uz}</option>
-            ))}
-          </select>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium mb-1">
             Duration <span className="text-muted-foreground font-normal">(min)</span>
@@ -166,11 +155,17 @@ export function QuizMetaForm({
           <input type="number" value={duration} onChange={(e) => setDuration(e.target.value)} placeholder="auto" className={input} style={{ borderRadius: 'var(--radius)' }} />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Published</label>
-          <label className="flex items-center gap-2 text-sm h-[38px]">
-            <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} />
-            <span className="text-muted-foreground">Visible on the site</span>
-          </label>
+          <span className="block text-sm font-medium mb-1">Holati / Status</span>
+          {item?.id ? (
+            <label className="flex items-center gap-2 text-sm min-h-[38px]">
+              <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} />
+              <span className="text-muted-foreground">Saytda ko‘rsatish / Published</span>
+            </label>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Qoralama sifatida saqlanadi. Savollarni tekshirgach nashr qiling. / Saved as a draft. Review the questions before publishing.
+            </p>
+          )}
         </div>
       </div>
 
