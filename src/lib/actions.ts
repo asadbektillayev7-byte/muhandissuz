@@ -87,6 +87,24 @@ function revalidateShowcase(table: string) {
   revalidatePath('/sitemap.xml')
 }
 
+function revalidateMedia() {
+  revalidatePath('/admin/media')
+  for (const locale of ['uz', 'en']) {
+    revalidatePath(`/${locale}`)
+    revalidatePath(`/${locale}/media`)
+  }
+  revalidatePath('/[locale]/media/[id]', 'page')
+}
+
+function validateMediaDimensions(data: { width?: unknown; height?: unknown }) {
+  for (const dimension of [data.width, data.height]) {
+    if (dimension === undefined || dimension === null) continue
+    if (typeof dimension !== 'number' || !Number.isInteger(dimension) || dimension <= 0 || dimension > 2_147_483_647) {
+      throw new Error('Rasm o‘lchamlari musbat butun son bo‘lishi kerak / Image dimensions must be positive whole numbers.')
+    }
+  }
+}
+
 export async function adminDeleteRecord(table: string, id: number | string) {
   await getAdminUser()
   const admin = createAdminClient()
@@ -95,10 +113,12 @@ export async function adminDeleteRecord(table: string, id: number | string) {
   revalidatePath(`/admin/${table}`)
   revalidateShowcase(table)
   if (table === 'articles') revalidateArticles()
+  if (table === 'media') revalidateMedia()
 }
 
 export async function adminSaveRecord(table: string, data: Record<string, unknown>, id?: number | string) {
   await getAdminUser()
+  if (table === 'media') validateMediaDimensions(data)
   if (table === 'hackathons' || table === 'student_projects') {
     const videoError = getVideoValidationError(
       typeof data.video_url === 'string' ? data.video_url : null,
@@ -119,6 +139,7 @@ export async function adminSaveRecord(table: string, data: Record<string, unknow
   }
   revalidatePath(`/admin/${table}`)
   revalidateShowcase(table)
+  if (table === 'media') revalidateMedia()
   return result
 }
 
@@ -347,6 +368,8 @@ export async function adminInsertMedia(data: {
   alt_en?: string
   mime_type: string
   filesize: number
+  width?: number
+  height?: number
   title_uz?: string
   title_en?: string
   location_uz?: string
@@ -357,10 +380,11 @@ export async function adminInsertMedia(data: {
   poster_url?: string
 }) {
   await getAdminUser()
+  validateMediaDimensions(data)
   const admin = createAdminClient()
   const { error } = await admin.from('media').insert(data)
   if (error) throw new Error(error.message)
-  revalidatePath('/admin/media')
+  revalidateMedia()
 }
 
 // ── AI-drafted quiz questions ──

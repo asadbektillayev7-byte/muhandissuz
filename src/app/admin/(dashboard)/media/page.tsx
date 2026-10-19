@@ -6,6 +6,24 @@ import { DeleteButton } from '../DeleteButton'
 import { adminInsertMedia } from '@/lib/actions'
 import { accepts, resolveType, uploadToMediaBucket, validateFile } from '@/lib/upload'
 
+async function readImageDimensions(file: File): Promise<{ width: number; height: number } | undefined> {
+  if (!resolveType(file).startsWith('image/')) return undefined
+  const source = URL.createObjectURL(file)
+  try {
+    const image = new Image()
+    image.src = source
+    await image.decode()
+    if (image.naturalWidth > 0 && image.naturalHeight > 0) {
+      return { width: image.naturalWidth, height: image.naturalHeight }
+    }
+  } catch {
+    // Some accepted formats (such as HEIC) cannot be decoded in every browser.
+    // Keep uploads working; the public image can detect its dimensions later.
+  } finally {
+    URL.revokeObjectURL(source)
+  }
+}
+
 export default function AdminMediaPage() {
   const [media, setMedia] = useState<any[]>([])
   const [file, setFile] = useState<File | null>(null)
@@ -45,10 +63,15 @@ export default function AdminMediaPage() {
 
     let publicUrl: string
     let filename: string
+    let dimensions: { width: number; height: number } | undefined
     try {
-      const uploaded = await uploadToMediaBucket(supabase, file)
+      const [uploaded, originalDimensions] = await Promise.all([
+        uploadToMediaBucket(supabase, file),
+        readImageDimensions(file),
+      ])
       publicUrl = uploaded.url
       filename = uploaded.filename
+      dimensions = originalDimensions
     } catch (e: any) {
       setValidationError(`Upload to storage failed: ${e?.message || 'unknown error'}`)
       setUploading(false)
@@ -89,6 +112,7 @@ export default function AdminMediaPage() {
         event_date: eventDate || undefined,
         mime_type: resolveType(file),
         filesize: file.size,
+        ...dimensions,
       })
     } catch (e: any) {
       setValidationError(`Saving to the database failed: ${e?.message || 'unknown error'}`)
